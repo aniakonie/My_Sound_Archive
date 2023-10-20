@@ -1,0 +1,5 @@
+test.py
+.env
+.cache
+/website/__pycache__
+/website/spotify_data/__pycache__

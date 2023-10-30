@@ -1,13 +1,12 @@
 from flask import Blueprint
-
 import spotipy
 from website.spotify_data.sp_get_library import sp_get_library
 from spotipy.oauth2 import SpotifyOAuth
 from dotenv import load_dotenv
 import os
 import time
-
 from flask import Flask, request, url_for, session, redirect
+from website.spotify_data.spotify_database import initialize_spotify_database, create_spotify_database
 
 sp_auth = Blueprint('sp_auth', '__name__')
 
@@ -39,9 +38,14 @@ def library_main():
 
 	sp = spotipy.Spotify(auth=token_info['access_token'])
 
-	artists_uris = sp_get_library(sp)
+	saved_tracks_library, artists_uris = sp_get_library(sp)
+	
+	initialize_spotify_database()
+	create_spotify_database(saved_tracks_library, artists_uris)
 
-	return artists_uris
+	return('Success')
+
+
 
 def get_token():
 	token_info = session.get(TOKEN_INFO, None)

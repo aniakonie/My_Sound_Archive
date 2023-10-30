@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<link rel="stylesheet" href="/static/main_style.css">
+<title>Virtual Music Library</title>
+</head>
+
+<body>
+
+<h1>Artists</h1>
+
+{% for artist in artists %}
+    <form method="POST">
+        <input type="hidden" name="artist" value="{{ artist }}">
+        <input type="submit" value="{{ artist }}">
+    </form>
+{% endfor %}
+
+</body>
+</html>
+

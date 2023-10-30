@@ -13,7 +13,7 @@ def sp_get_library(sp):
 		offset += 50
 
 	#iterating through list with saved tracks
-	#GETTING DATA FOR USER_SAVED_TRACKS DATABASE WITH A STRUCTURE: track_uri, track_artists, track_title, album_artists, album_title, album_uri
+	#GETTING DATA FOR USER_SAVED_TRACKS DATABASE WITH A STRUCTURE: track_uri, track_artists, track_title, album_artists, album_title, album_uri, genres
 	
 	saved_tracks_library = []
 	artists_uris = {}
@@ -32,7 +32,7 @@ def sp_get_library(sp):
 			album_artist = k["name"]
 			album_artists.append(album_artist)
 
-		#track artists and artists_uris
+		#track artists, artists_uris, genres
 		track_artists_list = i["track"]["artists"]
 		track_artists = []
 		for k in track_artists_list:
@@ -49,7 +49,11 @@ def sp_get_library(sp):
         
 		saved_tracks_library.append(saved_track)
 
-	return artists_uris
+	return(saved_tracks_library, artists_uris)
+
+
+
+
 
 	# #iterating through list with playlists
 	# #GETTING DATA FOR USER_SAVED_TRACKS DATABASE WITH A STRUCTURE: track_uri, track_artists, track_title, album_artists, album_title, album_uri
@@ -84,5 +88,3 @@ def sp_get_library(sp):
 
 	# print(playlists_ids)
 	# print(len(all_playlists_tracks))
-
-

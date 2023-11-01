@@ -8,14 +8,42 @@
 
 <body>
 
-<h1>Artists</h1>
 
-{% for artist in artists %}
-    <form method="POST">
-        <input type="hidden" name="artist" value="{{ artist }}">
-        <input type="submit" value="{{ artist }}">
-    </form>
-{% endfor %}
+<div class="container">
+
+    <div class="item Folders">
+    <h1>Folders</h1>
+    {% for folder in folders %}
+        <form method="POST">
+            <input type="hidden" name="selected_folder" value="{{ folder }}">
+            <input type="submit" value="{{ folder }}">
+        </form>
+    {% endfor %}
+    </div>
+
+    <div class="item Artists">
+    <h1>Artists</h1>
+
+    {% for artist in artists_folders %}
+        <form method="POST">
+            <input type="hidden" name="selected_artist" value="{{ artist }}">
+            <input type="submit" value="{{ artist }}">
+        </form>
+    {% endfor %}
+    </div>
+
+    <div class="item Tracks">
+    <h1>Tracks</h1>
+    {% for track in tracklist %}
+        <a class="play_track" href="{{track["track_uri"]}}">PL</a> <a class="open_album" href="{{track["album_uri"]}}">AL</a> <span class="track">{{track["track_artist_main"]}} - {{track["track_title"]}}</span>
+        <br>
+    {% endfor %}
+    </div>
+
+</div>
+
+
+
 
 </body>
 </html>

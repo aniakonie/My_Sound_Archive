@@ -4,8 +4,23 @@ import mysql.connector
 
 views = Blueprint('views', '__name__')
 
-@views.route('/artists', methods=["POST", "GET"])
-def library_all_artists():
+
+@views.route('/', methods=["POST", "GET"])
+def library():
+
+    folders = ["All artists", "Rock", "Others"]
+
+    if request.method == "POST":
+        selected_folder = request.form["selected_folder"]
+        return redirect(url_for("views.library_folders", selected_folder = selected_folder))
+
+    return render_template("artists.html", folders = folders)
+
+
+@views.route('/<selected_folder>', methods=["POST", "GET"])
+def library_folders(selected_folder):
+
+    folders = ["All artists", "Rock", "Others"]
 
     vml = mysql.connector.connect(
     host = "localhost",
@@ -16,7 +31,7 @@ def library_all_artists():
 
     cursor = vml.cursor()
 
-    query = (
+    query_artists = (
     '''
     SELECT track_artist_main
     FROM tracks
@@ -26,22 +41,30 @@ def library_all_artists():
     '''
     )
 
-    cursor.execute(query)
+    cursor.execute(query_artists)
 
-    artists = []
+    artists_folders = []
     for track_artist_main in cursor:
-        artists.append(track_artist_main[0])
+        artists_folders.append(track_artist_main[0])
 
+    #IMPROVE THIS!!!!!!!!!!!!
     if request.method == "POST":
-        artist = request.form["artist"]
-        print(artist)
-        return redirect(url_for("views.library_artist", artist = artist))
+        try:
+            selected_artist = request.form["selected_artist"]
+            return redirect(url_for("views.library_tracks", selected_folder=selected_folder, selected_artist = selected_artist))
 
-    return render_template("artists.html", artists = artists)
+        except:
+            selected_folder = request.form["selected_folder"]
+            return redirect(url_for("views.library_folders", selected_folder = selected_folder))
 
-@views.route('/artists/<artist>')
-def library_artist(artist):
+    return render_template("artists.html", artists_folders = artists_folders, folders=folders)
 
+
+@views.route('/<selected_folder>/<selected_artist>', methods=["POST", "GET"])
+def library_tracks(selected_folder, selected_artist):
+
+    folders = ["All artists", "Rock", "Others"]
+    
     vml = mysql.connector.connect(
     host = "localhost",
     user = "root",
@@ -51,18 +74,47 @@ def library_artist(artist):
 
     cursor = vml.cursor()
 
-    query = (
+    query_artists = (
     '''
-    SELECT track_uri, track_artist_main, track_artist_add1, track_artist_add2, track_title, album_uri
+    SELECT track_artist_main
+    FROM tracks
+    GROUP BY track_artist_main
+    HAVING COUNT(track_artist_main) > 2
+    ORDER BY track_artist_main ASC
+    '''
+    )
+
+    cursor.execute(query_artists)
+
+    artists_folders = []
+    for track_artist_main in cursor:
+        artists_folders.append(track_artist_main[0])
+
+    cursor = vml.cursor(dictionary=True)
+
+    query_tracks = (
+    '''
+    SELECT *
     FROM tracks
     WHERE track_artist_main = %s
     ORDER BY track_title ASC
     '''
     )
 
-    cursor.execute(query, (artist,))
+    cursor.execute(query_tracks, (selected_artist,))
 
-    for (track_uri, track_artist_main, track_artist_add1, track_artist_add2, track_title, album_uri) in cursor:
-        print(f"{track_artist_main}, {track_artist_add1}, {track_artist_add2} - {track_title}")
+    tracklist = []
+    for row in cursor:
+        tracklist.append(row)
 
-    return artist
+    if request.method == "POST":
+        try:
+            selected_artist = request.form["selected_artist"]
+            return redirect(url_for("views.library_tracks", selected_folder=selected_folder, selected_artist = selected_artist))
+
+        except:
+            selected_folder = request.form["selected_folder"]
+            return redirect(url_for("views.library_folders", selected_folder = selected_folder))
+
+    return render_template("artists.html", tracklist = tracklist, folders=folders, artists_folders = artists_folders)
+

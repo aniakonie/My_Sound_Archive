@@ -7,6 +7,7 @@ import os
 import time
 from flask import Flask, request, url_for, session, redirect
 from website.spotify_data.spotify_database import initialize_spotify_database, create_spotify_database
+from website.spotify_data.sp_get_artists_genres import sp_get_artists_genres
 
 sp_auth = Blueprint('sp_auth', '__name__')
 
@@ -38,13 +39,19 @@ def library_main():
 
 	sp = spotipy.Spotify(auth=token_info['access_token'])
 
-	saved_tracks_library, artists_uris = sp_get_library(sp)
+	# initialize_spotify_database()
+	# print("Database created")
+
+	# saved_tracks_library, artists_uris = sp_get_library(sp)
+	# print("Tracks downloaded")
 	
-	initialize_spotify_database()
-	create_spotify_database(saved_tracks_library, artists_uris)
+	# artists_uris_genres = sp_get_artists_genres(sp, artists_uris)
+	# print("Genres downloaded")
 
-	return('Success')
+	# create_spotify_database(saved_tracks_library, artists_uris_genres)
+	# print("Database populated")
 
+	return ("Success")
 
 
 def get_token():

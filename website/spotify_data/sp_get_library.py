@@ -20,33 +20,28 @@ def sp_get_library(sp):
 
 	for i in saved_tracks:
 
-		#link for playing the track (works in the desktop app only)
-		track_uri = i["track"]["uri"]
-
+		track_uri = i["track"]["uri"] #link for playing the track (works in the desktop app only)
 		track_title = i["track"]["name"]
 
 		#album artists
 		album_artists_dict = i["track"]["album"]["artists"]
 		album_artists = []
 		for k in album_artists_dict:
-			album_artist = k["name"]
-			album_artists.append(album_artist)
+			album_artists.append(k["name"])
 
 		#track artists, artists_uris, genres
 		track_artists_list = i["track"]["artists"]
 		track_artists = []
 		for k in track_artists_list:
-			track_artist = k["name"]
-			track_artists.append(track_artist)
-
-			if track_artist not in artists_uris:
-				artists_uris[track_artist] = k["uri"]
-
+			track_artists.append(k["name"])
+			if k["uri"] not in artists_uris:
+				artists_uris[k["uri"]] = k["name"]
+		
 		album_title = i["track"]["album"]["name"]
 		album_uri = i["track"]["album"]["uri"]
 
 		saved_track = {"track_uri": track_uri, "track_artists": track_artists, "track_title": track_title, "album_artists": album_artists, "album_title": album_title, "album_uri": album_uri}
-        
+
 		saved_tracks_library.append(saved_track)
 
 	return(saved_tracks_library, artists_uris)

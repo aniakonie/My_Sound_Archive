@@ -27,14 +27,15 @@ def initialize_spotify_database():
     )
 
     cursor.execute('''
-    CREATE TABLE artists_uris (
-    artist VARCHAR(50) PRIMARY KEY,
-    artist_uri VARCHAR(37))
+    CREATE TABLE artists_uris_genres (
+    artist_uri VARCHAR(37) PRIMARY KEY,
+    artist VARCHAR(50),
+    artist_genres VARCHAR(300))
     '''
     )
 
 
-def create_spotify_database(saved_tracks_library, artists_uris):
+def create_spotify_database(saved_tracks_library, artists_uris_genres):
 
     vml = mysql.connector.connect(
     host = "localhost",
@@ -82,10 +83,11 @@ def create_spotify_database(saved_tracks_library, artists_uris):
 
         vml.commit()
 
-    for artist, artist_uri in artists_uris.items():
+    for (artist_uri, artist, artist_genres) in artists_uris_genres:
 
-        add_artist = "INSERT INTO artists_uris VALUES(%s, %s)"
-        data_artist = (artist, artist_uri)
+        artist_genres_string = ", ".join(artist_genres)
+        add_artist = "INSERT INTO artists_uris_genres VALUES(%s, %s, %s)"
+        data_artist = (artist_uri, artist, artist_genres_string)
         cursor.execute(add_artist, data_artist)
 
         vml.commit()

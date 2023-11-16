@@ -12,6 +12,7 @@ def sp_get_library(sp):
 			break
 		offset += 50
 
+
 	#iterating through list with saved tracks
 	#GETTING DATA FOR USER_SAVED_TRACKS DATABASE WITH A STRUCTURE: track_uri, track_artists, track_title, album_artists, album_title, album_uri, genres
 	
@@ -37,10 +38,12 @@ def sp_get_library(sp):
 			if k["uri"] not in artists_uris:
 				artists_uris[k["uri"]] = k["name"]
 		
+		main_artist_uri = track_artists_list[0]["uri"]
+		
 		album_title = i["track"]["album"]["name"]
 		album_uri = i["track"]["album"]["uri"]
 
-		saved_track = {"track_uri": track_uri, "track_artists": track_artists, "track_title": track_title, "album_artists": album_artists, "album_title": album_title, "album_uri": album_uri}
+		saved_track = {"track_uri": track_uri, "track_artists": track_artists, "main_artist_uri": main_artist_uri, "track_title": track_title, "album_artists": album_artists, "album_title": album_title, "album_uri": album_uri}
 
 		saved_tracks_library.append(saved_track)
 

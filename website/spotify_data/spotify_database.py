@@ -1,14 +1,9 @@
 import mysql.connector
+from website.database_connect import db_connect
 
 def initialize_spotify_database():
 
-    vml = mysql.connector.connect(
-    host = "localhost",
-    user = "root",
-    password = "password",
-    database = "virtual_music_library"
-    )
-
+    vml, cursor = db_connect()
     cursor = vml.cursor()
 
     cursor.execute('''
@@ -40,13 +35,7 @@ def initialize_spotify_database():
 
 def create_spotify_database(saved_tracks_library, artists_uris_genres):
 
-    vml = mysql.connector.connect(
-    host = "localhost",
-    user = "root",
-    password = "password",
-    database = "virtual_music_library"
-    )
-
+    vml, cursor = db_connect()
     cursor = vml.cursor()
 
     for (artist_uri, artist, artist_genres) in artists_uris_genres:

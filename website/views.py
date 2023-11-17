@@ -1,6 +1,8 @@
 from flask import Flask, url_for, redirect, render_template, request
 from flask import Blueprint
+from website.database_connect import db_connect
 import mysql.connector
+
 
 views = Blueprint('views', '__name__')
 
@@ -22,13 +24,7 @@ def library_folders(selected_folder):
 
     folders = ["All artists", "Rock", "Others"]
 
-    vml = mysql.connector.connect(
-    host = "localhost",
-    user = "root",
-    password = "password",
-    database = "virtual_music_library"
-    )
-
+    vml, cursor = db_connect()
     cursor = vml.cursor()
 
     query_artists = (
@@ -65,13 +61,7 @@ def library_tracks(selected_folder, selected_artist):
 
     folders = ["All artists", "Rock", "Others"]
     
-    vml = mysql.connector.connect(
-    host = "localhost",
-    user = "root",
-    password = "password",
-    database = "virtual_music_library"
-    )
-
+    vml, cursor = db_connect()
     cursor = vml.cursor()
 
     query_artists = (

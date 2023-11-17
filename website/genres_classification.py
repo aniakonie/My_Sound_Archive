@@ -1,5 +1,5 @@
 import mysql.connector
-
+from website.database_connect import db_connect
 
 main_genres ={
     "metal",
@@ -49,12 +49,7 @@ rap = {
 
 def initialize_genres_database():
 
-    vml = mysql.connector.connect(
-    host = "localhost",
-    user = "root",
-    password = "password",
-    database = "virtual_music_library"
-    )
+    vml, cursor = db_connect()
 
     cursor = vml.cursor()
 

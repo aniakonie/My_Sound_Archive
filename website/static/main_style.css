@@ -19,14 +19,6 @@ h1 {
 }
 
 
-.Folders {
-    
-}
-
-.Artists {
-
-}
-
 .Tracks {
     flex-grow: 1;
 
@@ -35,6 +27,10 @@ h1 {
 
 span.track {
     background-color: rgb(237, 179, 255)
+}
+
+span.track_add {
+    background-color: rgb(204, 104, 235)
 }
 
 a.play_track{

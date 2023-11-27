@@ -16,7 +16,7 @@ def library():
         selected_folder = request.form["selected_folder"]
         return redirect(url_for("views.library_folders", selected_folder = selected_folder))
 
-    return render_template("artists.html", folders = folders)
+    return render_template("library_view.html", folders = folders)
 
 
 @views.route('/<selected_folder>', methods=["POST", "GET"])
@@ -55,11 +55,13 @@ def library_folders(selected_folder):
             selected_folder = request.form["selected_folder"]
             return redirect(url_for("views.library_folders", selected_folder = selected_folder))
 
-    return render_template("artists.html", artists_folders = artists_folders, folders=folders)
+    return render_template("library_view.html", artists_folders = artists_folders, folders=folders)
 
 
 @views.route('/<selected_folder>/<selected_artist>', methods=["POST", "GET"])
 def library_tracks(selected_folder, selected_artist):
+
+    tracklist_featured = ''
 
     folders = ["rock", "metal", "jazz", "pop", "reggae", "electronic", "funk", "others"]
     
@@ -124,6 +126,26 @@ def library_tracks(selected_folder, selected_artist):
     for row in cursor:
         tracklist.append(row)
 
+
+    if selected_artist != "Loose tracks":
+
+        query_featured_tracks = (
+        '''    
+        SELECT *
+        FROM tracks
+        WHERE track_artist_add1 = %s OR track_artist_add2 = %s
+        OR track_artist_main != %s AND album_artist_main = %s
+        ORDER BY track_title ASC;
+        '''
+        )
+        
+        cursor.execute(query_featured_tracks, (selected_artist,)*4)
+
+        tracklist_featured = []
+        for row in cursor:
+            tracklist_featured.append(row)
+
+
     if request.method == "POST":
         try:
             selected_artist = request.form["selected_artist"]
@@ -133,5 +155,4 @@ def library_tracks(selected_folder, selected_artist):
             selected_folder = request.form["selected_folder"]
             return redirect(url_for("views.library_folders", selected_folder = selected_folder))
 
-    return render_template("artists.html", tracklist = tracklist, folders=folders, artists_folders = artists_folders)
-
+    return render_template("library_view.html", tracklist = tracklist, folders=folders, artists_folders = artists_folders, tracklist_featured = tracklist_featured, selected_artist = selected_artist)

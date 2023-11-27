@@ -13,7 +13,7 @@ def create_app():
     from .views import views
     from .home import home
 
-    app.register_blueprint(sp_auth, url_prefix='/auth')
+    app.register_blueprint(sp_auth, url_prefix='/sp_auth')
     app.register_blueprint(views, url_prefix='/library')
     app.register_blueprint(home, url_prefix='/')
 

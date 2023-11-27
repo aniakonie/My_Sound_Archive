@@ -14,7 +14,7 @@ def sp_get_library(sp):
 
 
 	#iterating through list with saved tracks
-	#GETTING DATA FOR USER_SAVED_TRACKS DATABASE WITH A STRUCTURE: track_uri, track_artists, track_title, album_artists, album_title, album_uri, genres
+	#GETTING DATA FOR USER_SAVED_TRACKS DATABASE WITH A STRUCTURE: track_uri, track_artists, main_artist_uri, track_title, album_artists, album_title, album_uri
 	
 	saved_tracks_library = []
 	artists_uris = {}
@@ -37,7 +37,7 @@ def sp_get_library(sp):
 			track_artists.append(k["name"])
 			if k["uri"] not in artists_uris:
 				artists_uris[k["uri"]] = k["name"]
-		
+
 		main_artist_uri = track_artists_list[0]["uri"]
 		
 		album_title = i["track"]["album"]["name"]
@@ -54,7 +54,7 @@ def sp_get_library(sp):
 
 
 	# #iterating through list with playlists
-	# #GETTING DATA FOR USER_SAVED_TRACKS DATABASE WITH A STRUCTURE: track_uri, track_artists, track_title, album_artists, album_title, album_uri
+	# #GETTING DATA FOR USER_SAVED_TRACKS DATABASE WITH A STRUCTURE: track_uri, track_artists, main_artist_uri, track_title, album_artists, album_title, album_uri
 
 	# playlists = []
 

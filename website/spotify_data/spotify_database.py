@@ -1,5 +1,6 @@
 import mysql.connector
 from website.database_connect import db_connect
+from website.genres_classification import genres_artists_classification
 
 def initialize_spotify_database():
 
@@ -12,7 +13,8 @@ def initialize_spotify_database():
     artist VARCHAR(50),
     artist_genres VARCHAR(300),
     artist_genre VARCHAR(20),
-    artist_subgenre VARCHAR(20))
+    artist_subgenre VARCHAR(20)
+    )
     '''
     )
 
@@ -28,7 +30,8 @@ def initialize_spotify_database():
     album_artist_add1 VARCHAR(100),
     album_artist_add2 VARCHAR(100),
     album_title VARCHAR(100),
-    album_uri VARCHAR(36))
+    album_uri VARCHAR(36)
+    )
     '''
     )
 
@@ -41,8 +44,11 @@ def create_spotify_database(saved_tracks_library, artists_uris_genres):
     for (artist_uri, artist, artist_genres) in artists_uris_genres:
 
         artist_genres_string = ", ".join(artist_genres)
-        add_artist = "INSERT INTO artists_uris_genres VALUES(%s, %s, %s)"
-        data_artist = (artist_uri, artist, artist_genres_string)
+        artist_genre_chosen = genres_artists_classification(artist_genres_string)
+        artist_subgenre_chosen = " "
+
+        add_artist = "INSERT INTO artists_uris_genres VALUES(%s, %s, %s, %s, %s)"
+        data_artist = (artist_uri, artist, artist_genres_string, artist_genre_chosen, artist_subgenre_chosen)
         cursor.execute(add_artist, data_artist)
 
         vml.commit()

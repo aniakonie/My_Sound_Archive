@@ -1,14 +1,46 @@
 import mysql.connector
+from website.database_connect import db_connect
+
+
+# vml, cursor = db_connect()
+# cursor = vml.cursor()
+
+# cursor.execute('''
+# CREATE TABLE user_settings (
+# include_all_artists_folder BOOL,
+# user_genres_folders VARCHAR(300),
+# artists_tracks_folders_amount TINYINT(100)
+# )
+# '''
+# )
+
+
+def change_genres_folders():
+    pass
+
+
+def include_all_artists_in_folders():
+    include_all_artists_folder = True
+    return include_all_artists_folder
+
+def artists_tracks_folders_amount():
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
 
 def genres_folders_suggestions():
 
-    vml = mysql.connector.connect(
-    host = "localhost",
-    user = "root",
-    password = "password",
-    database = "virtual_music_library"
-    )
-
+    vml, cursor = db_connect()
     cursor = vml.cursor()
 
     query_genres = (
@@ -59,7 +91,6 @@ def genres_folders_suggestions():
             genres_names_popularity[name] = 1
         else:
             genres_names_popularity[name] += 1
-
 
     #retrieving main_genres names from DB
     query_main_genres = (

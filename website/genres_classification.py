@@ -1,5 +1,6 @@
 import mysql.connector
 from website.database_connect import db_connect
+import random
 
 main_genres ={
     "metal",
@@ -56,7 +57,8 @@ def initialize_genres_database():
     cursor.execute('''
     CREATE TABLE main_genres (
     main_genre VARCHAR(20) PRIMARY KEY,
-    subgenres VARCHAR(300))
+    subgenres VARCHAR(300)
+    )
     '''
     )
 
@@ -67,32 +69,26 @@ def initialize_genres_database():
         vml.commit()
 
 
-def genres_artists_classification():
+def genres_artists_classification(artist_genres_string):
 
-
-    string = "contemporary vocal jazz, jazz, pop, vocal jazz"
-    genres_string = string.lower()
-
+    genres_string = artist_genres_string.lower()
     main_genres_dict = dict()
-
+    #counting how many times names of the main genres occur in the artist_genres retrieved from spotify (exclude 0 times)
     for item in main_genres:
-        main_genres_dict[item] = genres_string.count(item)
-    print(main_genres_dict)
-
+        if genres_string.count(item) > 0:
+            main_genres_dict[item] = genres_string.count(item)
+            
+    #list of the biggest occurences
     genre_classification = [name for (name, num_of_occur) in main_genres_dict.items() if num_of_occur == max(main_genres_dict.values())]
 
-    print(genre_classification)
-
     if len(genre_classification) == 1:
-        artist_genre = genre_classification[0]
+        artist_genre_chosen = genre_classification[0]
+    elif len(genre_classification) > 1:
+        artist_genre_chosen = random.choice(genre_classification)
+    elif len(genre_classification) == 0:
+        artist_genre_chosen = "others"
 
-
-
-
-
-
-
-genres_artists_classification()
+    return artist_genre_chosen
 
 
     

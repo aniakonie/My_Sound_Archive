@@ -28,7 +28,6 @@ def redirect_page():
 	session[TOKEN_INFO] = token_info
 	return redirect(url_for('sp_auth.library_main', external = True))
 
-
 @sp_auth.route('/Library_Main')
 def library_main():
 	try:

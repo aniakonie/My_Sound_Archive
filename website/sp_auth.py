@@ -25,7 +25,7 @@ def request_authorization():
     client_id = os.getenv("CLIENT_ID")
     response_type = 'code'
     redirect_uri = 'http://127.0.0.1:5000/sp_auth/redirect'
-    scope = 'user-library-read playlist-read-private user-follow-read'
+    scope = 'user-library-read playlist-read-private user-follow-read user-read-private user-read-email'
     state = 'fgfrgwgawgwwe' #ZAMIENIĆ NA RANDOM STRING
 
     params = {'client_id': client_id, 'response_type': response_type, 'redirect_uri': redirect_uri, 'scope': scope, 'state': state}
@@ -83,18 +83,27 @@ def redirect_page():
 
     access_token_response = requests.post(get_token_url, headers=headers)
 
-    print(access_token_response)
-
     access_token_response_json = access_token_response.json()
-    print(access_token_response_json)
-    print(type(access_token_response_json))
 
     access_token = access_token_response_json['access_token']
     refresh_token = access_token_response_json['refresh_token']
     expires_in = access_token_response_json['expires_in']
+    token_type = access_token_response_json['token_type']
 
-    return ('You have successfully logged in to Spotify. CREATE LIBRARY.')
+    current_user_profile_data = get_current_user_profile(access_token)
+
+    return current_user_profile_data
 
 
 def refresh_token():
     pass
+
+
+def get_current_user_profile(access_token):
+    get_user_base_url = 'https://api.spotify.com/v1/me'
+    headers = {
+        'Authorization': 'Bearer ' + access_token
+    }
+    current_user_profile_data = (requests.get(get_user_base_url, headers=headers)).json()
+    return current_user_profile_data
+

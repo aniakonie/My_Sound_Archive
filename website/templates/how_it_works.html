@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}VMLibrary{% endblock %}
+
+
+{% block content %} 
+    
+<h1 style="text-align: center;">How this app works</h1>
+<br>
+<h2 style="text-align: left;">Data extraction:</h2>
+<br>
+As a default VML retrieves from your Spotify account all tracks which are:<br>
+- your liked songs (all songs included in your “Liked Songs” playlist),<br>
+- members of playlists which you have created.<br>
+<br>
+If some of your liked songs show up in your playlists as well, don't worry - VML takes care of this and won't show any songs in your library duplicated.
+You can customize your retrieving algorithm later - exclude songs from all or some of your playlists, include songs from playlists that you follow or all songs from saved albums.
+<br><br>
+<h2 style="text-align: left;">Data modification:</h2>
+<br>
+<span style="font-weight: bold; text-decoration: underline">VML won't modify any of your data on Spotify</span> - there's simply no functionality in our app which could do that.
+You can change the contents of VML library only by adding new songs on Spotify.
+
+
+{% endblock %}
+

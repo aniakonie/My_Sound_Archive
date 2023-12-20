@@ -1,34 +1,17 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
-<link rel="stylesheet" href="/static/main_style.css">
-<title>VMLibrary</title>
-</head>
+{% block title %}VMLibrary{% endblock %}
 
-<body>
+
+{% block content %} 
     
 <h1 style="text-align: center;">Welcome to Virtual Music Library</h1>
+<br>
+<h2 style="text-align: center;">All your favorite tracks in one place hblah blah</h2>
 
-<h2 style="text-align: center; color:white;">All your favorite tracks in one place hblah blah</h2>
-
-<h2 style="text-align: center; color:white;">Keep all of your music in folders so that you have a birds eye view of the collection</h2>
-
-<p style="color: white;">Create an account</p>
-<form action="#" method="post">
-    <p>User name:</p>
-    <p><input type="text" name="user_name"></p>
-    <p><input type="submit" value="Submit"></p>
-</form>
-
-<p style="color: white;">Log in:</p>
-<form action="#" method="post">
-    <p>User name:</p>
-    <p><input type="text" name="user_name"></p>
-    <p><input type="submit" value="Submit"></p>
-</form>
+<h2 style="text-align: center;">Keep all of your music in folders so that you have a birds eye view of the collection</h2>
 
 
-</body>
-</html>
+
+{% endblock %}
 

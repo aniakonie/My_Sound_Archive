@@ -1,5 +1,5 @@
 from flask import Blueprint
-from website.spotify_data.sp_get_library import sp_get_library
+from website.spotify_data.sp_get_library import get_spotify_saved_tracks, extract_track_data, get_spotify_playlists_ids
 from dotenv import load_dotenv
 import os
 import time
@@ -90,9 +90,14 @@ def redirect_page():
     expires_in = access_token_response_json['expires_in']
     token_type = access_token_response_json['token_type']
 
-    current_user_profile_data = get_current_user_profile(access_token)
+    # current_user_profile_data = get_current_user_profile(access_token)
 
-    return current_user_profile_data
+    # spotify_saved_tracks = get_spotify_saved_tracks(access_token)
+    # saved_tracks_library, artists_uris = extract_track_data(spotify_saved_tracks)
+
+    spotify_playlists = get_spotify_playlists_ids(access_token, '1182179835')
+
+    return spotify_playlists
 
 
 def refresh_token():

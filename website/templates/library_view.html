@@ -1,85 +1,79 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
-<link rel="stylesheet" href="/static/main_style.css">
-<title>VMLibrary</title>
-</head>
+{% block title %}VML Sample{% endblock %}
 
-<body>
-
+{% block content %}
 
 <div class="container">
 
-    <div class="item Folders">
-    <h1>Folders</h1>
-    {% for folder in folders %}
-        <form method="POST">
-            <input type="hidden" name="selected_folder" value="{{ folder }}">
-            <input type="submit" value="{{ folder }}">
-        </form>
-    {% endfor %}
-    </div>
+    <div class="row">
 
-    <div class="item Artists">
-    <h1>Artists</h1>
-
-    {% for artist in artists_folders %}
-        <form method="POST">
-            <input type="hidden" name="selected_artist" value="{{ artist }}">
-            <input type="submit" value="{{ artist }}">
-        </form>
-    {% endfor %}
-    </div>
-
-    <div class="item Tracks">
-    <h1>Tracks</h1>
-    {% if selected_artist != "Loose tracks" %}
-        {% for track in tracklist %}
-            <a class="play_track" href="{{track["track_uri"]}}">PL</a> <a class="open_album" href="{{track["album_uri"]}}">AL</a>
-            <span class="track">{{track["track_title"]}}</span> 
-
-            <br>
+        <div class="col">
+        <h1>Folders</h1>
+        {% for folder in folders %}
+            <form method="POST">
+                <input type="hidden" name="selected_folder" value="{{ folder }}">
+                <input type="submit" value="{{ folder }}">
+            </form>
         {% endfor %}
-    
-    {% else %}
-        {% for track in tracklist %}
-            <a class="play_track" href="{{track["track_uri"]}}">PL </a>
-            <a class="open_album" href="{{track["album_uri"]}}">AL </a>
-            <span class="track">{{track["track_artist_main"]}} - {{track["track_title"]}} </span>          
-            {% if track["track_artist_add1"] != None %}
-            <span class="track_add">[ with {{track["track_artist_add1"]}}
-                {% if track["track_artist_add2"] != None %}
-                <span class="track_add">, {{track["track_artist_add2"]}}</span>
-                {% endif %}]
-            </span>
+        </div>
+
+        <div class="col">
+            <h1>Artists</h1>
+            {% for artist in artists_folders %}
+                <form method="POST">
+                    <input type="hidden" name="selected_artist" value="{{ artist }}">
+                    <input type="submit" value="{{ artist }}">
+                </form>
+            {% endfor %}
+        </div>
+
+        <div class="col">
+            <h1>Tracks</h1>
+            {% if selected_artist != "Loose tracks" %}
+                {% for track in tracklist %}
+                    <a class="play_track" href="{{track["track_uri"]}}">PL</a> <a class="open_album" href="{{track["album_uri"]}}">AL</a>
+                    <span class="track">{{track["track_title"]}}</span> 
+
+                    <br>
+                {% endfor %}
+            
+            {% else %}
+                {% for track in tracklist %}
+                    <a class="play_track" href="{{track["track_uri"]}}">PL </a>
+                    <a class="open_album" href="{{track["album_uri"]}}">AL </a>
+                    <span class="track">{{track["track_artist_main"]}} - {{track["track_title"]}} </span>          
+                    {% if track["track_artist_add1"] != None %}
+                    <span class="track_add">[ with {{track["track_artist_add1"]}}
+                        {% if track["track_artist_add2"] != None %}
+                        <span class="track_add">, {{track["track_artist_add2"]}}</span>
+                        {% endif %}]
+                    </span>
+                    {% endif %}
+                    <br>
+                {% endfor %}
             {% endif %}
+
             <br>
-        {% endfor %}
-    {% endif %}
-
-
-    {% if tracklist_featured|length > 0 %}
-    <p style="color:white;">Featured tracks</p>
-        {% for track in tracklist_featured %}    
-            <a class="play_track" href="{{track["track_uri"]}}">PL </a>
-            <a class="open_album" href="{{track["album_uri"]}}">AL </a>
-            <span class="track">{{track["track_artist_main"]}} - {{track["track_title"]}} </span>          
-            {% if track["track_artist_add1"] != None %}
-            <span class="track_add">[ with {{track["track_artist_add1"]}}
-                {% if track["track_artist_add2"] != None %}
-                <span class="track_add">, {{track["track_artist_add2"]}}</span>
-                {% endif %}]
-            </span>
+            {% if tracklist_featured|length > 0 %}
+            <p>Featured tracks</p>
+                {% for track in tracklist_featured %}    
+                    <a class="play_track" href="{{track["track_uri"]}}">PL </a>
+                    <a class="open_album" href="{{track["album_uri"]}}">AL </a>
+                    <span class="track">{{track["track_artist_main"]}} - {{track["track_title"]}} </span>          
+                    {% if track["track_artist_add1"] != None %}
+                    <span class="track_add">[ with {{track["track_artist_add1"]}}
+                        {% if track["track_artist_add2"] != None %}
+                        <span class="track_add">, {{track["track_artist_add2"]}}</span>
+                        {% endif %}]
+                    </span>
+                    {% endif %}
+                    <br>
+                {% endfor %}
             {% endif %}
-            <br>
-        {% endfor %}
-    {% endif %}
-
+        </div>
     </div>
-
 </div>
 
-</body>
-</html>
+{% endblock %}
 

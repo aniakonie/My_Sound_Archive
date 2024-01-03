@@ -61,7 +61,6 @@ def get_spotify_playlists_ids(spotify_playlists):
 
 
 
-
 def get_spotify_response_all_items(spotify_req, access_token):
 
     offset = 0

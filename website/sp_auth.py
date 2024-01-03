@@ -95,13 +95,13 @@ def redirect_page():
     # spotify_all_playlists_tracks = get_spotify_playlists_songs_all_playlists_together(access_token)
     # saved_tracks_library, artists_uris = extract_track_data(spotify_saved_tracks)
 
-    spotify_playlists = get_spotify_playlists(access_token)
-    print(len(spotify_playlists))
+    spotify_saved_tracks = get_spotify_saved_tracks(access_token)
+    print(len(spotify_saved_tracks))
     # bla = get_spotify_playlists_songs_all_playlists_together(access_token, '1182179835')
 
     # spotify_playlists = get_spotify_playlists_ids(access_token, '1182179835')
 
-    return spotify_playlists[0]
+    return spotify_saved_tracks[4000]
 
 
 def refresh_token():

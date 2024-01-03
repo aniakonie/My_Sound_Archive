@@ -1,18 +1,11 @@
 from website.spotify_data.sp_API_requests import spotify_req_get_users_saved_tracks, spotify_req_get_users_playlists, spotify_req_get_playlist_items
 
 
-def get_spotify_saved_tracks(access_token):
-    '''adding batches of retrieved 50 songs to make a whole list of songs''' 
-    spotify_saved_tracks = []
-    offset = 0
 
-    while True:
-        spotify_saved_tracks_response = spotify_req_get_users_saved_tracks(access_token, offset)
-        spotify_saved_tracks_50items = spotify_saved_tracks_response['items']
-        if len(spotify_saved_tracks_50items) == 0:
-            break
-        spotify_saved_tracks.extend(spotify_saved_tracks_50items)
-        offset += 50
+def get_spotify_saved_tracks(access_token):
+    '''adding batches of retrieved 50 songs to make a whole list of songs'''
+
+    spotify_saved_tracks = get_spotify_response_all_items(spotify_req_get_users_saved_tracks, access_token)
     return spotify_saved_tracks
 
 
@@ -53,16 +46,7 @@ def get_spotify_playlist_songs_one_playlist(access_token, playlist_id):
 def get_spotify_playlists(access_token):
     '''adding batches of retrieved 50 playlists data to make a whole list of playlists data'''
 
-    spotify_playlists = []
-    offset = 0
-
-    while True:
-        spotify_playlists_response = spotify_req_get_users_playlists(access_token, offset)
-        spotify_playlists_50items = spotify_playlists_response['items']
-        if len(spotify_playlists_50items) == 0:
-            break
-        spotify_playlists.extend(spotify_playlists_50items)
-        offset += 50
+    spotify_playlists = get_spotify_response_all_items(spotify_req_get_users_playlists, access_token)
     return spotify_playlists
 
 
@@ -78,17 +62,17 @@ def get_spotify_playlists_ids(spotify_playlists):
 
 
 
-# def get_spotify_response_all_items(spotify_req, access_token):
+def get_spotify_response_all_items(spotify_req, access_token):
 
-#     offset = 0
-#     spotify_response_all_items = []
+    offset = 0
+    spotify_response_all_items = []
 
-#     while True:
-#         spotify_response = spotify_req(access_token, offset)
-#         spotify_50items = spotify_response['items']
-#         if len(spotify_50items) == 0:
-#             break
-#         spotify_response_all_items.extend(spotify_50items)
-#         offset += 50
-#     return spotify_response_all_items
+    while True:
+        spotify_response = spotify_req(access_token, offset)
+        spotify_50items = spotify_response['items']
+        if len(spotify_50items) == 0:
+            break
+        spotify_response_all_items.extend(spotify_50items)
+        offset += 50
+    return spotify_response_all_items
 

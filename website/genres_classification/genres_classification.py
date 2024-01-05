@@ -1,5 +1,4 @@
-import mysql.connector
-from website.database_connect import db_connect
+from website.database.database_connect import db_connect
 import random
 
 main_genres ={

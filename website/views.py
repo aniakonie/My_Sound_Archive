@@ -1,6 +1,6 @@
 from flask import Flask, url_for, redirect, render_template, request
 from flask import Blueprint
-from website.database_connect import db_connect
+from website.database.database_connect import db_connect
 import mysql.connector
 
 

@@ -2,12 +2,10 @@ from flask import Blueprint
 from website.spotify_data.sp_get_library import get_spotify_playlists_songs_all_playlists_together, get_spotify_saved_tracks, get_spotify_playlists
 from dotenv import load_dotenv
 import os
-import time
 import requests
 import urllib.parse
 import base64
-from flask import Flask, request, url_for, session, redirect
-from website.spotify_data.spotify_database import initialize_spotify_database, create_spotify_database
+from flask import request, url_for, redirect
 from website.spotify_data.sp_get_artists_genres import sp_get_artists_genres
 
 sp_auth = Blueprint('sp_auth', '__name__')

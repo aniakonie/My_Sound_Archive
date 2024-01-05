@@ -1,41 +1,4 @@
-import mysql.connector
-from website.database_connect import db_connect
-
-
-# vml, cursor = db_connect()
-# cursor = vml.cursor()
-
-# cursor.execute('''
-# CREATE TABLE user_settings (
-# include_all_artists_folder BOOL,
-# user_genres_folders VARCHAR(300),
-# artists_tracks_folders_amount TINYINT(100)
-# )
-# '''
-# )
-
-
-def change_genres_folders():
-    pass
-
-
-def include_all_artists_in_folders():
-    include_all_artists_folder = True
-    return include_all_artists_folder
-
-def artists_tracks_folders_amount():
-    pass
-
-
-
-
-
-
-
-
-
-
-
+from website.database.database_connect import db_connect
 
 
 def genres_folders_suggestions():

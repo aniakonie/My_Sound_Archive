@@ -8,6 +8,10 @@ import base64
 from flask import request, url_for, redirect
 from website.spotify_data.sp_get_artists_genres import sp_get_artists_genres
 
+from website.database.populating_database import populate_users_playlists_info, populate_users
+
+from website.database.create_users_tables import create_users_tables
+
 sp_auth = Blueprint('sp_auth', '__name__')
 
 load_dotenv()
@@ -81,25 +85,20 @@ def redirect_page():
 
     access_token_response = requests.post(get_token_url, headers=headers)
 
-    access_token_response_json = access_token_response.json()
+    access_token_response_dict = access_token_response.json()
 
-    access_token = access_token_response_json['access_token']
-    refresh_token = access_token_response_json['refresh_token']
-    expires_in = access_token_response_json['expires_in']
-    token_type = access_token_response_json['token_type']
+    access_token = access_token_response_dict['access_token']
+    refresh_token = access_token_response_dict['refresh_token']
+    expires_in = access_token_response_dict['expires_in']
+    token_type = access_token_response_dict['token_type']
 
-    # current_user_profile_data = get_current_user_profile(access_token)
+    # current_user_id = '1182179835'
 
-    # spotify_all_playlists_tracks = get_spotify_playlists_songs_all_playlists_together(access_token)
-    # saved_tracks_library, artists_uris = extract_track_data(spotify_saved_tracks)
+    # populate_users_playlists_info(access_token, current_user_id)
 
-    spotify_saved_tracks = get_spotify_saved_tracks(access_token)
-    print(len(spotify_saved_tracks))
-    # bla = get_spotify_playlists_songs_all_playlists_together(access_token, '1182179835')
 
-    # spotify_playlists = get_spotify_playlists_ids(access_token, '1182179835')
 
-    return spotify_saved_tracks[4000]
+    return 'gIT'
 
 
 def refresh_token():

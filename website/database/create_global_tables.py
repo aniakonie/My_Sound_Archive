@@ -1,6 +1,6 @@
 from website.database.database_connect import db_connect
 
-def initialize_spotify_database():
+def create_global_tables():
 
     vml, cursor = db_connect()
     cursor = vml.cursor()
@@ -8,10 +8,9 @@ def initialize_spotify_database():
     cursor.execute('''
     CREATE TABLE artists_uris_genres (
     artist_uri VARCHAR(37) PRIMARY KEY,
-    artist VARCHAR(50),
+    artist_name VARCHAR(50),
     artist_genres VARCHAR(300),
-    artist_genre VARCHAR(20),
-    artist_subgenre VARCHAR(20)
+    artist_main_genre VARCHAR(20)
     )
     '''
     )

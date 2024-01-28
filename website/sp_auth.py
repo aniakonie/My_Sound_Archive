@@ -8,15 +8,12 @@ import base64
 from flask import request, url_for, redirect
 from website.spotify_data.sp_get_artists_genres import sp_get_artists_genres
 
-from website.database.populating_database import populate_users_playlists_info, populate_users
-
-from website.database.create_users_tables import create_users_tables
+from website.database.populating_database import psql_test
+from website.database.models import db
 
 sp_auth = Blueprint('sp_auth', '__name__')
 
 load_dotenv()
-
-
 
 @sp_auth.route('/')
 def request_authorization():
@@ -96,9 +93,9 @@ def redirect_page():
 
     # populate_users_playlists_info(access_token, current_user_id)
 
+    psql_test(db)
 
-
-    return 'gIT'
+    return 'success'
 
 
 def refresh_token():

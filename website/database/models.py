@@ -1,12 +1,9 @@
-# from website.__init__ import db
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import func
 from flask_migrate import Migrate
-from website.__init__ import create_app
 
-app, db = create_app()
-migrate = Migrate(app, db)
-
+db = SQLAlchemy()
+migrate = Migrate()
 
 class User(db.Model):
     __tablename__ = "users"
@@ -17,10 +14,9 @@ class User(db.Model):
     account_created = db.Column(db.DateTime(timezone=True), default=func.now())
     user_music_platform = db.relationship('UserMusicPlatform')
 
-    def __init__(self, email, password, account_created):
+    def __init__(self, email, password):
         self.email = email
         self.password = password
-        self.account_created = account_created
 
     def __repr__(self):
         return f"<User id: {self.id}>"

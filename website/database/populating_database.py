@@ -1,37 +1,43 @@
 from website.database.database_connect import db_connect
-from  website.spotify_data.extracting_tracks_for_database import extract_playlists_info, extract_user_profile_data
+from website.spotify_data.extracting_tracks_for_database import extract_playlists_info, extract_user_profile_data
 # from website.genres_classification import genres_artists_classification
+from website.database.models import User
+
+# def populate_users(access_token, refresh_token):
+
+#     user_id, user_name = extract_user_profile_data(access_token)
+
+#     vml, cursor = db_connect()
+#     cursor = vml.cursor()
+
+#     sql_statement = "INSERT INTO users VALUES(%s, %s, CURRENT_TIMESTAMP, %s, %s)"
+#     row = (user_id, user_name, access_token, refresh_token)
+#     cursor.execute(sql_statement, row)
+
+#     vml.commit()
 
 
-def populate_users(access_token, refresh_token):
+# def populate_users_playlists_info(access_token, current_user_id):
 
-    user_id, user_name = extract_user_profile_data(access_token)
+#     vml, cursor = db_connect()
+#     cursor = vml.cursor()
 
-    vml, cursor = db_connect()
-    cursor = vml.cursor()
+#     playlists_info_library = extract_playlists_info(access_token, current_user_id)
 
-    sql_statement = "INSERT INTO users VALUES(%s, %s, CURRENT_TIMESTAMP, %s, %s)"
-    row = (user_id, user_name, access_token, refresh_token)
-    cursor.execute(sql_statement, row)
+#     for (current_user_id, playlist_id, playlist_name, is_owner) in playlists_info_library:
 
-    vml.commit()
+#         sql_statement = "INSERT INTO users_playlists_info VALUES(%s, %s, %s, %s)"
+#         row = (current_user_id, playlist_id, playlist_name, is_owner)
+#         cursor.execute(sql_statement, row)
+
+#         vml.commit()
 
 
-def populate_users_playlists_info(access_token, current_user_id):
-
-    vml, cursor = db_connect()
-    cursor = vml.cursor()
-
-    playlists_info_library = extract_playlists_info(access_token, current_user_id)
-
-    for (current_user_id, playlist_id, playlist_name, is_owner) in playlists_info_library:
-
-        sql_statement = "INSERT INTO users_playlists_info VALUES(%s, %s, %s, %s)"
-        row = (current_user_id, playlist_id, playlist_name, is_owner)
-        cursor.execute(sql_statement, row)
-
-        vml.commit()
-
+def psql_test(db):
+    pass
+    # new_user = User('aka@gmail.com', 'blah')
+    # db.session.add(new_user)
+    # db.session.commit()
 
 
 

@@ -1,25 +1,25 @@
-from flask import Flask, url_for, redirect, render_template, request
+from flask import url_for, redirect, render_template, request
 from flask import Blueprint
 from website.database.database_connect import db_connect
 import mysql.connector
 
 
-views = Blueprint('views', '__name__')
+library_views_bp = Blueprint('library_views_bp', __name__, template_folder='templates')
 
 
-@views.route('/', methods=["POST", "GET"])
+@library_views_bp.route('/', methods=["POST", "GET"])
 def library():
 
     folders = ["rock", "metal", "jazz", "pop", "reggae", "electronic", "funk", "others"]
 
     if request.method == "POST":
         selected_folder = request.form["selected_folder"]
-        return redirect(url_for("views.library_folders", selected_folder = selected_folder))
+        return redirect(url_for("views.library_views/library_folders", selected_folder = selected_folder))
 
-    return render_template("library_view.html", folders = folders, current = "library")
+    return render_template("library_views/library_views.html", folders = folders, current = "library")
 
 
-@views.route('/<selected_folder>', methods=["POST", "GET"])
+@library_views_bp.route('/<selected_folder>', methods=["POST", "GET"])
 def library_folders(selected_folder):
 
     folders = ["rock", "metal", "jazz", "pop", "reggae", "electronic", "funk", "others"]
@@ -49,16 +49,16 @@ def library_folders(selected_folder):
     if request.method == "POST":
         try:
             selected_artist = request.form["selected_artist"]
-            return redirect(url_for("views.library_tracks", selected_folder=selected_folder, selected_artist = selected_artist, current = "library"))
+            return redirect(url_for("views.library_views/library_tracks", selected_folder=selected_folder, selected_artist = selected_artist, current = "library"))
 
         except:
             selected_folder = request.form["selected_folder"]
-            return redirect(url_for("views.library_folders", selected_folder = selected_folder, current = "library"))
+            return redirect(url_for("views.library_views/library_folders", selected_folder = selected_folder, current = "library"))
 
-    return render_template("library_view.html", artists_folders = artists_folders, folders=folders, current = "library")
+    return render_template("library_views/library_views.html", artists_folders = artists_folders, folders=folders, current = "library")
 
 
-@views.route('/<selected_folder>/<selected_artist>', methods=["POST", "GET"])
+@library_views_bp.route('/<selected_folder>/<selected_artist>', methods=["POST", "GET"])
 def library_tracks(selected_folder, selected_artist):
 
     tracklist_featured = ''
@@ -149,10 +149,10 @@ def library_tracks(selected_folder, selected_artist):
     if request.method == "POST":
         try:
             selected_artist = request.form["selected_artist"]
-            return redirect(url_for("views.library_tracks", selected_folder=selected_folder, selected_artist = selected_artist, current = "library"))
+            return redirect(url_for("views.library_views/library_tracks", selected_folder=selected_folder, selected_artist = selected_artist, current = "library"))
 
         except:
             selected_folder = request.form["selected_folder"]
-            return redirect(url_for("views.library_folders", selected_folder = selected_folder, current = "library"))
+            return redirect(url_for("views.library_views/library_folders", selected_folder = selected_folder, current = "library"))
 
-    return render_template("library_view.html", tracklist = tracklist, folders=folders, artists_folders = artists_folders, tracklist_featured = tracklist_featured, selected_artist = selected_artist, current = "library")
+    return render_template("library_views/library_views.html", tracklist = tracklist, folders=folders, artists_folders = artists_folders, tracklist_featured = tracklist_featured, selected_artist = selected_artist, current = "library")

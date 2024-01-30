@@ -1,12 +1,10 @@
 from flask import Blueprint
-from website.spotify_data.sp_get_library import get_spotify_playlists_songs_all_playlists_together, get_spotify_saved_tracks, get_spotify_playlists
 from dotenv import load_dotenv
 import os
 import requests
 import urllib.parse
 import base64
 from flask import request, url_for, redirect
-from website.spotify_data.sp_get_artists_genres import sp_get_artists_genres
 
 from website.database.populating_database import psql_test
 from website.database.models import db
@@ -95,7 +93,7 @@ def redirect_page():
 
     psql_test(db)
 
-    return 'success'
+    return access_token
 
 
 def refresh_token():

@@ -15,12 +15,12 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app, db)
 
-    from .sp_auth import sp_auth
-    from .views import views
-    from .home import home
+    from .spotify_data.sp_auth import sp_auth
+    from .library_views.library_views import library_views_bp
+    from .general_views.general_views import general_views_bp
 
     app.register_blueprint(sp_auth, url_prefix='/sp_auth')
-    app.register_blueprint(views, url_prefix='/library')
-    app.register_blueprint(home, url_prefix='/')
+    app.register_blueprint(library_views_bp, url_prefix='/library')
+    app.register_blueprint(general_views_bp, url_prefix='/')
 
     return app

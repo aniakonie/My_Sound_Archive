@@ -14,7 +14,7 @@ def library():
 
     if request.method == "POST":
         selected_folder = request.form["selected_folder"]
-        return redirect(url_for("views.library_views/library_folders", selected_folder = selected_folder))
+        return redirect(url_for("library_views_bp.library_folders", selected_folder = selected_folder))
 
     return render_template("library_views/library_views.html", folders = folders, current = "library")
 
@@ -49,11 +49,11 @@ def library_folders(selected_folder):
     if request.method == "POST":
         try:
             selected_artist = request.form["selected_artist"]
-            return redirect(url_for("views.library_views/library_tracks", selected_folder=selected_folder, selected_artist = selected_artist, current = "library"))
+            return redirect(url_for("library_views_bp.library_tracks", selected_folder=selected_folder, selected_artist = selected_artist, current = "library"))
 
         except:
             selected_folder = request.form["selected_folder"]
-            return redirect(url_for("views.library_views/library_folders", selected_folder = selected_folder, current = "library"))
+            return redirect(url_for("library_views_bp.library_folders", selected_folder = selected_folder, current = "library"))
 
     return render_template("library_views/library_views.html", artists_folders = artists_folders, folders=folders, current = "library")
 
@@ -149,10 +149,10 @@ def library_tracks(selected_folder, selected_artist):
     if request.method == "POST":
         try:
             selected_artist = request.form["selected_artist"]
-            return redirect(url_for("views.library_views/library_tracks", selected_folder=selected_folder, selected_artist = selected_artist, current = "library"))
+            return redirect(url_for("library_views_bp.library_tracks", selected_folder=selected_folder, selected_artist = selected_artist, current = "library"))
 
         except:
             selected_folder = request.form["selected_folder"]
-            return redirect(url_for("views.library_views/library_folders", selected_folder = selected_folder, current = "library"))
+            return redirect(url_for("library_views_bp.library_folders", selected_folder = selected_folder, current = "library"))
 
     return render_template("library_views/library_views.html", tracklist = tracklist, folders=folders, artists_folders = artists_folders, tracklist_featured = tracklist_featured, selected_artist = selected_artist, current = "library")

@@ -1,5 +1,5 @@
 from website.database.database_connect import db_connect
-from website.spotify_data.extracting_tracks_for_database import extract_playlists_info, extract_user_profile_data
+from website.spotify.extracting_tracks_for_database import extract_playlists_info, extract_user_profile_data
 # from website.genres_classification import genres_artists_classification
 from website.database.models import User
 

@@ -1,0 +1,23 @@
+{% extends "spotify/base.html" %}
+
+{% block title %}VMLibrary{% endblock %}
+
+
+{% block content %} 
+
+<br>
+<h2 style="text-align: center;">You have successfully logged in to Spotify</h2>
+<br>
+<form method="POST">
+    <input type="hidden" name="create_library" value="True">
+    <input type="submit" value="Create library">
+</form>
+<br>
+<form method="POST">
+    <input type="hidden" name="create_library" value="False">
+    <input type="submit" value="Changed my mind">
+</form>
+
+
+{% endblock %}
+

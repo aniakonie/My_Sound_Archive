@@ -1,4 +1,4 @@
-from website.spotify_data.sp_get_library import get_spotify_saved_tracks, get_spotify_playlists_songs_all_playlists_together, get_spotify_playlists, get_current_user_profile_data
+from website.spotify.sp_get_library import get_spotify_saved_tracks, get_spotify_playlists_songs_all_playlists_together, get_spotify_playlists, get_current_user_profile_data
 from website.database.database_connect import db_connect
 
 def extract_user_profile_data(access_token):

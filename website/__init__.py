@@ -15,7 +15,7 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app, db)
 
-    from .spotify_data.sp_auth import sp_auth
+    from .spotify.sp_auth import sp_auth
     from .library_views.library_views import library_views_bp
     from .general_views.general_views import general_views_bp
 

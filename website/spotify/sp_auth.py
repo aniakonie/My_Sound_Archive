@@ -1,15 +1,15 @@
-from flask import Blueprint
+from flask import Blueprint, render_template, request, url_for, redirect
 from dotenv import load_dotenv
 import os
 import requests
 import urllib.parse
 import base64
-from flask import request, url_for, redirect
-
 from website.database.populating_database import psql_test
 from website.database.models import db
 
-sp_auth = Blueprint('sp_auth', '__name__')
+from website.spotify.sp_controller import *
+
+sp_auth = Blueprint('sp_auth', __name__, template_folder="templates")
 
 load_dotenv()
 
@@ -89,11 +89,25 @@ def redirect_page():
 
     # current_user_id = '1182179835'
 
-    # populate_users_playlists_info(access_token, current_user_id)
+    # at this point add this data to the database?
 
     psql_test(db)
 
-    return access_token
+    return redirect(url_for("sp_auth.successfully_logged_in_to_spotify"))
+
+
+
+@sp_auth.route('/create_library', methods=["POST", "GET"])
+def successfully_logged_in_to_spotify():
+
+    create_library = create_library_request()
+
+    if create_library == False:
+        return redirect(url_for("general_views_bp.home"))
+    if create_library == True:
+        pass
+
+    return render_template("spotify/sp_create_library.html")
 
 
 def refresh_token():

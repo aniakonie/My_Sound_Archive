@@ -1,4 +1,4 @@
-from website.spotify_data.sp_API_requests import spotify_req_get_users_saved_tracks, spotify_req_get_users_playlists, spotify_req_get_playlist_items, spotify_req_get_current_user_profile
+from website.spotify.sp_API_requests import spotify_req_get_users_saved_tracks, spotify_req_get_users_playlists, spotify_req_get_playlist_items, spotify_req_get_current_user_profile
 
 # passes: current_user_profile_data, spotify_saved_tracks, spotify_all_playlists_tracks, spotify_playlists to "extracting_tracks_for_database.py"
 

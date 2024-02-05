@@ -42,13 +42,20 @@
                 <button class="btn btn-outline-success" type="submit">Search</button>
               </form> -->
             </ul>
-            <ul class="navbar-nav me-2 mb-2 mb-lg-0">     
+            <ul class="navbar-nav me-2 mb-2 mb-lg-0">
+            {% if not current_user.is_authenticated %}  
             <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="http://127.0.0.1:5000/sp_auth">Log in</a>
+                <a class="nav-link active" aria-current="page" href="http://127.0.0.1:5000/login">Log in</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="http://127.0.0.1:5000/sp_auth">Sign up</a>
+                <a class="nav-link active" aria-current="page" href="http://127.0.0.1:5000/sign-up">Sign up</a>
             </li>
+            {% endif %}
+            {% if current_user.is_authenticated %}
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="http://127.0.0.1:5000/logout">Log out</a>
+            </li>
+            {% endif %}
             </ul>
           </div>
         </div>

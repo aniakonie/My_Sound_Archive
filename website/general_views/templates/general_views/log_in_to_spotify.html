@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}VMLibrary{% endblock %}
+
+
+{% block content %} 
+    
+<br>
+<h3 style="text-align: center;">Hello {user},</h3>
+<h3 style="text-align: center;">you have successfully created your VML account.
+    Please log in to Spotify.</h3>
+<br>
+<div style="text-align: center;">
+<form action="/sp_auth">
+    <input type=submit value="Log in to Spotify" class="btn btn-dark">
+</form>
+</div>
+{% endblock %}
+

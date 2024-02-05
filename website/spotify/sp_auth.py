@@ -5,7 +5,7 @@ import requests
 import urllib.parse
 import base64
 from website.database.populating_database import psql_test
-from website.database.models import db
+from website.database.models import User
 
 from website.spotify.sp_controller import *
 
@@ -91,7 +91,9 @@ def redirect_page():
 
     # at this point add this data to the database?
 
-    psql_test(db)
+
+    # user = User.query.filter_by(password = "blah").first()
+    # print(user.email)
 
     return redirect(url_for("sp_auth.successfully_logged_in_to_spotify"))
 

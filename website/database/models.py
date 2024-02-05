@@ -1,22 +1,39 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import func
 from flask_migrate import Migrate
+from flask_login import LoginManager
 
 db = SQLAlchemy()
 migrate = Migrate()
+login_manager = LoginManager()
 
 class User(db.Model):
     __tablename__ = "users"
 
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(100), unique=True)
+    username = db.Column(db.String(30), unique=True)
     password = db.Column(db.String(30))
     account_created = db.Column(db.DateTime(timezone=True), default=func.now())
+    authenticated = db.Column(db.Boolean, default = False)
     user_music_platform = db.relationship('UserMusicPlatform')
 
-    def __init__(self, email, password):
-        self.email = email
+    def __init__(self, username, password):
+        self.username = username
         self.password = password
+
+    def is_active(self):
+        """True, as all users are active."""
+        return True
+    
+    def get_id(self):
+        return self.id
+    
+    def is_authenticated(self):
+        return self.authenticated
+    
+    def is_anonymous(self):
+        '''Anonymous users aren't supported.'''
+        return False
 
     def __repr__(self):
         return f"<User id: {self.id}>"

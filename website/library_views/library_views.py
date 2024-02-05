@@ -1,7 +1,6 @@
 from flask import url_for, redirect, render_template, request
 from flask import Blueprint
 from website.database.database_connect import db_connect
-import mysql.connector
 
 
 library_views_bp = Blueprint('library_views_bp', __name__, template_folder='templates')

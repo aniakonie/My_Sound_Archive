@@ -59,7 +59,8 @@ def log_out_view():
 @general_views_bp.route('/log_in_to_spotify')
 @login_required
 def log_in_to_spotify_view():
-    return render_template("general_views/log_in_to_spotify.html")
+    username = current_user.username
+    return render_template("general_views/log_in_to_spotify.html", username = username)
 
 
 @general_views_bp.route('/account_page')

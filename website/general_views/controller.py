@@ -9,6 +9,7 @@ def sign_up(form):
         new_user.authenticated = True
         db.session.add(new_user)
         db.session.commit()
+        login_user(new_user, remember=True)
         return True
 
 def log_in(form):

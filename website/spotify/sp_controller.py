@@ -1,16 +1,8 @@
-from flask import request
-
-def create_library_request():
-
-    if request.method == "POST":
-        create_library_response = eval(request.form["create_library"])
-        if not create_library_response:
-            return False
-        else:
-            create_library()
-
 
 def create_library():
+
+
+
 
     #POBIERA Z KLASY SpotifyLibrary
     #spotify_saved_tracks

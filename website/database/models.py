@@ -16,6 +16,7 @@ class User(db.Model):
     account_created = db.Column(db.DateTime(timezone=True), default=func.now())
     authenticated = db.Column(db.Boolean, default = False)
     user_music_platform = db.relationship('UserMusicPlatform')
+    user_playlists = db.relationship('UserPlaylists')
 
     def __init__(self, username, password):
         self.username = username
@@ -59,3 +60,108 @@ class UserMusicPlatform(db.Model):
 
     def __repr__(self):
         return f"<User of {self.music_platform_name}, music_platform_id: {self.music_platform_id}>"
+
+
+class UserPlaylists(db.Model):
+    __tablename__ = "users_playlists"
+
+    id = db.Column(db.Integer, primary_key=True)
+    playlist_id = db.Column(db.String(25))
+    playlist_name = db.Column(db.String(100))
+    is_owner = db.Column(db.Boolean)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+    def __init__(self, playlist_id, playlist_name, is_owner):
+        self.playlist_id = playlist_id
+        self.playlist_name = playlist_name
+        self.is_owner = is_owner
+
+    def __repr__(self):
+        return f"<Playlist: {self.playlist_name}>"
+
+
+class UserTracks(db.Model):
+    __tablename__ = "users_tracks"
+
+    id = db.Column(db.Integer, primary_key=True)
+    track_uri = db.Column(db.String(36))
+    playlist_id_or_saved_song = db.Column(db.String(25))
+    display_in_library = db.Column(db.Boolean)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+    def __init__(self, track_uri, playlist_id_or_saved_song, display_in_library):
+        self.track_uri = track_uri
+        self.playlist_id_or_saved_song = playlist_id_or_saved_song
+        self.display_in_library = display_in_library
+
+    def __repr__(self):
+        return f"<Track_uri: {self.track_uri}, owner_id: {self.user_id}>" 
+
+
+class UserArtistsGenres(db.Model):
+    __tablename__ = "users_artists_genres"
+
+    id = db.Column(db.Integer, primary_key=True)
+    artist_uri = db.Column(db.String(37))
+    artist_main_genre_custom = db.Column(db.String(20))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+    def __init__(self, artist_uri, artist_main_genre_custom):
+        self.artist_uri = artist_uri
+        self.artist_main_genre_custom = artist_main_genre_custom
+
+    def __repr__(self):
+        return f"<Artist_uri: {self.artist_uri}, genre: {self.artist_main_genre_custom}, owner_id: {self.user_id}>"
+
+
+class ArtistsGenres(db.Model):
+    __tablename__ = "artists_genres"
+
+    id = db.Column(db.Integer, primary_key=True)
+    artist_uri = db.Column(db.String(37))
+    artist_name = db.Column(db.String(50))
+    artist_genres = db.Column(db.String(300))
+    artist_main_genre = db.Column(db.String(20))
+
+    def __init__(self, artist_uri, artist_name, artist_genres, artist_main_genre):
+        self.artist_uri = artist_uri
+        self.artist_name = artist_name
+        self.artist_genres = artist_genres
+        self.artist_main_genre = artist_main_genre
+
+    def __repr__(self):
+        return f"<Artist_name: {self.artist_name}, genre: {self.artist_main_genre}"
+
+
+class Tracks(db.Model):
+    __tablename__ = "tracks"
+
+    id = db.Column(db.Integer, primary_key=True)
+    track_uri = db.Column(db.String(36))
+    track_artist_main = db.Column(db.String(100))
+    main_artist_uri = db.Column(db.String(37))
+    track_artist_add1 = db.Column(db.String(100))
+    track_artist_add2 = db.Column(db.String(100))
+    track_title = db.Column(db.String(100))
+    album_artist_main = db.Column(db.String(100))
+    album_artist_add1 = db.Column(db.String(100))
+    album_artist_add2 = db.Column(db.String(100))
+    album_title = db.Column(db.String(100))
+    album_uri = db.Column(db.String(36))
+
+    def __init__(self, track_uri, track_artist_main, main_artist_uri, track_artist_add1, track_artist_add2,
+                 track_title, album_artist_main, album_artist_add1, album_artist_add2, album_title, album_uri):
+        self.track_uri = track_uri
+        self.track_artist_main = track_artist_main
+        self.main_artist_uri = main_artist_uri
+        self.track_artist_add1 = track_artist_add1
+        self.track_artist_add2 = track_artist_add2
+        self.track_title = track_title
+        self.album_artist_main = album_artist_main
+        self.album_artist_add1 = album_artist_add1
+        self.album_artist_add2 = album_artist_add2
+        self.album_title = album_title
+        self.album_uri = album_uri
+
+    def __repr__(self):
+        return f"<Track_title: {self.track_title}, track_artist: {self.track_artist_main}"

@@ -18,7 +18,7 @@ def request_authorization():
 
     client_id = os.getenv("CLIENT_ID")
     response_type = 'code'
-    redirect_uri = 'http://127.0.0.1:5000/sp_auth/redirect'
+    redirect_uri = 'http://127.0.0.1:5000/spotify/callback'
     scope = 'user-library-read playlist-read-private user-follow-read user-read-private user-read-email'
     state = 'fgfrgwgawgwwe' #ZAMIENIĆ NA RANDOM STRING
 
@@ -31,8 +31,8 @@ def request_authorization():
     return redirect(spotify_login_page_url)
 
 #our endpoint to which spotify sends back code and state
-@spotify_bp.route('/redirect')
-def redirect_page():
+@spotify_bp.route('/callback')
+def callback():
 
     #user accepted app's request and logged in
     #retrieving query parameters (code and state) from spotify callback
@@ -53,7 +53,7 @@ def redirect_page():
 
     client_id = os.getenv("CLIENT_ID")
     client_secret = os.getenv("CLIENT_SECRET")
-    redirect_uri = 'http://127.0.0.1:5000/sp_auth/redirect'
+    redirect_uri = 'http://127.0.0.1:5000/spotify/callback'
     grant_type = 'authorization_code'
 
     params = {'grant_type': grant_type, 'code': code, 'redirect_uri': redirect_uri}
@@ -78,15 +78,14 @@ def redirect_page():
 
 @spotify_bp.route('/create_library', methods=["POST", "GET"])
 def successfully_logged_in_to_spotify():
-
-    create_library = create_library_request()
-
-    if create_library == False:
-        return redirect(url_for("home_bp.home"))
-    if create_library == True:
-        pass
-
+    if request.method == "POST":
+        create_library_response = eval(request.form["create_library"])
+        if not create_library_response:
+            return redirect(url_for("home_bp.home"))
+        else:
+            create_library()
     return render_template("spotify/create_library.html")
+
 
 #TODO refresh token function
 def refresh_token():

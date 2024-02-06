@@ -22,7 +22,7 @@ def create_app():
     from .library.views import library_bp
     from .home.views import home_bp
 
-    app.register_blueprint(spotify_bp, url_prefix='/sp_auth')
+    app.register_blueprint(spotify_bp, url_prefix='/spotify')
     app.register_blueprint(library_bp, url_prefix='/library')
     app.register_blueprint(home_bp, url_prefix='/')
 

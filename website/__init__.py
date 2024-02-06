@@ -18,12 +18,12 @@ def create_app():
     migrate.init_app(app, db)
     login_manager.init_app(app)
 
-    from .spotify.sp_auth import sp_auth
-    from .library_views.library_views import library_views_bp
-    from .general_views.general_views import general_views_bp
+    from .spotify.views import spotify_bp
+    from .library.views import library_bp
+    from .home.views import home_bp
 
-    app.register_blueprint(sp_auth, url_prefix='/sp_auth')
-    app.register_blueprint(library_views_bp, url_prefix='/library')
-    app.register_blueprint(general_views_bp, url_prefix='/')
+    app.register_blueprint(spotify_bp, url_prefix='/sp_auth')
+    app.register_blueprint(library_bp, url_prefix='/library')
+    app.register_blueprint(home_bp, url_prefix='/')
 
     return app

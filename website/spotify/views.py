@@ -4,16 +4,13 @@ import os
 import requests
 import urllib.parse
 import base64
-from website.database.populating_database import psql_test
-from website.database.models import User
-
 from website.spotify.sp_controller import *
 
-sp_auth = Blueprint('sp_auth', __name__, template_folder="templates")
+spotify_bp = Blueprint('spotify_bp', __name__, template_folder="templates")
 
 load_dotenv()
 
-@sp_auth.route('/')
+@spotify_bp.route('/')
 def request_authorization():
 	
     #requesting authorization from Spotify to access data (get request to the authorize endpoint)
@@ -34,7 +31,7 @@ def request_authorization():
     return redirect(spotify_login_page_url)
 
 #our endpoint to which spotify sends back code and state
-@sp_auth.route('/redirect')
+@spotify_bp.route('/redirect')
 def redirect_page():
 
     #user accepted app's request and logged in
@@ -49,10 +46,8 @@ def redirect_page():
     
     try:
         code = request.args.get("code")
-
     except:
         error = request.args.get("error")
-
 
     #exchanging authorization code for an access token - post request to the api/token endpoint
 
@@ -65,21 +60,12 @@ def redirect_page():
     get_token_base_url = 'https://accounts.spotify.com/api/token'
     get_token_url = get_token_base_url + '?' + urllib.parse.urlencode(params)
 
-
-    def convert_to_base64_str(data):
-
-        data_bytes = data.encode('ascii')
-        data_base64 = base64.b64encode(data_bytes)
-        data_base64_str = data_base64.decode()
-        return data_base64_str
-
     headers = {
         'content-type': 'application/x-www-form-urlencoded',
         'Authorization': 'Basic ' + convert_to_base64_str(client_id + ':' + client_secret)
     }
 
     access_token_response = requests.post(get_token_url, headers=headers)
-
     access_token_response_dict = access_token_response.json()
 
     access_token = access_token_response_dict['access_token']
@@ -87,32 +73,28 @@ def redirect_page():
     expires_in = access_token_response_dict['expires_in']
     token_type = access_token_response_dict['token_type']
 
-    # current_user_id = '1182179835'
-
-    # at this point add this data to the database?
+    return redirect(url_for("spotify_bp.successfully_logged_in_to_spotify"))
 
 
-    # user = User.query.filter_by(password = "blah").first()
-    # print(user.email)
-
-    return redirect(url_for("sp_auth.successfully_logged_in_to_spotify"))
-
-
-
-@sp_auth.route('/create_library', methods=["POST", "GET"])
+@spotify_bp.route('/create_library', methods=["POST", "GET"])
 def successfully_logged_in_to_spotify():
 
     create_library = create_library_request()
 
     if create_library == False:
-        return redirect(url_for("general_views_bp.home"))
+        return redirect(url_for("home_bp.home"))
     if create_library == True:
         pass
 
-    return render_template("spotify/sp_create_library.html")
+    return render_template("spotify/create_library.html")
 
-
+#TODO refresh token function
 def refresh_token():
     pass
 
 
+
+def convert_to_base64_str(data):
+    data_bytes = data.encode('ascii')
+    data_base64_str = base64.b64encode(data_bytes).decode()
+    return data_base64_str

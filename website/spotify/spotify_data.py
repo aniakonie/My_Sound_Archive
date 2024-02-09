@@ -1,14 +1,23 @@
-from website.spotify.sp_API_requests import spotify_req_get_users_saved_tracks, spotify_req_get_users_playlists, spotify_req_get_playlist_items, spotify_req_get_current_user_profile
+import requests
+import urllib.parse
 
-# passes: current_user_profile_data, spotify_saved_tracks, spotify_all_playlists_tracks, spotify_playlists to "extracting_tracks_for_database.py"
+
+def get_music_platform_id(access_token):
+    current_user_profile_data_response = spotify_req_get_current_user_profile(access_token)
+    current_user_profile_data = current_user_profile_data_response.json() 
+    music_platform_id = current_user_profile_data["id"]
+    return music_platform_id
 
 
-def get_current_user_profile_data(access_token):
+def get_spotify_data(access_token):
 
-    current_user_profile_data = spotify_req_get_current_user_profile(access_token)
-    return current_user_profile_data
+    spotify_playlists = get_spotify_playlists(access_token)
+    spotify_saved_tracks = get_spotify_saved_tracks(access_token)
+    spotify_all_playlists_tracks = get_spotify_all_playlists_tracks(access_token)
+
+    return spotify_playlists, spotify_saved_tracks, spotify_all_playlists_tracks
+
     
-
 def get_spotify_saved_tracks(access_token):
     '''adding batches of retrieved 50 songs to make a whole list of songs'''
 
@@ -16,7 +25,7 @@ def get_spotify_saved_tracks(access_token):
     return spotify_saved_tracks
 
 
-def get_spotify_playlists_songs_all_playlists_together(access_token):
+def get_spotify_all_playlists_tracks(access_token):
     '''adding songs from all playlists'''
 
     spotify_playlists = get_spotify_playlists(access_token)
@@ -63,6 +72,8 @@ def get_spotify_playlists_ids(spotify_playlists):
     return spotify_playlists_ids
 
 
+# REQUESTS OFFSET
+
 def get_spotify_response_all_items(spotify_req, access_token):
 
     offset = 0
@@ -77,3 +88,48 @@ def get_spotify_response_all_items(spotify_req, access_token):
         offset += 50
     return spotify_response_all_items
 
+
+# SPOTIFY API REQUESTS
+
+def spotify_request(base_url, offset, access_token):
+
+    params = {'limit': 50, 'offset': offset}
+    url = base_url + '?' + urllib.parse.urlencode(params)
+    headers = {
+        'Authorization': 'Bearer ' + access_token
+    }
+    spotify_response = (requests.get(url, headers=headers)).json()
+    return spotify_response
+
+
+def spotify_req_get_users_saved_tracks(access_token, offset):
+    '''retrieving 50 saved songs from spotify at a time'''
+
+    base_url = 'https://api.spotify.com/v1/me/tracks'
+    spotify_saved_tracks_response = spotify_request(base_url, offset, access_token)
+    return spotify_saved_tracks_response
+
+
+def spotify_req_get_users_playlists(access_token, offset):
+    '''retrieving info about 50 playlists from spotify at a time'''
+
+    base_url = 'https://api.spotify.com/v1/me/playlists'
+    spotify_playlists_response = spotify_request(base_url, offset, access_token)
+    return spotify_playlists_response
+
+
+def spotify_req_get_playlist_items(access_token, offset, playlist_id):
+    '''retrieving 50 songs from spotify's particular playlist at a time'''
+
+    base_url = f'https://api.spotify.com/v1/playlists/{playlist_id}/tracks'
+    spotify_playlist_items_response = spotify_request(base_url, offset, access_token)
+    return spotify_playlist_items_response
+
+
+def spotify_req_get_current_user_profile(access_token):
+    get_user_base_url = 'https://api.spotify.com/v1/me'
+    headers = {
+        'Authorization': 'Bearer ' + access_token
+    }
+    current_user_profile_data_response = requests.get(get_user_base_url, headers=headers)
+    return current_user_profile_data_response

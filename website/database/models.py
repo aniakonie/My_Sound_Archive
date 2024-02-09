@@ -17,6 +17,9 @@ class User(db.Model):
     authenticated = db.Column(db.Boolean, default = False)
     user_music_platform = db.relationship('UserMusicPlatform')
     user_playlists = db.relationship('UserPlaylists')
+    user_tracks = db.relationship('UserTracks')
+    user_artists_genres = db.relationship('UserArtistsGenres')
+
 
     def __init__(self, username, password):
         self.username = username
@@ -47,16 +50,15 @@ class UserMusicPlatform(db.Model):
     music_platform_name = db.Column(db.String(15))
     music_platform_id = db.Column(db.String(15))
     access_token = db.Column(db.String(220))
-    expires_in = db.Column(db.Integer)
     refresh_token = db.Column(db.String(131))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-    def __init__(self, music_platform_name, music_platform_id, access_token, expires_in, refresh_token):
+    def __init__(self, music_platform_name, music_platform_id, access_token, refresh_token, user_id):
         self.music_platform_name = music_platform_name
         self.music_platform_id = music_platform_id
         self.access_token = access_token
-        self.expires_in = expires_in
         self.refresh_token = refresh_token
+        self.user_id = user_id
 
     def __repr__(self):
         return f"<User of {self.music_platform_name}, music_platform_id: {self.music_platform_id}>"
@@ -71,10 +73,11 @@ class UserPlaylists(db.Model):
     is_owner = db.Column(db.Boolean)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-    def __init__(self, playlist_id, playlist_name, is_owner):
+    def __init__(self, playlist_id, playlist_name, is_owner, user_id):
         self.playlist_id = playlist_id
         self.playlist_name = playlist_name
         self.is_owner = is_owner
+        self.user_id = user_id
 
     def __repr__(self):
         return f"<Playlist: {self.playlist_name}>"
@@ -89,10 +92,11 @@ class UserTracks(db.Model):
     display_in_library = db.Column(db.Boolean)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-    def __init__(self, track_uri, playlist_id_or_saved_song, display_in_library):
+    def __init__(self, track_uri, playlist_id_or_saved_song, display_in_library, user_id):
         self.track_uri = track_uri
         self.playlist_id_or_saved_song = playlist_id_or_saved_song
         self.display_in_library = display_in_library
+        self.user_id = user_id
 
     def __repr__(self):
         return f"<Track_uri: {self.track_uri}, owner_id: {self.user_id}>" 
@@ -106,9 +110,10 @@ class UserArtistsGenres(db.Model):
     artist_main_genre_custom = db.Column(db.String(20))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-    def __init__(self, artist_uri, artist_main_genre_custom):
+    def __init__(self, artist_uri, artist_main_genre_custom, user_id):
         self.artist_uri = artist_uri
         self.artist_main_genre_custom = artist_main_genre_custom
+        self.user_id = user_id
 
     def __repr__(self):
         return f"<Artist_uri: {self.artist_uri}, genre: {self.artist_main_genre_custom}, owner_id: {self.user_id}>"

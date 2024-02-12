@@ -7,6 +7,7 @@ import base64
 from flask_login import login_required, current_user
 from website.spotify.spotify_data import *
 from website.spotify.parse import *
+from website.spotify.save_to_database import *
 from website.database.models import db, UserMusicPlatform
 
 spotify_bp = Blueprint('spotify_bp', __name__, template_folder="templates")
@@ -37,8 +38,7 @@ def callback():
         error = request.args.get("error")
 
     access_token, refresh_token = get_token(code)
-    save_token(access_token, refresh_token, current_user)
-
+    save_token(access_token, refresh_token)
     return redirect(url_for("spotify_bp.successfully_logged_in_to_spotify"))
 
 
@@ -51,7 +51,7 @@ def successfully_logged_in_to_spotify():
             #TODO delete user's music platform row
             return redirect(url_for("home_bp.home"))
         else:
-            create_library(current_user)
+            create_library()
     return render_template("spotify/create_library.html")
 
 
@@ -83,7 +83,8 @@ def do_refresh_token(refresh_token):
     grant_type = 'refresh_token'
     params = {'grant_type': grant_type, 'refresh_token': refresh_token}
     access_token_response_dict = token_request(params)
-    access_token = access_token_response_dict['access_token']    
+    access_token = access_token_response_dict['access_token']
+    save_token(access_token, refresh_token)
     return access_token
 
 
@@ -101,7 +102,7 @@ def token_request(params):
     return access_token_response_dict
 
 
-def save_token(access_token, refresh_token, current_user):
+def save_token(access_token, refresh_token):
     music_platform_id = get_music_platform_id(access_token)
     user = UserMusicPlatform.query.filter_by(user_id = current_user.id).first()
     if not user:
@@ -115,22 +116,18 @@ def save_token(access_token, refresh_token, current_user):
         return access_token
 
 
-def create_library(current_user):
+def create_library():
     user = UserMusicPlatform.query.filter_by(user_id = current_user.id).first()
     access_token = user.access_token
     refresh_token = user.refresh_token
     is_valid = check_token_validity(access_token)
     if is_valid == False:
         access_token = do_refresh_token(refresh_token)
-        save_token(access_token, refresh_token, current_user)
 
     spotify_playlists, spotify_saved_tracks, spotify_all_playlists_tracks = get_spotify_data(access_token)
     music_platform_id = user.music_platform_id
-    library_data = parse(spotify_playlists, spotify_saved_tracks, spotify_all_playlists_tracks, music_platform_id)
-
-
-    # save_library_data(library_data)
-
+    playlists_info_library, saved_tracks_library, all_playlists_tracks_library = parse(spotify_playlists, spotify_saved_tracks, spotify_all_playlists_tracks, music_platform_id)
+    save_to_dabatase(playlists_info_library, saved_tracks_library, all_playlists_tracks_library)
 
 
 def check_token_validity(access_token):

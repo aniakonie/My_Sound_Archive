@@ -68,7 +68,7 @@ class UserPlaylists(db.Model):
     __tablename__ = "users_playlists"
 
     id = db.Column(db.Integer, primary_key=True)
-    playlist_id = db.Column(db.String(25))
+    playlist_id = db.Column(db.String(25), unique=True)
     playlist_name = db.Column(db.String(100))
     is_owner = db.Column(db.Boolean)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
@@ -106,7 +106,7 @@ class UserArtistsGenres(db.Model):
     __tablename__ = "users_artists_genres"
 
     id = db.Column(db.Integer, primary_key=True)
-    artist_uri = db.Column(db.String(37))
+    artist_uri = db.Column(db.String(37), unique=True)
     artist_main_genre_custom = db.Column(db.String(20))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
@@ -123,7 +123,7 @@ class ArtistsGenres(db.Model):
     __tablename__ = "artists_genres"
 
     id = db.Column(db.Integer, primary_key=True)
-    artist_uri = db.Column(db.String(37))
+    artist_uri = db.Column(db.String(37), unique=True)
     artist_name = db.Column(db.String(50))
     artist_genres = db.Column(db.String(300))
     artist_main_genre = db.Column(db.String(20))
@@ -142,7 +142,7 @@ class Tracks(db.Model):
     __tablename__ = "tracks"
 
     id = db.Column(db.Integer, primary_key=True)
-    track_uri = db.Column(db.String(36))
+    track_uri = db.Column(db.String(36), unique=True)
     track_artist_main = db.Column(db.String(100))
     main_artist_uri = db.Column(db.String(37))
     track_artist_add1 = db.Column(db.String(100))

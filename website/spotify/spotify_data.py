@@ -11,12 +11,10 @@ def get_music_platform_id(access_token):
 
 def get_spotify_data(access_token):
 
-    # spotify_playlists = get_spotify_playlists(access_token)
-    # spotify_saved_tracks = get_spotify_saved_tracks(access_token)
+    spotify_playlists = get_spotify_playlists(access_token)
+    spotify_saved_tracks = get_spotify_saved_tracks(access_token)
     spotify_all_playlists_tracks = get_spotify_all_playlists_tracks(access_token)
-
-    return spotify_all_playlists_tracks
-    # return spotify_playlists, spotify_saved_tracks, spotify_all_playlists_tracks
+    return spotify_playlists, spotify_saved_tracks, spotify_all_playlists_tracks
 
     
 def get_spotify_saved_tracks(access_token):
@@ -123,7 +121,6 @@ def spotify_req_get_playlist_items(access_token, offset, playlist_id):
     '''retrieving 50 songs from spotify's particular playlist at a time'''
     base_url = f'https://api.spotify.com/v1/playlists/{playlist_id}/tracks'
     spotify_playlist_items_response = spotify_request(base_url, offset, access_token)
-    print('playlist done')
     return spotify_playlist_items_response
 
 

@@ -135,7 +135,7 @@ class ArtistsGenres(db.Model):
         self.artist_main_genre = artist_main_genre
 
     def __repr__(self):
-        return f"<Artist_name: {self.artist_name}, genre: {self.artist_main_genre}"
+        return f"<Artist_name: {self.artist_name}, genre: {self.artist_main_genre}>"
 
 
 class Tracks(db.Model):

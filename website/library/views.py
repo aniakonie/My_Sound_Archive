@@ -1,11 +1,20 @@
 from flask import url_for, redirect, render_template, request
 from flask import Blueprint
-
+from flask_login import login_required, current_user
+from website.library.genres_classification.genres_classification import classify_artists_genres
 
 library_bp = Blueprint('library_bp', __name__, template_folder='templates')
 
 
+@library_bp.route('/genres_classification')
+@login_required
+def classify_artists():
+    classify_artists_genres()
+    return redirect(url_for("library_bp.library"))
+
+
 @library_bp.route('/', methods=["POST", "GET"])
+@login_required
 def library():
 
     folders = ["rock", "metal", "jazz", "pop", "reggae", "electronic", "funk", "others"]

@@ -9,6 +9,7 @@ from website.spotify.spotify_data import *
 from website.spotify.parse import *
 from website.spotify.save_to_database import *
 from website.database.models import db, UserMusicPlatform
+from website.spotify.spotify_genres import spotify_get_artists_genres
 
 spotify_bp = Blueprint('spotify_bp', __name__, template_folder="templates")
 
@@ -52,6 +53,7 @@ def successfully_logged_in_to_spotify():
             return redirect(url_for("home_bp.home"))
         else:
             create_library()
+            return redirect(url_for("spotify_bp.successfully_logged_in_to_spotify")) ######################
     return render_template("spotify/create_library.html")
 
 
@@ -124,10 +126,10 @@ def create_library():
     if is_valid == False:
         access_token = do_refresh_token(refresh_token)
 
-    spotify_playlists, spotify_saved_tracks, spotify_all_playlists_tracks = get_spotify_data(access_token)
-    music_platform_id = user.music_platform_id
-    playlists_info_library, saved_tracks_library, all_playlists_tracks_library = parse(spotify_playlists, spotify_saved_tracks, spotify_all_playlists_tracks, music_platform_id)
-    save_to_dabatase(playlists_info_library, saved_tracks_library, all_playlists_tracks_library)
+    # spotify_playlists, spotify_saved_tracks, spotify_all_playlists_tracks = get_spotify_data(access_token)
+    # music_platform_id = user.music_platform_id
+    # playlists_info_library, saved_tracks_library, all_playlists_tracks_library = parse(spotify_playlists, spotify_saved_tracks, spotify_all_playlists_tracks, music_platform_id)
+    # save_to_dabatase(playlists_info_library, saved_tracks_library, all_playlists_tracks_library)
 
 
 def check_token_validity(access_token):
@@ -144,3 +146,6 @@ def convert_to_base64_str(data):
     data_base64_str = base64.b64encode(data_bytes).decode()
     return data_base64_str
 
+
+# def classify_artists_genres():
+#     pass

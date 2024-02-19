@@ -126,10 +126,10 @@ def create_library():
     if is_valid == False:
         access_token = do_refresh_token(refresh_token)
 
-    # spotify_playlists, spotify_saved_tracks, spotify_all_playlists_tracks = get_spotify_data(access_token)
-    # music_platform_id = user.music_platform_id
-    # playlists_info_library, saved_tracks_library, all_playlists_tracks_library = parse(spotify_playlists, spotify_saved_tracks, spotify_all_playlists_tracks, music_platform_id)
-    # save_to_dabatase(playlists_info_library, saved_tracks_library, all_playlists_tracks_library)
+    spotify_playlists, spotify_saved_tracks, spotify_all_playlists_tracks = get_spotify_data(access_token)
+    music_platform_id = user.music_platform_id
+    playlists_info_library, saved_tracks_library, all_playlists_tracks_library = parse(spotify_playlists, spotify_saved_tracks, spotify_all_playlists_tracks, music_platform_id)
+    save_to_dabatase(playlists_info_library, saved_tracks_library, all_playlists_tracks_library)
 
 
 def check_token_validity(access_token):
@@ -145,7 +145,3 @@ def convert_to_base64_str(data):
     data_bytes = data.encode('ascii')
     data_base64_str = base64.b64encode(data_bytes).decode()
     return data_base64_str
-
-
-# def classify_artists_genres():
-#     pass

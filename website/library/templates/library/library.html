@@ -4,16 +4,18 @@
 
 {% block content %}
 
+<h1>Hi, {{user}}, this is your library.</h1>
+
 <div class="container">
 
     <div class="row">
 
         <div class="col">
-        <h1>Folders</h1>
-        {% for folder in folders %}
+        <h1>Genres</h1>
+        {% for genre in genres %}
             <form method="POST">
-                <input type="hidden" name="selected_folder" value="{{ folder }}">
-                <input type="submit" value="{{ folder }}">
+                <input type="hidden" name="selected_genre" value="{{ genre }}">
+                <input type="submit" value="{{ genre }}">
             </form>
         {% endfor %}
         </div>

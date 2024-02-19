@@ -108,11 +108,13 @@ class UserArtistsGenres(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     artist_uri = db.Column(db.String(37), unique=True)
     artist_main_genre_custom = db.Column(db.String(20))
+    artist_subgenre_custom = db.Column(db.String(30))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-    def __init__(self, artist_uri, artist_main_genre_custom, user_id):
+    def __init__(self, artist_uri, artist_main_genre_custom, artist_subgenre_custom, user_id):
         self.artist_uri = artist_uri
         self.artist_main_genre_custom = artist_main_genre_custom
+        self.artist_subgenre_custom = artist_subgenre_custom
         self.user_id = user_id
 
     def __repr__(self):
@@ -127,15 +129,17 @@ class ArtistsGenres(db.Model):
     artist_name = db.Column(db.String(50))
     artist_genres = db.Column(db.String(300))
     artist_main_genre = db.Column(db.String(20))
+    artist_subgenre = db.Column(db.String(30))
 
-    def __init__(self, artist_uri, artist_name, artist_genres, artist_main_genre):
+    def __init__(self, artist_uri, artist_name, artist_genres, artist_main_genre, artist_subgenre):
         self.artist_uri = artist_uri
         self.artist_name = artist_name
         self.artist_genres = artist_genres
         self.artist_main_genre = artist_main_genre
+        self.artist_subgenre = artist_subgenre
 
     def __repr__(self):
-        return f"<Artist_name: {self.artist_name}, genre: {self.artist_main_genre}>"
+        return f"<Artist_name: {self.artist_name}, genre: {self.artist_main_genre}, subgenre: {self.artist_subgenre}>"
 
 
 class Tracks(db.Model):
@@ -170,3 +174,16 @@ class Tracks(db.Model):
 
     def __repr__(self):
         return f"<Track_title: {self.track_title}, track_artist: {self.track_artist_main}"
+
+
+class Genre(db.Model):
+    __tablename__ = "genres_subgenres"
+
+    id = db.Column(db.Integer, primary_key=True)
+    genre = db.Column(db.String(30))
+    subgenre = db.Column(db.String(30))
+
+    def __init__(self, genre, subgenre):
+        self.genre = genre
+        self.subgenre = subgenre
+

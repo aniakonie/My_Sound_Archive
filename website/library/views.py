@@ -1,35 +1,29 @@
-from flask import url_for, redirect, render_template, request
-from flask import Blueprint
+from flask import Blueprint, url_for, redirect, render_template, request, abort
 from flask_login import login_required, current_user
-from website.library.genres_classification.genres_classification import classify_artists_genres
 from website.database.models import *
 
+
 library_bp = Blueprint('library_bp', __name__, template_folder='templates')
-
-
-@library_bp.route('/genres_classification')
-@login_required
-def classify_artists():
-    classify_artists_genres()
-    return redirect(url_for("library_bp.library"))
 
 
 @library_bp.route('/', methods=["POST", "GET"])
 @login_required
 def library():
     genres = get_genres()
-
     if request.method == "POST":
         selected_genre = request.form["selected_genre"]
         return redirect(url_for("library_bp.library_genres", selected_genre = selected_genre))
-
     return render_template("library/library.html", genres = genres, current = "library", user = current_user.username)
 
 
 @library_bp.route('/<selected_genre>', methods=["POST", "GET"])
+@login_required
 def library_genres(selected_genre):
 
     genres = get_genres()
+    if selected_genre not in genres:
+        abort(404)
+
     no_of_songs = 2 #TODO retrieve from user's settings table
     artists_folders = get_artists_of_selected_genre(selected_genre, current_user.id, no_of_songs)
 

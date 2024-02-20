@@ -25,17 +25,14 @@
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="http://127.0.0.1:5000">Home</a>
-                  </li>
-            {% if current != "how_it_works" %}
-              <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="http://127.0.0.1:5000/how_it_works">How it works</a>
-              </li>
-            {% endif %}
-
-            {% if current != "library" %}
-              <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="http://127.0.0.1:5000/library">See an example</a>
-              </li>
+                </li>
+            {% if current != 'library' and current != 'settings' %}
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="http://127.0.0.1:5000/how_it_works">How it works</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="http://127.0.0.1:5000/library">See an example</a>
+                </li>
             {% endif %}
               <!-- <form class="d-flex" role="search">
                 <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
@@ -52,6 +49,12 @@
             </li>
             {% endif %}
             {% if current_user.is_authenticated %}
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="http://127.0.0.1:5000/library">My VML</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="http://127.0.0.1:5000/settings">Settings</a>
+            </li>
             <li class="nav-item">
                 <a class="nav-link active" aria-current="page" href="http://127.0.0.1:5000/logout">Log out</a>
             </li>

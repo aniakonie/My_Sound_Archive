@@ -9,7 +9,7 @@ from website.spotify.spotify_data import *
 from website.spotify.parse import *
 from website.spotify.save_to_database import *
 from website.database.models import db, UserMusicPlatform
-from website.spotify.spotify_genres import spotify_get_artists_genres
+from website.library.genres_classification.genres_classification import classify_artists_genres
 
 spotify_bp = Blueprint('spotify_bp', __name__, template_folder="templates")
 
@@ -53,7 +53,8 @@ def successfully_logged_in_to_spotify():
             return redirect(url_for("home_bp.home"))
         else:
             create_library()
-            return redirect(url_for("spotify_bp.successfully_logged_in_to_spotify")) ######################
+            classify_artists_genres()
+            return redirect(url_for("library_bp.library"))
     return render_template("spotify/create_library.html")
 
 
@@ -130,15 +131,13 @@ def create_library():
     music_platform_id = user.music_platform_id
     playlists_info_library, saved_tracks_library, all_playlists_tracks_library = parse(spotify_playlists, spotify_saved_tracks, spotify_all_playlists_tracks, music_platform_id)
     save_to_dabatase(playlists_info_library, saved_tracks_library, all_playlists_tracks_library)
+    user.is_library_created = True
 
 
 def check_token_validity(access_token):
     '''making an API request to check the type of response'''
     response = spotify_req_get_current_user_profile(access_token)
-    if response.status_code == 401:
-        return False
-    else:
-        return True
+    return response.status_code == 401
 
 
 def convert_to_base64_str(data):

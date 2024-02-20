@@ -15,6 +15,7 @@ class User(db.Model):
     password = db.Column(db.String(30))
     account_created = db.Column(db.DateTime(timezone=True), default=func.now())
     authenticated = db.Column(db.Boolean, default = False)
+    is_library_created = db.Column(db.Boolean, default = False)
     user_music_platform = db.relationship('UserMusicPlatform')
     user_playlists = db.relationship('UserPlaylists')
     user_tracks = db.relationship('UserTracks')

@@ -4,24 +4,33 @@
 
 {% block content %}
 
-<h1>Hi, {{user}}, this is your library.</h1>
 
+{% if current_user.is_library_created == True %}
 <div class="container">
 
     <div class="row">
-
         <div class="col">
-        <h1>Genres</h1>
-        {% for genre in genres %}
+            <h3>Genres</h3>
+            {% for genre in genres %}
             <form method="POST">
                 <input type="hidden" name="selected_genre" value="{{ genre }}">
                 <input type="submit" value="{{ genre }}">
             </form>
-        {% endfor %}
+            {% endfor %}
         </div>
 
         <div class="col">
-            <h1>Artists</h1>
+            <h3>Subgenres</h3>
+            <!-- {% for subgenre in subgenres %}
+                <form method="POST">
+                    <input type="hidden" name="selected_subgenre" value="{{ subgenre }}">
+                    <input type="submit" value="{{ subgenre }}">
+                </form>
+            {% endfor %} -->
+        </div>
+
+        <div class="col">
+            <h3>Artists</h3>
             {% for artist in artists_folders %}
                 <form method="POST">
                     <input type="hidden" name="selected_artist" value="{{ artist }}">
@@ -31,7 +40,7 @@
         </div>
 
         <div class="col">
-            <h1>Tracks</h1>
+            <h3>Tracks</h3>
             {% if selected_artist != "Loose tracks" %}
                 {% for track in tracklist %}
                     <a class="play_track" href="{{track["track_uri"]}}">PL</a> <a class="open_album" href="{{track["album_uri"]}}">AL</a>
@@ -76,6 +85,45 @@
         </div>
     </div>
 </div>
+{% endif %}
+
+
+
+{% if current_user.is_library_created == False %}
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h3>Genres</h3>
+        </div>
+
+        <div class="col">
+            <h3>Subgenres</h3>
+        </div>
+
+        <div class="col">
+            <h3>Artists</h3>
+        </div>
+
+        <div class="col">
+            <h3>Tracks</h3>
+        </div>
+    </div>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+
+<div class="container">
+<h5 style="text-align: center;">Nothing here yet. Please log in to Spotify to retrieve your music collection.</h5>
+<br>
+<div style="text-align: center;">
+<form action="/spotify/authorization">
+    <input type=submit value="Log in to Spotify" class="btn btn-dark">
+</form>
+</div>
+{% endif %}
 
 {% endblock %}
 

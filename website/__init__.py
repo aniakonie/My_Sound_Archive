@@ -1,14 +1,24 @@
 from dotenv import load_dotenv
 import os
-from flask import Flask
+from flask import Flask, render_template
 from flask_migrate import Migrate
 
 load_dotenv()
+
+
+def page_not_found(e):
+    return render_template("404.html"), 404
+
+def unauthorized(e):
+    return render_template("401.html"), 401
+
 
 def create_app():
 
     app = Flask(__name__)
 
+    app.register_error_handler(404, page_not_found)
+    app.register_error_handler(401, unauthorized)
     password_postgres = os.getenv('PASSWORD_POSTGRES')
     app.config['SQLALCHEMY_DATABASE_URI'] = f"postgresql://postgres:{password_postgres}@localhost:5432/VMLdb"
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')

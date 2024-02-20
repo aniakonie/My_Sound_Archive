@@ -22,7 +22,7 @@ def home():
 
 @home_bp.route('/how_it_works')
 def how_it_works():
-    return render_template("home/how_it_works.html", current = "how_it_works")
+    return render_template("home/how_it_works.html")
 
 
 @home_bp.route('/sign-up', methods=["GET", "POST"])
@@ -50,10 +50,9 @@ def login():
                 db.session.add(user)
                 db.session.commit()
                 login_user(user, remember=True)
-                return redirect(url_for("home_bp.account"))
+                return redirect(url_for("library_bp.library"))
         else:
             pass #TODO flash_message_wrong_password
-
     return render_template("home/login.html", form = form)
 
 
@@ -75,13 +74,15 @@ def log_in_to_spotify():
     return render_template("home/log_in_to_spotify.html", username = username)
 
 
-@home_bp.route('/account')
+@home_bp.route('/settings')
 @login_required
-def account():
+def settings():
     username = current_user.username
-    return render_template("home/account.html", username = username)
+    return render_template("home/settings.html", username = username, current = 'settings')
 
 
 @login_manager.user_loader
 def user_loader(user_id):
     return User.query.get(user_id)
+
+

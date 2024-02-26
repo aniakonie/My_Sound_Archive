@@ -109,8 +109,8 @@ class UserArtistsGenres(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     artist_uri = db.Column(db.String(37), unique=True)
     artist_main_genre_custom = db.Column(db.String(20))
-    artist_subgenre_custom = db.Column(db.String(30))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    artist_subgenre_custom = db.Column(db.String(30))
 
     def __init__(self, artist_uri, artist_main_genre_custom, artist_subgenre_custom, user_id):
         self.artist_uri = artist_uri

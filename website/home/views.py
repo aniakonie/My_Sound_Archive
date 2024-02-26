@@ -1,5 +1,4 @@
-from flask import render_template, redirect, url_for, request
-from flask import Blueprint
+from flask import Blueprint, render_template, redirect, url_for, request, abort, flash
 from website.database.models import login_manager, User, db
 from flask_login import login_required, current_user, login_user, logout_user
 from flask_wtf import FlaskForm
@@ -10,9 +9,13 @@ from wtforms.validators import InputRequired, Length
 home_bp = Blueprint('home_bp', __name__, template_folder='templates')
 
 
+class SignUpForm(FlaskForm):
+    username = StringField('Username', validators=[InputRequired(), Length(min=5, max=30)])
+    password = PasswordField('Password', validators=[InputRequired(), Length(min=5, max=30)])
+
 class LoginForm(FlaskForm):
-    username = StringField('username', validators=[InputRequired(), Length(min=5, max=30)])
-    password = PasswordField('password', validators=[InputRequired(), Length(min=5, max=30)])
+    username = StringField('Username', validators=[InputRequired()])
+    password = PasswordField('Password', validators=[InputRequired()])
 
 
 @home_bp.route('/')
@@ -27,20 +30,30 @@ def how_it_works():
 
 @home_bp.route('/sign-up', methods=["GET", "POST"])
 def sign_up():
-    form = LoginForm()
+    if current_user.is_authenticated:
+        return redirect(url_for("library_bp.library"))
+    
+    form = SignUpForm()
     if request.method == 'POST':
-        #add a case in which user with given username already exists
-        new_user = User(form.username.data, form.password.data)
-        new_user.authenticated = True
-        db.session.add(new_user)
-        db.session.commit()
-        login_user(new_user, remember=True)
-        return redirect(url_for("home_bp.log_in_to_spotify"))
+        all_usernames = User.query.all()
+        all_usernames = [user.username for user in all_usernames]
+        if form.username.data in  all_usernames:
+            flash('Such user already exists. Please choose different username.', category="error")
+        else:
+            new_user = User(form.username.data, form.password.data)
+            new_user.authenticated = True
+            db.session.add(new_user)
+            db.session.commit()
+            login_user(new_user, remember=True)
+            return redirect(url_for("home_bp.log_in_to_spotify"))
     return render_template("home/sign-up.html", form = form)
 
 
 @home_bp.route('/login', methods=["GET", "POST"])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for("library_bp.library"))
+
     form = LoginForm()
     if request.method == 'POST':
         user = User.query.filter_by(username = form.username.data).first()
@@ -51,8 +64,12 @@ def login():
                 db.session.commit()
                 login_user(user, remember=True)
                 return redirect(url_for("library_bp.library"))
+            else:
+                flash('Wrong login credentials', category = "error")
+                return redirect(url_for("home_bp.login")) 
         else:
-            pass #TODO flash_message_wrong_password
+            flash('Wrong login credentials', category = "error")
+            return redirect(url_for("home_bp.login")) 
     return render_template("home/login.html", form = form)
 
 
@@ -70,6 +87,8 @@ def log_out():
 @home_bp.route('/log_in_to_spotify')
 @login_required
 def log_in_to_spotify():
+    if current_user.is_library_created:
+        abort(401)
     username = current_user.username
     return render_template("home/log_in_to_spotify.html", username = username)
 

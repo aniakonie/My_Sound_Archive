@@ -16,6 +16,7 @@ def library():
     return render_template("library/library.html", genres = genres, current = "library", user = current_user.username)
 
 
+
 @library_bp.route('/<selected_genre>', methods=["POST", "GET"])
 @login_required
 def library_genres(selected_genre):
@@ -38,6 +39,20 @@ def library_genres(selected_genre):
             return redirect(url_for("library_bp.library_folders", selected_folder = selected_folder, current = "library"))
 
     return render_template("library/library.html", artists_folders = artists_folders, genres = genres, current = "library")
+
+
+
+# @library_bp.route('/<selected_genre>/<selected_subgenre>', methods=["POST", "GET"])
+# @login_required
+# def library_genres(selected_genre, selected_subgenre):
+
+#     genres = get_genres()
+#     subgenres = get_subgenres()
+#     if selected_genre not in genres:
+#         abort(404)
+
+
+
 
 
 # @library_bp.route('/<selected_folder>/<selected_artist>', methods=["POST", "GET"])
@@ -144,6 +159,16 @@ def get_genres():
     artists_main_genres = Genre.query.with_entities(Genre.genre).distinct().order_by(Genre.genre.asc())
     genres = [genre.genre for genre in artists_main_genres] + ['others']
     return genres
+
+
+
+
+
+def get_subgenres():
+    pass
+
+
+
 
 
 def get_artists_of_selected_genre(genre, user_id, no_of_songs):

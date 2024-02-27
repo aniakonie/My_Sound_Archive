@@ -1,4 +1,4 @@
-from flask import Blueprint, url_for, redirect, render_template, request, abort
+from flask import Blueprint, url_for, redirect, render_template, request, abort, session
 from flask_login import login_required, current_user
 from website.database.models import *
 
@@ -9,12 +9,17 @@ library_bp = Blueprint('library_bp', __name__, template_folder='templates')
 @library_bp.route('/', methods=["POST", "GET"])
 @login_required
 def library():
-    genres = get_genres()
-    if request.method == "POST":
-        selected_genre = request.form["selected_genre"]
-        return redirect(url_for("library_bp.library_genres", selected_genre = selected_genre))
+    if not current_user.is_library_created:
+        genres = None
+        if request.method == "POST":
+            session["allowed"] = True
+            return redirect(url_for("spotify_bp.authorization"))
+    else:
+        genres = get_genres()
+        if request.method == "POST":
+            selected_genre = request.form["selected_genre"]
+            return redirect(url_for("library_bp.library_genres", selected_genre = selected_genre))
     return render_template("library/library.html", genres = genres, current = "library", user = current_user.username)
-
 
 
 @library_bp.route('/<selected_genre>', methods=["POST", "GET"])
@@ -156,6 +161,7 @@ def library_genres(selected_genre):
 
 
 def get_genres():
+    #TODO genres should be retrieved from user's tables, not from general tables
     artists_main_genres = Genre.query.with_entities(Genre.genre).distinct().order_by(Genre.genre.asc())
     genres = [genre.genre for genre in artists_main_genres] + ['others']
     return genres

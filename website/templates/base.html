@@ -77,6 +77,11 @@
                         {{ message }}
                     </div>
                 {% endif %}
+                {% if category == 'info' %}
+                    <div class="alert alert-info" role="alert">
+                        {{ message }}
+                    </div>
+                {% endif %}
             {% endfor %}
         {% endif %}
     {% endwith %}

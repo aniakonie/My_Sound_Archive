@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, request, abort, flash
+from flask import Blueprint, render_template, redirect, url_for, request, abort, flash, session
 from website.database.models import login_manager, User, db
 from flask_login import login_required, current_user, login_user, logout_user
 from flask_wtf import FlaskForm
@@ -84,12 +84,15 @@ def log_out():
     return redirect(url_for("home_bp.home"))
 
 
-@home_bp.route('/log_in_to_spotify')
+@home_bp.route('/log_in_to_spotify', methods=["GET", "POST"])
 @login_required
 def log_in_to_spotify():
     if current_user.is_library_created:
         abort(401)
     username = current_user.username
+    if request.method == 'POST':
+        session["allowed"] = True
+        return redirect(url_for("spotify_bp.authorization"))
     return render_template("home/log_in_to_spotify.html", username = username)
 
 

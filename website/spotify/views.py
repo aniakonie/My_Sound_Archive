@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, url_for, redirect
+from flask import Blueprint, render_template, request, url_for, redirect, abort, session, flash
 from dotenv import load_dotenv
 import os
 import requests
@@ -20,6 +20,7 @@ load_dotenv()
 def authorization():
     '''requesting authorization from Spotify to access data
     using client id from app registration on spotify dev'''
+    session.pop("allowed", default=None)
     spotify_login_page_url = request_authorization()
     return redirect(spotify_login_page_url)
 
@@ -31,21 +32,35 @@ def callback():
     retrieving query parameters (code and state) from spotify callback'''
 
     state_received = request.args.get("state")
-    #TODO compare received state with the one which was sent before
-    
-    try:
+    # user tried to access this url by typing it in the browser
+    if state_received == None:
+        abort(401)
+    else:
+        pass #TODO compare received state with the one which was sent before
+    # spotify sent back an error - something went wrong or user refused access to his/her spotify account
+    error = request.args.get("error")
+    if error != None:
+        if error == "access_denied":
+            flash('''Did you mean to refuse access to your Spotify account? If not, please click 'Log in to Spotify' again.
+                  If you did mean it and you are not sure whether to accept it, please head over to 'How it works' page and find out more about the app.''', category="info")
+            return redirect(url_for("library_bp.library"))
+        else:
+            flash("Oops, something went wrong. Spotify refused to cooperate. Please try again by clicking 'Log in to Spotify", category="error")
+            return redirect(url_for("library_bp.library"))
+    else:
         code = request.args.get("code")
-    except:
-        error = request.args.get("error")
-
-    access_token, refresh_token = get_token(code)
-    save_token(access_token, refresh_token)
+        access_token, refresh_token = get_token(code)
+        save_token(access_token, refresh_token)
+        session["allowed"] = True
     return redirect(url_for("spotify_bp.successfully_logged_in_to_spotify"))
 
 
 @spotify_bp.route('/create_library', methods=["POST", "GET"])
 @login_required
 def successfully_logged_in_to_spotify():
+    session.pop("allowed", default=None)
+    if current_user.is_library_created:
+        abort(401)
     if request.method == "POST":
         create_library_response = eval(request.form["create_library"])
         if not create_library_response:
@@ -144,3 +159,11 @@ def convert_to_base64_str(data):
     data_bytes = data.encode('ascii')
     data_base64_str = base64.b64encode(data_bytes).decode()
     return data_base64_str
+
+
+@spotify_bp.before_request
+def check_access():
+    endpoints = ("spotify_bp.authorization", "spotify_bp.successfully_logged_in_to_spotify")
+    if request.endpoint in endpoints and not session.get("allowed"):
+        abort(401)
+

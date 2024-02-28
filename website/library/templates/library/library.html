@@ -21,17 +21,17 @@
 
         <div class="col">
             <h3>Subgenres</h3>
-            <!-- {% for subgenre in subgenres %}
+            {% for subgenre in subgenres %}
                 <form method="POST">
                     <input type="hidden" name="selected_subgenre" value="{{ subgenre }}">
                     <input type="submit" value="{{ subgenre }}">
                 </form>
-            {% endfor %} -->
+            {% endfor %}
         </div>
 
         <div class="col">
             <h3>Artists</h3>
-            {% for artist in artists_folders %}
+            {% for artist in artists %}
                 <form method="POST">
                     <input type="hidden" name="selected_artist" value="{{ artist }}">
                     <input type="submit" value="{{ artist }}">

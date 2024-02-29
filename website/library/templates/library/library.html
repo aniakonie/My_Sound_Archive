@@ -33,8 +33,8 @@
             <h3>Artists</h3>
             {% for artist in artists %}
                 <form method="POST">
-                    <input type="hidden" name="selected_artist" value="{{ artist }}">
-                    <input type="submit" value="{{ artist }}">
+                    <input type="hidden" name="selected_artist_uri" value="{{ artist[0] }}">
+                    <input type="submit" name="selected_artist_name" value="{{ artist[1] }}">
                 </form>
             {% endfor %}
         </div>
@@ -45,7 +45,6 @@
                 {% for track in tracklist %}
                     <a class="play_track" href="{{track["track_uri"]}}">PL</a> <a class="open_album" href="{{track["album_uri"]}}">AL</a>
                     <span class="track">{{track["track_title"]}}</span> 
-
                     <br>
                 {% endfor %}
             

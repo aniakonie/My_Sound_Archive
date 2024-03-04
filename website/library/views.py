@@ -26,6 +26,9 @@ def library():
 @login_required
 def library_genres(selected_genre):
 
+    if not current_user.is_library_created:
+        return redirect(url_for("library_bp.library"))
+
     genres = get_genres()
     if selected_genre not in genres:
         abort(404)
@@ -35,22 +38,24 @@ def library_genres(selected_genre):
         new_selected_genre = request.form.get("selected_genre")
         selected_subgenre = request.form.get("selected_subgenre")
         if new_selected_genre != None:
-            return redirect(url_for("library_bp.library_genres", selected_genre = new_selected_genre, current = "library"))
+            return redirect(url_for("library_bp.library_genres", selected_genre = new_selected_genre))
         elif selected_subgenre != None:
-            return redirect(url_for("library_bp.library_subgenres", selected_genre = selected_genre, selected_subgenre = selected_subgenre, current = "library"))
-    return render_template("library/library.html", genres = genres, subgenres = subgenres, current = "library")
+            return redirect(url_for("library_bp.library_subgenres", selected_genre = selected_genre, selected_subgenre = selected_subgenre))
+    return render_template("library/library.html", genres = genres, subgenres = subgenres, current = "library", selected_genre = selected_genre)
 
 
 @library_bp.route('/<selected_genre>/<selected_subgenre>', methods=["POST", "GET"])
 @login_required
 def library_subgenres(selected_genre, selected_subgenre):
 
-    genres = get_genres()
-    subgenres = get_subgenres(selected_genre)
+    if not current_user.is_library_created:
+        return redirect(url_for("library_bp.library"))
 
+    genres = get_genres()
     if selected_genre not in genres:
         abort(404)
-    elif selected_subgenre not in subgenres:
+    subgenres = get_subgenres(selected_genre)
+    if selected_subgenre not in subgenres:
         abort(404)
 
     artists = get_artists_of_selected_subgenre(selected_genre, selected_subgenre)
@@ -61,31 +66,34 @@ def library_subgenres(selected_genre, selected_subgenre):
         selected_artist_uri = request.form.get("selected_artist_uri")
 
         if new_selected_genre != None:
-            return redirect(url_for("library_bp.library_genres", selected_genre = new_selected_genre, current = "library"))
+            return redirect(url_for("library_bp.library_genres", selected_genre = new_selected_genre))
         elif new_selected_subgenre != None:
-            return redirect(url_for("library_bp.library_subgenres", selected_genre = selected_genre, selected_subgenre = new_selected_subgenre, current = "library"))
+            return redirect(url_for("library_bp.library_subgenres", selected_genre = selected_genre, selected_subgenre = new_selected_subgenre))
         elif selected_artist_uri != None:
             selected_artist_name = request.form.get("selected_artist_name")
             session["selected_artist_uri"] = selected_artist_uri
-            return redirect(url_for("library_bp.library_tracks", selected_genre = selected_genre, selected_subgenre = selected_subgenre, selected_artist_name = selected_artist_name, current = "library"))   
+            return redirect(url_for("library_bp.library_tracks", selected_genre = selected_genre, selected_subgenre = selected_subgenre, selected_artist_name = selected_artist_name))   
 
-    return render_template("library/library.html", genres = genres, subgenres = subgenres, artists = artists, current = "library")
+    return render_template("library/library.html", genres = genres, subgenres = subgenres, artists = artists, current = "library", selected_genre = selected_genre, selected_subgenre = selected_subgenre)
 
 
 @library_bp.route('/<selected_genre>/<selected_subgenre>/<selected_artist_name>', methods=["POST", "GET"])
 @login_required
 def library_tracks(selected_genre, selected_subgenre, selected_artist_name):
 
-    genres = get_genres()
-    subgenres = get_subgenres(selected_genre)
-    artists = get_artists_of_selected_subgenre(selected_genre, selected_subgenre)
-    selected_artist_uri = session["selected_artist_uri"]
+    if not current_user.is_library_created:
+        return redirect(url_for("library_bp.library"))
 
+    genres = get_genres()
     if selected_genre not in genres:
         abort(404)
-    elif selected_subgenre not in subgenres:
+    subgenres = get_subgenres(selected_genre)
+    if selected_subgenre not in subgenres:
         abort(404)
-    elif (selected_artist_uri, selected_artist_name) not in artists:
+
+    artists = get_artists_of_selected_subgenre(selected_genre, selected_subgenre)
+    selected_artist_uri = session["selected_artist_uri"]
+    if (selected_artist_uri, selected_artist_name) not in artists:
         abort(404)
 
     if (selected_artist_uri, selected_artist_name) != ("Loose tracks", "Loose tracks"):
@@ -95,23 +103,23 @@ def library_tracks(selected_genre, selected_subgenre, selected_artist_name):
     # else:
     #     pass
 
-
     if request.method == "POST":
         new_selected_genre = request.form.get("selected_genre")
         new_selected_subgenre = request.form.get("selected_subgenre")
         new_selected_artist_uri = request.form.get("selected_artist_uri")
 
         if new_selected_genre != None:
-            return redirect(url_for("library_bp.library_genres", selected_genre = new_selected_genre, current = "library"))
+            return redirect(url_for("library_bp.library_genres", selected_genre = new_selected_genre))
         elif new_selected_subgenre != None:
-            return redirect(url_for("library_bp.library_subgenres", selected_genre = selected_genre, selected_subgenre = new_selected_subgenre, current = "library"))
+            return redirect(url_for("library_bp.library_subgenres", selected_genre = selected_genre, selected_subgenre = new_selected_subgenre))
         elif new_selected_artist_uri != None:
             new_selected_artist_name = request.form.get("selected_artist_name")
             session.pop("selected_artist_uri", default=None)
             session["selected_artist_uri"] = new_selected_artist_uri
-            return redirect(url_for("library_bp.library_tracks", selected_genre = selected_genre, selected_subgenre = selected_subgenre, selected_artist_name = new_selected_artist_name, current = "library"))        
+            return redirect(url_for("library_bp.library_tracks", selected_genre = selected_genre, selected_subgenre = selected_subgenre, selected_artist_name = new_selected_artist_name))        
 
-    return render_template("library/library.html", genres = genres, subgenres = subgenres, artists = artists, tracklist = tracklist, tracklist_featured = tracklist_featured, current = "library")
+    return render_template("library/library.html", genres = genres, subgenres = subgenres, artists = artists, tracklist = tracklist, tracklist_featured = tracklist_featured,
+                           current = "library", selected_genre = selected_genre, selected_subgenre = selected_subgenre, selected_artist_uri = selected_artist_uri)
 
 
 
@@ -168,7 +176,7 @@ def get_subgenres(selected_genre):
 
 def get_artists_of_selected_subgenre(selected_genre, selected_subgenre):
     '''Select all artists which play particular subgenre and user owns in his library at least 3 songs of this artist'''
-
+    #TODO RETRIEVE THIS FROM USER'S SETTINGS
     no_of_songs = 2
 
     query_sql = (f'''
@@ -193,24 +201,6 @@ def get_artists_of_selected_subgenre(selected_genre, selected_subgenre):
     artists = [(artist.artist_uri, artist.artist_name) for artist in query_result]
     artists.append(("Loose tracks", "Loose tracks"))
     return artists
-
-
-
-def get_loose_tracks_for_subgenre(selected_subgenre):
-    pass
-
-    
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -271,7 +261,30 @@ def get_featured_tracks_of_artist(selected_artist_name):
 
 
 
+# def get_loose_tracks_for_subgenre(selected_subgenre):
 
+#     query_sql = (f'''
+#     SELECT track_uri, track_artist_main, track_artist_add1, track_artist_add2, track_title, album_uri
+#     FROM tracks
+    
+#     WHERE track_uri IN
+#     (SELECT DISTINCT track_uri
+#     FROM users_tracks
+#     WHERE user_id = {current_user.id} AND display_in_library = 'True')
+#     AND track_artist_main IN
+
+
+    
+
+
+
+    
+
+#     do users_tracks dokleić tracks i wybrać te, gdzie artist_uri w tablicy, ktora laczy artists_genres i user-art-genr i wybrane subgenre
+
+
+#     '''
+#     )
 
 
 

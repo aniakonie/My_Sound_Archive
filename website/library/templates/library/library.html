@@ -6,46 +6,68 @@
 
 
 {% if current_user.is_library_created == True %}
+<div style="margin-bottom: 20px;"></div>
 <div class="container">
 
     <div class="row">
         <div class="col">
             <h3>Genres</h3>
+            <div style="margin-bottom: 20px;"></div>
             {% for genre in genres %}
-            <form method="POST">
-                <input type="hidden" name="selected_genre" value="{{ genre }}">
-                <input type="submit" value="{{ genre }}">
-            </form>
+                <form method="POST">
+                    <input type="hidden" name="selected_genre" value="{{ genre }}">
+                    {% if genre == selected_genre %}
+                    <input type="submit" value="{{ genre }}" class="btn btn-dark">
+                    {% else %}
+                    <input type="submit" value="{{ genre }}" class="btn btn-light">
+                    {% endif %}
+                </form>
+            <div style="margin-bottom: 5px;"></div>
             {% endfor %}
         </div>
 
         <div class="col">
             <h3>Subgenres</h3>
+            <div style="margin-bottom: 20px;"></div>
             {% for subgenre in subgenres %}
                 <form method="POST">
                     <input type="hidden" name="selected_subgenre" value="{{ subgenre }}">
-                    <input type="submit" value="{{ subgenre }}">
+                    {% if subgenre == selected_subgenre %}
+                    <input type="submit" value="{{ subgenre }}" class="btn btn-dark">
+                    {% else %}
+                    <input type="submit" value="{{ subgenre }}" class="btn btn-light">
+                    {% endif %}
                 </form>
+                <div style="margin-bottom: 5px;"></div>
             {% endfor %}
         </div>
 
         <div class="col">
             <h3>Artists</h3>
+            <div style="margin-bottom: 20px;"></div>
             {% for artist in artists %}
                 <form method="POST">
                     <input type="hidden" name="selected_artist_uri" value="{{ artist[0] }}">
-                    <input type="submit" name="selected_artist_name" value="{{ artist[1] }}">
+                    {% if artist[0] == selected_artist_uri %}
+                    <input type="submit" name="selected_artist_name" value="{{ artist[1] }}" class="btn btn-dark">
+                    {% else %}
+                    <input type="submit" name="selected_artist_name" value="{{ artist[1] }}" class="btn btn-light">
+                    {% endif %}
                 </form>
+            <div style="margin-bottom: 5px;"></div>
             {% endfor %}
         </div>
 
         <div class="col">
             <h3>Tracks</h3>
+            <div style="margin-bottom: 20px;"></div>
             {% if selected_artist != "Loose tracks" %}
                 {% for track in tracklist %}
+                    <button type="button" class="btn btn-light">
                     <a class="play_track" href="{{track["track_uri"]}}">PL</a> <a class="open_album" href="{{track["album_uri"]}}">AL</a>
-                    <span class="track">{{track["track_title"]}}</span> 
-                    <br>
+                    <span class="track">{{track["track_title"]}}</span>
+                    </button>
+                    <div style="margin-bottom: 5px;"></div>
                 {% endfor %}
             
             {% else %}
@@ -85,8 +107,6 @@
     </div>
 </div>
 {% endif %}
-
-
 
 {% if current_user.is_library_created == False %}
 <div class="container">

@@ -1,11 +1,55 @@
 {% extends "base.html" %}
 
-{% block title %}My VML{% endblock %}
+{% block title %}VML Demo{% endblock %}
+
+
+{% block navbar %}
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="http://127.0.0.1:5000">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="http://127.0.0.1:5000/how_it_works">How it works</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="http://127.0.0.1:5000/demo">See an example</a>
+            </li>
+        </ul>
+        <ul class="navbar-nav me-2 mb-2 mb-lg-0">
+        {% if not current_user.is_authenticated %}  
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="http://127.0.0.1:5000/login">Log in</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="http://127.0.0.1:5000/sign-up">Sign up</a>
+        </li>
+        {% endif %}
+        {% if current_user.is_authenticated %}
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="http://127.0.0.1:5000/library">My VML</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="http://127.0.0.1:5000/settings">Settings</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="http://127.0.0.1:5000/logout">Log out</a>
+        </li>
+        {% endif %}
+        </ul>
+      </div>
+    </div>
+</nav>
+{% endblock %}
+
 
 {% block content %}
 
-
-{% if current_user.is_library_created == True %}
 <div style="margin-bottom: 20px;"></div>
 <div class="container">
 
@@ -106,43 +150,7 @@
         </div>
     </div>
 </div>
-{% endif %}
 
-{% if current_user.is_library_created == False %}
-<div class="container">
-    <div class="row">
-        <div class="col">
-            <h3>Genres</h3>
-        </div>
-
-        <div class="col">
-            <h3>Subgenres</h3>
-        </div>
-
-        <div class="col">
-            <h3>Artists</h3>
-        </div>
-
-        <div class="col">
-            <h3>Tracks</h3>
-        </div>
-    </div>
-</div>
-
-<br>
-<br>
-<br>
-<br>
-
-<div class="container">
-<h5 style="text-align: center;">Nothing here yet. Please log in to Spotify to retrieve your music collection.</h5>
-<br>
-<div style="text-align: center;">
-    <form method="POST">
-        <input type=submit value="Log in to Spotify" class="btn btn-dark">
-    </form>
-</div>
-{% endif %}
 
 {% endblock %}
 

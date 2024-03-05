@@ -15,7 +15,7 @@ def library():
             session["allowed"] = True
             return redirect(url_for("spotify_bp.authorization"))
     else:
-        genres = get_genres()
+        genres = get_genres(current_user.id)
         if request.method == "POST":
             selected_genre = request.form["selected_genre"]
             return redirect(url_for("library_bp.library_genres", selected_genre = selected_genre))
@@ -29,10 +29,10 @@ def library_genres(selected_genre):
     if not current_user.is_library_created:
         return redirect(url_for("library_bp.library"))
 
-    genres = get_genres()
+    genres = get_genres(current_user.id)
     if selected_genre not in genres:
         abort(404)
-    subgenres = get_subgenres(selected_genre)
+    subgenres = get_subgenres(selected_genre, current_user.id)
 
     if request.method == "POST":
         new_selected_genre = request.form.get("selected_genre")
@@ -51,14 +51,14 @@ def library_subgenres(selected_genre, selected_subgenre):
     if not current_user.is_library_created:
         return redirect(url_for("library_bp.library"))
 
-    genres = get_genres()
+    genres = get_genres(current_user.id)
     if selected_genre not in genres:
         abort(404)
-    subgenres = get_subgenres(selected_genre)
+    subgenres = get_subgenres(selected_genre, current_user.id)
     if selected_subgenre not in subgenres:
         abort(404)
 
-    artists = get_artists_of_selected_subgenre(selected_genre, selected_subgenre)
+    artists = get_artists_of_selected_subgenre(selected_genre, selected_subgenre, current_user.id)
 
     if request.method == "POST":
         new_selected_genre = request.form.get("selected_genre")       
@@ -84,21 +84,21 @@ def library_tracks(selected_genre, selected_subgenre, selected_artist_name):
     if not current_user.is_library_created:
         return redirect(url_for("library_bp.library"))
 
-    genres = get_genres()
+    genres = get_genres(current_user.id)
     if selected_genre not in genres:
         abort(404)
-    subgenres = get_subgenres(selected_genre)
+    subgenres = get_subgenres(selected_genre, current_user.id)
     if selected_subgenre not in subgenres:
         abort(404)
 
-    artists = get_artists_of_selected_subgenre(selected_genre, selected_subgenre)
+    artists = get_artists_of_selected_subgenre(selected_genre, selected_subgenre, current_user.id)
     selected_artist_uri = session["selected_artist_uri"]
     if (selected_artist_uri, selected_artist_name) not in artists:
         abort(404)
 
     if (selected_artist_uri, selected_artist_name) != ("Loose tracks", "Loose tracks"):
-        tracklist = get_tracks_of_artist(selected_artist_uri)
-        tracklist_featured = get_featured_tracks_of_artist(selected_artist_name)
+        tracklist = get_tracks_of_artist(selected_artist_uri, current_user.id)
+        tracklist_featured = get_featured_tracks_of_artist(selected_artist_name, current_user.id)
 
     # else:
     #     pass
@@ -122,8 +122,8 @@ def library_tracks(selected_genre, selected_subgenre, selected_artist_name):
                            current = "library", selected_genre = selected_genre, selected_subgenre = selected_subgenre, selected_artist_uri = selected_artist_uri)
 
 
-
-def get_genres():
+#FIX THIS
+def get_genres(user_id):
     '''Select all genres'''
 
     query_sql = (f'''
@@ -135,7 +135,7 @@ def get_genres():
     (SELECT tracks.main_artist_uri
     FROM users_tracks
     INNER JOIN tracks ON users_tracks.track_uri = tracks.track_uri
-    WHERE user_id = {current_user.id} AND display_in_library = 'True')
+    WHERE user_id = {user_id} AND display_in_library = 'True')
     ORDER BY artist_main_genre ASC
     '''
     )
@@ -148,7 +148,8 @@ def get_genres():
 
 
 
-def get_subgenres(selected_genre):
+#FIX THIS
+def get_subgenres(selected_genre, user_id):
     '''Select all subgenres for selected genre'''
 
     query_sql = (f'''
@@ -161,7 +162,7 @@ def get_subgenres(selected_genre):
     (SELECT tracks.main_artist_uri
     FROM users_tracks
     INNER JOIN tracks ON users_tracks.track_uri = tracks.track_uri
-    WHERE user_id = {current_user.id} AND display_in_library = 'True')
+    WHERE user_id = {user_id} AND display_in_library = 'True')
     ORDER BY artist_subgenre ASC
     '''
     )
@@ -173,8 +174,8 @@ def get_subgenres(selected_genre):
     return subgenres
 
 
-
-def get_artists_of_selected_subgenre(selected_genre, selected_subgenre):
+#FIX THIS
+def get_artists_of_selected_subgenre(selected_genre, selected_subgenre, user_id):
     '''Select all artists which play particular subgenre and user owns in his library at least 3 songs of this artist'''
     #TODO RETRIEVE THIS FROM USER'S SETTINGS
     no_of_songs = 2
@@ -190,7 +191,7 @@ def get_artists_of_selected_subgenre(selected_genre, selected_subgenre):
     (SELECT tracks.main_artist_uri
     FROM users_tracks
     INNER JOIN tracks ON users_tracks.track_uri = tracks.track_uri
-    WHERE user_id = {current_user.id} AND display_in_library = 'True'
+    WHERE user_id = {user_id} AND display_in_library = 'True'
     GROUP BY tracks.main_artist_uri
     HAVING COUNT(tracks.main_artist_uri) > {no_of_songs})
     ORDER BY artists_genres.artist_name ASC
@@ -204,7 +205,7 @@ def get_artists_of_selected_subgenre(selected_genre, selected_subgenre):
 
 
 
-def get_tracks_of_artist(selected_artist_uri):
+def get_tracks_of_artist(selected_artist_uri, user_id):
     '''Select all tracks of an artist'''
 
     query_sql = (f'''
@@ -213,7 +214,7 @@ def get_tracks_of_artist(selected_artist_uri):
     WHERE main_artist_uri = '{selected_artist_uri}' AND track_uri IN
     (SELECT DISTINCT track_uri
     FROM users_tracks
-    WHERE user_id = {current_user.id} AND display_in_library = 'True')
+    WHERE user_id = {user_id} AND display_in_library = 'True')
     GROUP BY track_title
     ORDER BY track_title ASC
     '''
@@ -232,7 +233,7 @@ def get_tracks_of_artist(selected_artist_uri):
 
 
 
-def get_featured_tracks_of_artist(selected_artist_name):
+def get_featured_tracks_of_artist(selected_artist_name, user_id):
     '''Select all featured tracks of an artist'''
 
     query_sql = (f'''
@@ -241,7 +242,7 @@ def get_featured_tracks_of_artist(selected_artist_name):
     WHERE track_artist_add1 = '{selected_artist_name}' OR track_artist_add2 = '{selected_artist_name}' AND track_uri IN
     (SELECT DISTINCT track_uri
     FROM users_tracks
-    WHERE user_id = {current_user.id} AND display_in_library = 'True')
+    WHERE user_id = {user_id} AND display_in_library = 'True')
     '''
     )
 
@@ -261,33 +262,43 @@ def get_featured_tracks_of_artist(selected_artist_name):
 
 
 
-# def get_loose_tracks_for_subgenre(selected_subgenre):
+def get_loose_tracks_for_subgenre(selected_genre, selected_subgenre, user_id):
 
-#     query_sql = (f'''
-#     SELECT track_uri, track_artist_main, track_artist_add1, track_artist_add2, track_title, album_uri
-#     FROM tracks
+    query_sql = (f'''
+    SELECT track_uri, track_artist_main, track_artist_add1, track_artist_add2, track_title, album_uri
+    FROM tracks
     
-#     WHERE track_uri IN
-#     (SELECT DISTINCT track_uri
-#     FROM users_tracks
-#     WHERE user_id = {current_user.id} AND display_in_library = 'True')
-#     AND track_artist_main IN
-
-
-    
-
-
-
-    
-
-#     do users_tracks dokleić tracks i wybrać te, gdzie artist_uri w tablicy, ktora laczy artists_genres i user-art-genr i wybrane subgenre
-
-
-#     '''
-#     )
+    WHERE track_uri IN
+    (SELECT DISTINCT track_uri
+    FROM users_tracks
+    WHERE user_id = {user_id} AND display_in_library = 'True')
+    AND track_artist_main IN
+    '''
+    )
 
 
 
+
+# select track_artist_main from tracks
+# where track_uri in(
+# select track_uri from users_tracks
+# where users_tracks.user_id = 3 and users_tracks.display_in_library = 'True')
+# group by track_artist_main
+# having count(track_artist_main) < 3
+
+
+
+
+
+
+# entire artists_genres table + custom genres and subgenres for a particular user
+
+# SELECT artists_genres.artist_uri,
+# COALESCE(users_artists_genres.artist_main_genre_custom, artists_genres.artist_main_genre) AS artist_main_genre,
+# COALESCE(users_artists_genres.artist_subgenre_custom, artists_genres.artist_subgenre) AS artist_subgenre
+# FROM artists_genres
+# LEFT JOIN users_artists_genres ON artists_genres.artist_uri = users_artists_genres.artist_uri
+# AND users_artists_genres.user_id = 3
 
 
 
@@ -307,7 +318,6 @@ def get_featured_tracks_of_artist(selected_artist_name):
 
 
 
-
 # tables users_artists_genres and artist_genres combined, artists for one user only
 
 # SELECT *
@@ -318,3 +328,12 @@ def get_featured_tracks_of_artist(selected_artist_name):
 # FROM users_tracks
 # INNER JOIN tracks ON users_tracks.track_uri = tracks.track_uri
 # WHERE user_id = 3 AND display_in_library = 'True')
+    
+
+
+# SELECT artists_genres.artist_uri,
+# COALESCE(users_artists_genres.artist_main_genre_custom, artists_genres.artist_main_genre) AS artist_main_genre,
+# COALESCE(users_artists_genres.artist_subgenre_custom, artists_genres.artist_subgenre) AS artist_subgenre
+# FROM artists_genres
+# LEFT JOIN users_artists_genres ON artists_genres.artist_uri = users_artists_genres.artist_uri
+# WHERE user_id = 3 AND artist_main_genre = 'electronic' AND artist_subgenre = 'liquid funk'

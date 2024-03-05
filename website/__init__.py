@@ -31,9 +31,11 @@ def create_app():
     from .spotify.views import spotify_bp
     from .library.views import library_bp
     from .home.views import home_bp
+    from .library.demo import demo_bp
 
     app.register_blueprint(spotify_bp, url_prefix='/spotify')
     app.register_blueprint(library_bp, url_prefix='/library')
     app.register_blueprint(home_bp, url_prefix='/')
+    app.register_blueprint(demo_bp, url_prefix='/demo')
 
     return app

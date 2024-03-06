@@ -1,6 +1,6 @@
 # Virtual Music Library
 
-A web application that displays Spotify user's library organized into artists, genres and subgenres folders, offering a convenient way to browse through their music collection.
+A web application that displays Spotify user's library organized into artists, genres and subgenres folders, offering a convenient way to browse through the music collection.
 
 ## What problem does it solve
 

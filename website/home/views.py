@@ -37,7 +37,7 @@ def sign_up():
     if request.method == 'POST':
         all_usernames = User.query.all()
         all_usernames = [user.username for user in all_usernames]
-        if form.username.data in  all_usernames:
+        if form.username.data in all_usernames:
             flash('Such user already exists. Please choose different username.', category="error")
         else:
             new_user = User(form.username.data, form.password.data)

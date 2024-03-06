@@ -146,7 +146,14 @@ def create_library():
     music_platform_id = user.music_platform_id
     playlists_info_library, saved_tracks_library, all_playlists_tracks_library = parse(spotify_playlists, spotify_saved_tracks, spotify_all_playlists_tracks, music_platform_id)
     save_to_dabatase(playlists_info_library, saved_tracks_library, all_playlists_tracks_library)
+    save_default_user_settings()
     user.is_library_created = True
+
+
+def save_default_user_settings():
+    user_settings = UserSettings(current_user.id)
+    db.session.add(user_settings)
+    db.session.commit()
 
 
 def check_token_validity(access_token):

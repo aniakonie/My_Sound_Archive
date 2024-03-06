@@ -289,8 +289,6 @@ def get_loose_tracks_for_subgenre(selected_genre, selected_subgenre, user_id):
 
 
 
-
-
 # entire artists_genres table + custom genres and subgenres for a particular user
 
 # SELECT artists_genres.artist_uri,

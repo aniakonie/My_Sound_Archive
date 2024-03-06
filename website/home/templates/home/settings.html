@@ -1,11 +1,56 @@
 {% extends "base.html" %}
 
-{% block title %}VMLibrary{% endblock %}
+{% block title %}VML Settings{% endblock %}
 
 
 {% block content %} 
-    
+
 <h1 style="text-align: center;">Hi, {{username}},</h1>
 <h1 style="text-align: center;">this will be your settings page in the future.</h1>
+
+
+
+
+
+
+{% if current_user.is_library_created == True %}
+
+
+Minimum number of songs of an artist to be in a folder
+
+
+Artists with 3 or more songs will be grouped into folders. The rest of them will
+be listed in the 'loose tracks' folder.
+
+
+
+
+
+{% else %}
+
+
+Delete my VML account
+
+
+
+
+
+{% endif %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 {% endblock %}

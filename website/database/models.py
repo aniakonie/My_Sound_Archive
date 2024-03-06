@@ -188,3 +188,15 @@ class Genre(db.Model):
         self.genre = genre
         self.subgenre = subgenre
 
+
+class UserSettings(db.Model):
+    __tablename__ = "users_settings"
+
+    id = db.Column(db.Integer, primary_key=True)
+    no_of_songs_into_folder = db.Column(db.Integer, default=3)
+    include_songs_from_playlists = db.Column(db.Boolean, default=True)
+    include_followed_playlists = db.Column(db.Boolean, default=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), unique=True)
+
+    def __init__(self, user_id):
+        self.user_id = user_id

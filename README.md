@@ -12,7 +12,7 @@ Unless you search through a long list of liked songs or artists when selecting s
 
 Virtual Music Library app retrieves liked songs and all tracks from a user's playlists through the Spotify API. It then consolidates them and organizes the collection into corresponding artists and genres folders. Users can play songs on Spotify by using the links provided within the app.
 
-![My Remote Image](https://private-user-images.githubusercontent.com/112773165/310471953-823d24fe-d5b7-4f28-b3eb-45ccfff8ba76.PNG?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MDk3MjM4MjIsIm5iZiI6MTcwOTcyMzUyMiwicGF0aCI6Ii8xMTI3NzMxNjUvMzEwNDcxOTUzLTgyM2QyNGZlLWQ1YjctNGYyOC1iM2ViLTQ1Y2NmZmY4YmE3Ni5QTkc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjQwMzA2JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI0MDMwNlQxMTEyMDJaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT1iYzgyM2U0YmRiOWM2OThhZGMzMjg3MDI4YmNiMDRmODBiZDA5YTNhNzU4N2YxYmYyMGMyOTgyYjAzYTdmMjlmJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZhY3Rvcl9pZD0wJmtleV9pZD0wJnJlcG9faWQ9MCJ9.Am96wh2khtK2uSOmD_KtjetJm_FlSMP3xuDY8VUU8As)
+![Screen](https://github.com/aniakonie/virtual_music_library_flask/assets/112773165/4d2f88aa-f312-4a63-8742-3e4849d8063d)
 
 ## Technologies used
 

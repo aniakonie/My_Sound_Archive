@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}VML Settings{% endblock %}
+
+
+{% block content %} 
+<div style="margin-bottom: 100px;"></div>
+{% if current_user.is_library_created == True %}
+    <h2 style="text-align: center;">Are you sure you want to delete your VML library?</h2>
+{% else %}
+    <h2 style="text-align: center;">Are you sure you want to delete your VML account?</h2>
+{% endif %}
+<div style="margin-bottom: 50px;"></div>
+<div style="text-align: center;">
+    <form method="POST">
+        <input type=submit value="Yes" name="answer" class="btn btn-dark">
+        <div style="margin-bottom: 20px;"></div>
+        <input type=submit value="No" name="answer" class="btn btn-dark">
+    </form>
+</div>
+
+
+{% endblock %}

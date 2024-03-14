@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, redirect, url_for, request, abort, flash, session
-from website.database.models import login_manager, User, db
+from website.database.models import *
 from flask_login import login_required, current_user, login_user, logout_user
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField
@@ -96,15 +96,67 @@ def log_in_to_spotify():
     return render_template("home/log_in_to_spotify.html", username = username)
 
 
-@home_bp.route('/settings')
+@home_bp.route('/settings', methods=["GET", "POST"])
 @login_required
 def settings():
     username = current_user.username
+
+    if request.method == "POST":
+
+        if request.form["delete_account"] == "Delete my account":
+            return redirect(url_for("home_bp.delete_account"))
+
     return render_template("home/settings.html", username = username, current = 'settings')
+
+
+@home_bp.route('/delete_account', methods=["GET", "POST"])
+@login_required
+def delete_account():
+    user_id = current_user.id
+    if request.method == "POST":
+        if request.form["answer"] == "Yes":
+            if current_user.is_library_created == True:
+                delete_library(user_id)
+                delete_vml_account(user_id)
+            else:
+                delete_vml_account(user_id)
+            flash('Your account has been deleted', category = "success")
+            return redirect(url_for("home_bp.home"))
+        else:
+            return redirect(url_for("library_bp.library"))
+    return render_template("home/delete_account.html", current = "delete_account")
+
+
+def delete_library(user_id):
+    user_settings = UserSettings.query.filter_by(user_id=user_id).first()
+    db.session.delete(user_settings)
+    db.session.commit()  
+
+    user_music_platform = UserMusicPlatform.query.filter_by(user_id=user_id).first()
+    db.session.delete(user_music_platform)
+    db.session.commit()  
+
+    models_to_delete = [UserTracks, UserPlaylists, UserArtists]
+    for model in models_to_delete:
+        user_records = model.query.filter_by(user_id=user_id).all()
+        for record in user_records:
+            db.session.delete(record)
+    db.session.commit()
+
+    user = User.query.filter_by(id=user_id).first()
+    user.is_library_created = False
+    db.session.add(user)
+    db.session.commit()
+    print("Library deleted")
+
+
+def delete_vml_account(user_id):
+    user = User.query.filter_by(id=user_id).first()
+    db.session.delete(user)
+    db.session.commit()    
+    print("VML account deleted")
 
 
 @login_manager.user_loader
 def user_loader(user_id):
     return User.query.get(user_id)
-
-

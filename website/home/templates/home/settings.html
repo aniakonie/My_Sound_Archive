@@ -4,9 +4,9 @@
 
 
 {% block content %} 
-
-<h1 style="text-align: center;">Hi, {{username}},</h1>
-<h1 style="text-align: center;">this will be your settings page in the future.</h1>
+<div style="margin-bottom: 20px;"></div>
+<h1 style="text-align: center;">Settings</h1>
+<div style="margin-bottom: 20px;"></div>
 
 
 
@@ -18,17 +18,26 @@
 
 
 
-Minimum number of songs to be grouped into artist folder.
+Minimum number of songs to be grouped into artist folder:
 
+
+<div>
+Delete account:
+<br>
+<form method="POST">
+    <input type=submit value="Delete my account" name="delete_account" class="btn btn-danger">
+</form>
+</div>
 
 {% else %}
 
-
-Delete my VML account
-
-
-
-
+<div>
+Delete account
+<br>
+<form method="POST">
+    <input type=submit value="Delete my account" name="delete_account" class="btn btn-danger">
+</form>
+</div>
 
 {% endif %}
 

@@ -19,7 +19,7 @@ class User(db.Model):
     user_music_platform = db.relationship('UserMusicPlatform')
     user_playlists = db.relationship('UserPlaylists')
     user_tracks = db.relationship('UserTracks')
-    user_artists_genres = db.relationship('UserArtistsGenres')
+    user_artists_genres = db.relationship('UserArtists')
 
 
     def __init__(self, username, password):
@@ -103,27 +103,29 @@ class UserTracks(db.Model):
         return f"<Track_uri: {self.track_uri}, owner_id: {self.user_id}>" 
 
 
-class UserArtistsGenres(db.Model):
-    __tablename__ = "users_artists_genres"
+class UserArtists(db.Model):
+    __tablename__ = "users_artists"
 
     id = db.Column(db.Integer, primary_key=True)
     artist_uri = db.Column(db.String(37), unique=True)
+    artist_name = db.Column(db.String(50))
     artist_main_genre_custom = db.Column(db.String(20))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     artist_subgenre_custom = db.Column(db.String(30))
 
-    def __init__(self, artist_uri, artist_main_genre_custom, artist_subgenre_custom, user_id):
+    def __init__(self, artist_uri, artist_name, artist_main_genre_custom, artist_subgenre_custom, user_id):
         self.artist_uri = artist_uri
+        self.artist_name = artist_name
         self.artist_main_genre_custom = artist_main_genre_custom
         self.artist_subgenre_custom = artist_subgenre_custom
         self.user_id = user_id
 
     def __repr__(self):
-        return f"<Artist_uri: {self.artist_uri}, genre: {self.artist_main_genre_custom}, owner_id: {self.user_id}>"
+        return f"<Artist_name: {self.artist_name}, genre: {self.artist_main_genre_custom}, owner_id: {self.user_id}>"
 
 
-class ArtistsGenres(db.Model):
-    __tablename__ = "artists_genres"
+class Artists(db.Model):
+    __tablename__ = "artists"
 
     id = db.Column(db.Integer, primary_key=True)
     artist_uri = db.Column(db.String(37), unique=True)

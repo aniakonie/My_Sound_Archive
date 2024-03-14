@@ -1,11 +1,10 @@
 import random
-from website.database.models import ArtistsGenres
 from website.spotify.spotify_genres import spotify_get_artists_genres
 from website.database.models import *
 
 def classify_artists_genres():
     #retrieving all artists without corresponding genres from database
-    artists = ArtistsGenres.query.filter_by(artist_genres = None).all()
+    artists = Artists.query.filter_by(artist_genres = None).all()
     artists_list = [artist for artist in artists]
     artists_uris_genres = spotify_get_artists_genres(artists_list)
 
@@ -20,7 +19,7 @@ def classify_artists_genres():
 def save_artists_genres(artists_uris_genres_main_genre):
 
     for artist in artists_uris_genres_main_genre:
-        artist_uri_genre = ArtistsGenres.query.filter_by(artist_uri = artist[0]).first()
+        artist_uri_genre = Artists.query.filter_by(artist_uri = artist[0]).first()
         print(artist_uri_genre)
         artist_uri_genre.artist_genres = ', '.join(artist[1])
         print(artist_uri_genre.artist_genres)

@@ -3,7 +3,7 @@ from website.spotify.spotify_genres import spotify_get_artists_genres
 from website.database.models import *
 
 def classify_artists_genres():
-    #retrieving all artists without corresponding genres from database
+    '''retrieving all artists without corresponding genres from database'''
     artists = Artists.query.filter_by(artist_genres = None).all()
     artists_list = [artist for artist in artists]
     artists_uris_genres = spotify_get_artists_genres(artists_list)
@@ -17,16 +17,24 @@ def classify_artists_genres():
 
 
 def save_artists_genres(artists_uris_genres_main_genre):
-
+    '''saving genres and subgenres to global table artists'''
     for artist in artists_uris_genres_main_genre:
         artist_uri_genre = Artists.query.filter_by(artist_uri = artist[0]).first()
-        print(artist_uri_genre)
         artist_uri_genre.artist_genres = ', '.join(artist[1])
-        print(artist_uri_genre.artist_genres)
         artist_uri_genre.artist_main_genre = artist[2]
-        print(artist_uri_genre.artist_main_genre)
         db.session.add(artist_uri_genre)
         db.session.commit()
+
+
+#TODO add subgenres classification and saving subgenres
+
+#TODO
+def save_user_artists_genres():
+    '''saving genres and subgenres to table user_artists'''
+    pass
+
+
+
 
 
 main_genres ={
@@ -53,7 +61,8 @@ electronic = {
 
 reggae = {
     "polish reggae",
-    "dub"
+    "dub",
+    "roots reggae"
 }
 
 rock = {
@@ -90,7 +99,7 @@ def assign_main_genre(genres_string):
 
 
 
-
+#dnb
 #liquid funk is an electronic subgenre (=liquid drum and bass)!
 #electronica
 #metalcore, post-metal, post-rock

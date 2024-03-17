@@ -13,7 +13,6 @@ def library():
     if not current_user.is_library_created:
         genres = None
         if request.method == "POST":
-            session["allowed"] = True
             return redirect(url_for("spotify_bp.authorization"))
     else:
         genres = get_genres(current_user.id)

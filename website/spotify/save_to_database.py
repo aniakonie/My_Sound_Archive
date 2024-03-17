@@ -27,7 +27,7 @@ def save_saved_tracks(saved_tracks_library):
 
         add_track_to_tracks(track)
         add_artist_to_artists(track)
-
+        add_artist_to_user_artists(track)
 
 def save_all_playlists_tracks(all_playlists_tracks_library):
 
@@ -44,7 +44,7 @@ def save_all_playlists_tracks(all_playlists_tracks_library):
             db.session.commit()   
             add_track_to_tracks(track)
             add_artist_to_artists(track)
-
+            add_artist_to_user_artists(track)
 
 def add_track_to_tracks(track):
 
@@ -69,22 +69,23 @@ def add_track_to_tracks(track):
 
 def add_artist_to_artists(track):
 
-    statement = insert(ArtistsGenres).values(
+    statement = insert(Artists).values(
         {'artist_uri':track["main_artist_uri"],
          'artist_name':track["track_artist_main"][0:50],
          'artist_genres':None, 'artist_main_genre':None}
-         ).on_conflict_do_nothing(index_elements = ["artist_uri"])
+         ).on_conflict_do_nothing()
     db.session.execute(statement)
     db.session.commit()
 
 
-def get_artists_uris_db():
-    artists = ArtistsGenres.query.all()
-    artists_uris_db = set([artist.artist_uri for artist in artists])
-    return artists_uris_db
+def add_artist_to_user_artists(track):
 
-
-def get_tracks_uris_db():
-    tracks = Tracks.query.all()
-    tracks_uris_db = set([track.track_uri for track in tracks])
-    return tracks_uris_db
+    statement = insert(UserArtists).values(
+        {'artist_uri':track["main_artist_uri"],
+         'artist_name':track["track_artist_main"][0:50],
+         'artist_main_genre_custom':None,
+         'artist_subgenre_custom':None,
+         'user_id': current_user.id}
+         ).on_conflict_do_nothing()
+    db.session.execute(statement)
+    db.session.commit()

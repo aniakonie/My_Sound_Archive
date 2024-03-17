@@ -20,7 +20,8 @@ load_dotenv()
 def authorization():
     '''requesting authorization from Spotify to access data
     using client id from app registration on spotify dev'''
-    session.pop("allowed", default=None)
+    if current_user.is_library_created:
+        abort(404)
     spotify_login_page_url = request_authorization()
     return redirect(spotify_login_page_url)
 
@@ -49,27 +50,27 @@ def callback():
             return redirect(url_for("library_bp.library"))
     else:
         code = request.args.get("code")
-        access_token, refresh_token = get_token(code)
+        access_token, refresh_token = get_token_initial(code)
         save_token(access_token, refresh_token)
-        session["allowed"] = True
     return redirect(url_for("spotify_bp.successfully_logged_in_to_spotify"))
 
 
 @spotify_bp.route('/create_library', methods=["POST", "GET"])
 @login_required
 def successfully_logged_in_to_spotify():
-    session.pop("allowed", default=None)
+    user = UserMusicPlatform.query.filter_by(user_id = current_user.id).first()
+    if not user:
+        return redirect(url_for("home_bp.log_in_to_spotify"))
     if current_user.is_library_created:
         abort(401)
+
     if request.method == "POST":
-        create_library_response = eval(request.form["create_library"])
-        if not create_library_response:
-            #TODO delete user's music platform row
-            return redirect(url_for("home_bp.home"))
-        else:
-            create_library()
-            classify_artists_genres()
+        if request.form["create_library"] == "Changed my mind":
             return redirect(url_for("library_bp.library"))
+        else:
+            print('yeah')
+            create_library()
+            abort(401)
     return render_template("spotify/create_library.html")
 
 
@@ -86,7 +87,7 @@ def request_authorization():
     return spotify_login_page_url
 
 
-def get_token(code):
+def get_token_initial(code):
     '''exchanging authorization code for an access token - post request to the token endpoint'''
     redirect_uri = 'http://127.0.0.1:5000/spotify/callback'
     grant_type = 'authorization_code'
@@ -95,15 +96,6 @@ def get_token(code):
     access_token = access_token_response_dict['access_token']
     refresh_token = access_token_response_dict['refresh_token']
     return access_token, refresh_token
-
-
-def do_refresh_token(refresh_token):
-    grant_type = 'refresh_token'
-    params = {'grant_type': grant_type, 'refresh_token': refresh_token}
-    access_token_response_dict = token_request(params)
-    access_token = access_token_response_dict['access_token']
-    save_token(access_token, refresh_token)
-    return access_token
 
 
 def token_request(params):
@@ -134,26 +126,14 @@ def save_token(access_token, refresh_token):
         return access_token
 
 
-def create_library():
+def get_access_token():
     user = UserMusicPlatform.query.filter_by(user_id = current_user.id).first()
     access_token = user.access_token
     refresh_token = user.refresh_token
     is_valid = check_token_validity(access_token)
     if is_valid == False:
-        access_token = do_refresh_token(refresh_token)
-
-    spotify_playlists, spotify_saved_tracks, spotify_all_playlists_tracks = get_spotify_data(access_token)
-    music_platform_id = user.music_platform_id
-    playlists_info_library, saved_tracks_library, all_playlists_tracks_library = parse(spotify_playlists, spotify_saved_tracks, spotify_all_playlists_tracks, music_platform_id)
-    save_to_dabatase(playlists_info_library, saved_tracks_library, all_playlists_tracks_library)
-    save_default_user_settings()
-    user.is_library_created = True
-
-
-def save_default_user_settings():
-    user_settings = UserSettings(current_user.id)
-    db.session.add(user_settings)
-    db.session.commit()
+        access_token = refresh_token(refresh_token)
+    return access_token
 
 
 def check_token_validity(access_token):
@@ -162,15 +142,37 @@ def check_token_validity(access_token):
     return response.status_code == 401
 
 
+def refresh_token(refresh_token):
+    grant_type = 'refresh_token'
+    params = {'grant_type': grant_type, 'refresh_token': refresh_token}
+    access_token_response_dict = token_request(params)
+    access_token = access_token_response_dict['access_token']
+    save_token(access_token, refresh_token)
+    return access_token
+
+
+def create_library():
+    user = UserMusicPlatform.query.filter_by(user_id = current_user.id).first()
+    access_token = get_access_token()
+    print(access_token)
+
+    # spotify_playlists, spotify_saved_tracks, spotify_all_playlists_tracks = get_spotify_data(access_token)
+    # music_platform_id = user.music_platform_id
+    # playlists_info_library, saved_tracks_library, all_playlists_tracks_library = parse(spotify_playlists, spotify_saved_tracks, spotify_all_playlists_tracks, music_platform_id)
+    # save_to_dabatase(playlists_info_library, saved_tracks_library, all_playlists_tracks_library)
+    # save_default_user_settings()
+    # classify_artists_genres()
+    # user.is_library_created = True
+
+
+def save_default_user_settings():
+    user_settings = UserSettings(current_user.id)
+    db.session.add(user_settings)
+    db.session.commit()
+
+
 def convert_to_base64_str(data):
     data_bytes = data.encode('ascii')
     data_base64_str = base64.b64encode(data_bytes).decode()
     return data_base64_str
-
-
-@spotify_bp.before_request
-def check_access():
-    endpoints = ("spotify_bp.authorization", "spotify_bp.successfully_logged_in_to_spotify")
-    if request.endpoint in endpoints and not session.get("allowed"):
-        abort(401)
 

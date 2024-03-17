@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import UniqueConstraint
 from sqlalchemy.sql import func
 from flask_migrate import Migrate
 from flask_login import LoginManager
@@ -112,6 +113,7 @@ class UserArtists(db.Model):
     artist_main_genre_custom = db.Column(db.String(20))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     artist_subgenre_custom = db.Column(db.String(30))
+    __table_args__ = (UniqueConstraint('artist_uri', 'user_id'),)
 
     def __init__(self, artist_uri, artist_name, artist_main_genre_custom, artist_subgenre_custom, user_id):
         self.artist_uri = artist_uri

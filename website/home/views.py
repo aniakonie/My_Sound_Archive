@@ -91,7 +91,6 @@ def log_in_to_spotify():
         abort(401)
     username = current_user.username
     if request.method == 'POST':
-        session["allowed"] = True
         return redirect(url_for("spotify_bp.authorization"))
     return render_template("home/log_in_to_spotify.html", username = username)
 

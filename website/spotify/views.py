@@ -68,9 +68,8 @@ def successfully_logged_in_to_spotify():
         if request.form["create_library"] == "Changed my mind":
             return redirect(url_for("library_bp.library"))
         else:
-            print('yeah')
             create_library()
-            abort(401)
+            return redirect(url_for("library_bp.library"))
     return render_template("spotify/create_library.html")
 
 
@@ -132,7 +131,7 @@ def get_access_token():
     refresh_token = user.refresh_token
     is_valid = check_token_validity(access_token)
     if is_valid == False:
-        access_token = refresh_token(refresh_token)
+        access_token = do_refresh_token(refresh_token)
     return access_token
 
 
@@ -142,7 +141,7 @@ def check_token_validity(access_token):
     return response.status_code == 401
 
 
-def refresh_token(refresh_token):
+def do_refresh_token(refresh_token):
     grant_type = 'refresh_token'
     params = {'grant_type': grant_type, 'refresh_token': refresh_token}
     access_token_response_dict = token_request(params)
@@ -154,15 +153,17 @@ def refresh_token(refresh_token):
 def create_library():
     user = UserMusicPlatform.query.filter_by(user_id = current_user.id).first()
     access_token = get_access_token()
-    print(access_token)
-
-    # spotify_playlists, spotify_saved_tracks, spotify_all_playlists_tracks = get_spotify_data(access_token)
-    # music_platform_id = user.music_platform_id
-    # playlists_info_library, saved_tracks_library, all_playlists_tracks_library = parse(spotify_playlists, spotify_saved_tracks, spotify_all_playlists_tracks, music_platform_id)
-    # save_to_dabatase(playlists_info_library, saved_tracks_library, all_playlists_tracks_library)
-    # save_default_user_settings()
-    # classify_artists_genres()
-    # user.is_library_created = True
+    spotify_playlists, spotify_saved_tracks, spotify_all_playlists_tracks = get_spotify_data(access_token)
+    music_platform_id = user.music_platform_id
+    playlists_info_library, saved_tracks_library, all_playlists_tracks_library = parse(spotify_playlists, spotify_saved_tracks, spotify_all_playlists_tracks, music_platform_id)
+    save_to_dabatase(playlists_info_library, saved_tracks_library, all_playlists_tracks_library)
+    print('music saved, now genres...')
+    save_default_user_settings()
+    classify_artists_genres()
+    print('done')
+    current_user.is_library_created = True
+    db.session.add(current_user)
+    db.session.commit()
 
 
 def save_default_user_settings():

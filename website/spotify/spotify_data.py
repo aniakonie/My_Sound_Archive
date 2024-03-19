@@ -12,8 +12,11 @@ def get_music_platform_id(access_token):
 def get_spotify_data(access_token):
 
     spotify_playlists = get_spotify_playlists(access_token)
+    print("playlists saved")
     spotify_saved_tracks = get_spotify_saved_tracks(access_token)
+    print("saved tracks saved")
     spotify_all_playlists_tracks = get_spotify_all_playlists_tracks(access_token)
+    print("playlists tracks saved")
     return spotify_playlists, spotify_saved_tracks, spotify_all_playlists_tracks
 
     

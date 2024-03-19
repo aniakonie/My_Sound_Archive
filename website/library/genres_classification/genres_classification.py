@@ -1,6 +1,7 @@
 import random
 from website.spotify.spotify_genres import spotify_get_artists_genres
 from website.database.models import *
+from flask_login import current_user
 
 def classify_artists_genres():
     '''retrieving all artists without corresponding genres from database'''
@@ -14,6 +15,7 @@ def classify_artists_genres():
         main_genre = assign_main_genre(genres_string)
         artists_uris_genres_main_genre.append((artist + (main_genre,)))
     save_artists_genres(artists_uris_genres_main_genre)
+    save_user_artists_genres()
 
 
 def save_artists_genres(artists_uris_genres_main_genre):
@@ -22,19 +24,28 @@ def save_artists_genres(artists_uris_genres_main_genre):
         artist_uri_genre = Artists.query.filter_by(artist_uri = artist[0]).first()
         artist_uri_genre.artist_genres = ', '.join(artist[1])
         artist_uri_genre.artist_main_genre = artist[2]
+        #TODO assign subgenres
+        artist_uri_genre.artist_subgenre = 'others'
         db.session.add(artist_uri_genre)
         db.session.commit()
 
 
-#TODO add subgenres classification and saving subgenres
+#TODO add subgenres classification
 
-#TODO
+
 def save_user_artists_genres():
     '''saving genres and subgenres to table user_artists'''
-    pass
-
-
-
+    user_artists = UserArtists.query.filter_by(user_id = current_user.id).all()
+    user_artists_uris = [artist.artist_uri for artist in user_artists]
+    for user_artist_uri in user_artists_uris:
+        artist = Artists.query.filter_by(artist_uri = user_artist_uri).first()
+        artist_main_genre = artist.artist_main_genre
+        artist_subgenre = artist.artist_subgenre
+        user_artist = UserArtists.query.filter_by(artist_uri = user_artist_uri).filter_by(user_id = current_user.id).first()
+        user_artist.artist_main_genre_custom = artist_main_genre
+        user_artist.artist_subgenre_custom = artist_subgenre
+        db.session.add(user_artist)
+        db.session.commit()
 
 
 main_genres ={
@@ -97,10 +108,7 @@ def assign_main_genre(genres_string):
 
 
 
-
-
 #dnb
 #liquid funk is an electronic subgenre (=liquid drum and bass)!
 #electronica
 #metalcore, post-metal, post-rock
-#co jeśli tyle samo razy występują jakieś gatunki (na razie algorytm wybiera randomly)

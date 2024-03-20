@@ -1,7 +1,7 @@
 from flask import Blueprint, url_for, redirect, render_template, request, abort, session
 from flask_login import login_required, current_user
 from website.database.models import *
-from sqlalchemy import func, select, and_, distinct
+from sqlalchemy import func, select, and_, or_, distinct
 
 
 library_bp = Blueprint('library_bp', __name__, template_folder='templates')
@@ -99,11 +99,9 @@ def library_tracks(selected_genre, selected_subgenre, selected_artist_name):
     if (selected_artist_uri, selected_artist_name) != ("Loose tracks", "Loose tracks"):
         tracklist = get_tracks_of_artist(selected_artist_uri, current_user.id)
         tracklist_featured = get_featured_tracks_of_artist(selected_artist_name, current_user.id)
-
     else:
-
-        pass
-
+        tracklist = get_loose_tracks_for_subgenre(selected_genre, selected_subgenre, current_user.id)
+        tracklist_featured = []
 
     if request.method == "POST":
         new_selected_genre = request.form.get("selected_genre")
@@ -120,34 +118,29 @@ def library_tracks(selected_genre, selected_subgenre, selected_artist_name):
             session["selected_artist_uri"] = new_selected_artist_uri
             return redirect(url_for("library_bp.library_tracks", selected_genre = selected_genre, selected_subgenre = selected_subgenre, selected_artist_name = new_selected_artist_name))        
 
-    return render_template("library/library.html", genres = genres, subgenres = subgenres, artists = artists, tracklist = tracklist, tracklist_featured = tracklist_featured,
-                           current = "library", selected_genre = selected_genre, selected_subgenre = selected_subgenre, selected_artist_uri = selected_artist_uri)
+    return render_template("library/library.html", genres = genres, subgenres = subgenres, artists = artists, tracklist = tracklist,
+                           tracklist_featured = tracklist_featured, current ="library", selected_genre=selected_genre,
+                           selected_subgenre=selected_subgenre, selected_artist_uri=selected_artist_uri, selected_artist_name=selected_artist_name)
 
 
 
 def get_genres(user_id):
-
     subquery = (
         select([Tracks.main_artist_uri])
         .join(UserTracks, UserTracks.track_uri == Tracks.track_uri)
         .filter(and_(UserTracks.user_id == user_id, UserTracks.display_in_library == 'True'))
     )
-
     query = (
-        select([func.coalesce(UserArtistsGenres.artist_main_genre_custom, ArtistsGenres.artist_main_genre).label('artist_main_genre')])
-        .distinct()
-        .select_from(ArtistsGenres)
-        .outerjoin(UserArtistsGenres, and_(ArtistsGenres.artist_uri == UserArtistsGenres.artist_uri, UserArtistsGenres.user_id == user_id))
-        .filter(ArtistsGenres.artist_uri.in_(subquery))
-        .order_by('artist_main_genre')
+        select([UserArtists.artist_main_genre_custom]).distinct()
+        .filter(UserArtists.user_id == user_id) 
+        .filter(UserArtists.artist_uri.in_(subquery))
+        .order_by('artist_main_genre_custom')
     )
-
     result = db.session.execute(query)
-    genres = [genre.artist_main_genre for genre in result]
+    genres = [genre.artist_main_genre_custom for genre in result]
     genres.remove("others")
     genres.append("others")
     return genres
-
 
 
 def get_subgenres(selected_genre, user_id):
@@ -158,27 +151,18 @@ def get_subgenres(selected_genre, user_id):
         .join(UserTracks, UserTracks.track_uri == Tracks.track_uri)
         .filter(and_(UserTracks.user_id == user_id, UserTracks.display_in_library == 'True'))
     )
-
     query = (
-        select([
-            func.coalesce(UserArtistsGenres.artist_subgenre_custom, ArtistsGenres.artist_subgenre).label('artist_subgenre'),
-            func.coalesce(UserArtistsGenres.artist_main_genre_custom, ArtistsGenres.artist_main_genre).label('artist_main_genre')
-        ])
-        .distinct()
-        .select_from(ArtistsGenres)
-        .outerjoin(UserArtistsGenres, and_(ArtistsGenres.artist_uri == UserArtistsGenres.artist_uri, UserArtistsGenres.user_id == user_id))
-        .filter(and_(func.coalesce(UserArtistsGenres.artist_main_genre_custom, ArtistsGenres.artist_main_genre) == selected_genre,
-                     ArtistsGenres.artist_uri.in_(subquery)))
-        .order_by('artist_subgenre')
+        select([UserArtists.artist_subgenre_custom]).distinct()
+        .filter(UserArtists.user_id == user_id) 
+        .filter(UserArtists.artist_main_genre_custom == selected_genre)        
+        .filter(UserArtists.artist_uri.in_(subquery))
+        .order_by('artist_subgenre_custom')
     )
-
     query_result = db.session.execute(query)
-    subgenres = [subgenre.artist_subgenre for subgenre in query_result]
+    subgenres = [subgenre.artist_subgenre_custom for subgenre in query_result]
     subgenres.remove("others")
     subgenres.append("others")
     return subgenres
-
-
 
 
 def get_artists_of_selected_subgenre(selected_genre, selected_subgenre, user_id):
@@ -186,57 +170,40 @@ def get_artists_of_selected_subgenre(selected_genre, selected_subgenre, user_id)
 
     user_settings = UserSettings.query.filter_by(user_id=user_id).first()
     no_of_songs = user_settings.no_of_songs_into_folder
-
     subquery = (
         select([Tracks.main_artist_uri])
         .join(UserTracks, UserTracks.track_uri == Tracks.track_uri)
         .filter(and_(UserTracks.user_id == user_id, UserTracks.display_in_library == 'True'))
         .group_by(Tracks.main_artist_uri)
-        .having(func.count(distinct(Tracks.track_uri)) > no_of_songs)
+        .having(func.count(distinct(Tracks.track_uri)) >= no_of_songs)
     )
-
     query = (
-        select([
-            ArtistsGenres.artist_uri,
-            ArtistsGenres.artist_name,
-            func.coalesce(UserArtistsGenres.artist_subgenre_custom, ArtistsGenres.artist_subgenre).label('artist_subgenre'),
-            func.coalesce(UserArtistsGenres.artist_main_genre_custom, ArtistsGenres.artist_main_genre).label('artist_main_genre')
-        ])
-        .distinct()
-        .select_from(ArtistsGenres)
-        .outerjoin(UserArtistsGenres, and_(ArtistsGenres.artist_uri == UserArtistsGenres.artist_uri, UserArtistsGenres.user_id == user_id))
-        .filter(and_(
-            func.coalesce(UserArtistsGenres.artist_main_genre_custom, ArtistsGenres.artist_main_genre) == selected_genre,
-            func.coalesce(UserArtistsGenres.artist_subgenre_custom, ArtistsGenres.artist_subgenre) == selected_subgenre,
-            ArtistsGenres.artist_uri.in_(subquery)
-        ))
+        select([UserArtists.artist_uri, UserArtists.artist_name]).distinct()
+        .filter(UserArtists.user_id == user_id) 
+        .filter(UserArtists.artist_main_genre_custom == selected_genre)
+        .filter(UserArtists.artist_subgenre_custom == selected_subgenre)               
+        .filter(UserArtists.artist_uri.in_(subquery))
         .order_by('artist_name')
     )
-
     query_result = db.session.execute(query)
     artists = [(artist.artist_uri, artist.artist_name) for artist in query_result]
     artists.append(("Loose tracks", "Loose tracks"))
     return artists
 
 
-
-
 def get_tracks_of_artist(selected_artist_uri, user_id):
     '''Select all tracks of an artist'''
-
-    query_sql = (f'''
-    SELECT MIN(track_uri) AS track_uri, MIN(album_uri) AS album_uri, track_title
-    FROM tracks
-    WHERE main_artist_uri = '{selected_artist_uri}' AND track_uri IN
-    (SELECT DISTINCT track_uri
-    FROM users_tracks
-    WHERE user_id = {user_id} AND display_in_library = 'True')
-    GROUP BY track_title
-    ORDER BY track_title ASC
-    '''
+    subquery = (
+        select([UserTracks.track_uri]).distinct()
+        .filter(and_(UserTracks.user_id == user_id, UserTracks.display_in_library == 'True'))
     )
-
-    query_result = db.session.execute(query_sql)
+    query = (
+        select([func.min(Tracks.track_uri).label('track_uri'), func.min(Tracks.album_uri).label('album_uri'), Tracks.track_title])
+        .filter(and_(Tracks.main_artist_uri == selected_artist_uri, Tracks.track_uri.in_(subquery)))
+        .group_by(Tracks.track_title)
+        .order_by(Tracks.track_title.asc())
+    )
+    query_result = db.session.execute(query)
     tracklist = []
     for track in query_result:
         track_dict = {
@@ -248,18 +215,22 @@ def get_tracks_of_artist(selected_artist_uri, user_id):
     return tracklist
 
 
-
 def get_featured_tracks_of_artist(selected_artist_name, user_id):
     '''Select all featured tracks of an artist'''
 
-    tracklist_featured_query = db.session.query(Tracks.track_uri, Tracks.track_artist_main, Tracks.track_artist_add1, Tracks.track_artist_add2, Tracks.track_title, Tracks.album_uri)\
-        .filter((Tracks.track_artist_add1 == selected_artist_name) | (Tracks.track_artist_add2 == selected_artist_name))\
-        .filter(Tracks.track_uri.in_(db.session.query(UserTracks.track_uri)\
-                                     .filter_by(user_id=user_id, display_in_library=True).distinct()))\
-        .all()
-
+    subquery = (
+        select([UserTracks.track_uri]).distinct()
+        .filter(and_(UserTracks.user_id == user_id, UserTracks.display_in_library == 'True'))
+    )
+    query = (
+        select([Tracks.track_uri, Tracks.track_artist_main, Tracks.track_artist_add1, Tracks.track_artist_add2, Tracks.track_title, Tracks.album_uri])
+        .filter(or_(Tracks.track_artist_add1 == selected_artist_name, Tracks.track_artist_add2 == selected_artist_name))
+        .filter(Tracks.track_uri.in_(subquery))
+        .order_by(Tracks.track_title.asc())
+    )
+    query_result = db.session.execute(query)
     tracklist_featured = []
-    for track in tracklist_featured_query:
+    for track in query_result:
         track_dict = {
             "track_title": track.track_title,
             "track_uri": track.track_uri,
@@ -272,23 +243,41 @@ def get_featured_tracks_of_artist(selected_artist_name, user_id):
     return tracklist_featured
 
 
-#TODO
 def get_loose_tracks_for_subgenre(selected_genre, selected_subgenre, user_id):
 
-    query_sql = (f'''
-    SELECT track_uri, track_artist_main, track_artist_add1, track_artist_add2, track_title, album_uri
-    FROM tracks
-    
-    WHERE track_uri IN
-    (SELECT DISTINCT track_uri
-    FROM users_tracks
-    WHERE user_id = {user_id} AND display_in_library = 'True')
-    AND track_artist_main IN
-    '''
+    user_settings = UserSettings.query.filter_by(user_id=user_id).first()
+    no_of_songs = user_settings.no_of_songs_into_folder
+
+    artist_subquery = select([UserArtists.artist_uri]).where(
+        and_(
+            UserArtists.user_id == user_id,
+            UserArtists.artist_main_genre_custom == selected_genre,
+            UserArtists.artist_subgenre_custom == selected_subgenre
+        )
     )
 
-    query_result = db.session.execute(query_sql)
-    loose_tracks = []
+    track_artist_main_subquery = select([Tracks.track_artist_main]).where(
+        Tracks.track_uri.in_(
+            select([UserTracks.track_uri]).where(
+                and_(
+                    UserTracks.user_id == user_id,
+                    UserTracks.display_in_library == 'True'
+                )
+            )
+        )
+    ).group_by(Tracks.track_artist_main).having(
+        func.count(Tracks.track_artist_main) < no_of_songs
+    )
+
+    query = select([Tracks.track_artist_main, Tracks.track_uri, Tracks.track_artist_add1, Tracks.track_artist_add2,
+        Tracks.track_title, Tracks.album_uri, Tracks.main_artist_uri]).where(
+        and_(
+            Tracks.main_artist_uri.in_(artist_subquery),
+            Tracks.track_artist_main.in_(track_artist_main_subquery)))
+
+
+    query_result = db.session.execute(query)
+    tracklist = []
     for track in query_result:
         track_dict = {
             "track_title": track.track_title,
@@ -298,8 +287,8 @@ def get_loose_tracks_for_subgenre(selected_genre, selected_subgenre, user_id):
             "track_artist_add1": track.track_artist_add1,
             "track_artist_add2": track.track_artist_add2
         }
-        loose_tracks.append(track_dict)
-    return loose_tracks
+        tracklist.append(track_dict)
+    return tracklist
 
 
 

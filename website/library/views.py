@@ -248,32 +248,35 @@ def get_loose_tracks_for_subgenre(selected_genre, selected_subgenre, user_id):
     user_settings = UserSettings.query.filter_by(user_id=user_id).first()
     no_of_songs = user_settings.no_of_songs_into_folder
 
-    artist_subquery = select([UserArtists.artist_uri]).where(
-        and_(
-            UserArtists.user_id == user_id,
-            UserArtists.artist_main_genre_custom == selected_genre,
-            UserArtists.artist_subgenre_custom == selected_subgenre
-        )
+    artist_subquery = (
+    select([UserArtists.artist_uri])
+    .filter(UserArtists.user_id == user_id)
+    .filter(UserArtists.artist_main_genre_custom == selected_genre)
+    .filter(UserArtists.artist_subgenre_custom == selected_subgenre)
     )
 
-    track_artist_main_subquery = select([Tracks.track_artist_main]).where(
-        Tracks.track_uri.in_(
-            select([UserTracks.track_uri]).where(
-                and_(
-                    UserTracks.user_id == user_id,
-                    UserTracks.display_in_library == 'True'
-                )
-            )
-        )
-    ).group_by(Tracks.track_artist_main).having(
-        func.count(Tracks.track_artist_main) < no_of_songs
+    track_artist_main_subquery = (
+        select([Tracks.main_artist_uri])
+        .join(UserTracks, UserTracks.track_uri == Tracks.track_uri)
+        .filter(and_(UserTracks.user_id == user_id, UserTracks.display_in_library == 'True'))
+        .group_by(Tracks.main_artist_uri)
+        .having(func.count(distinct(Tracks.track_uri)) < no_of_songs)
     )
 
-    query = select([Tracks.track_artist_main, Tracks.track_uri, Tracks.track_artist_add1, Tracks.track_artist_add2,
-        Tracks.track_title, Tracks.album_uri, Tracks.main_artist_uri]).where(
-        and_(
-            Tracks.main_artist_uri.in_(artist_subquery),
-            Tracks.track_artist_main.in_(track_artist_main_subquery)))
+    query = (
+        select([Tracks.track_artist_main, Tracks.track_uri, Tracks.track_artist_add1, Tracks.track_artist_add2,
+        Tracks.track_title, Tracks.album_uri, Tracks.main_artist_uri]).distinct()
+        .join(UserTracks, UserTracks.track_uri == Tracks.track_uri)
+        .filter(and_(UserTracks.user_id == user_id, UserTracks.display_in_library == 'True'))
+        .filter(Tracks.main_artist_uri.in_(artist_subquery))
+        .filter(Tracks.main_artist_uri.in_(track_artist_main_subquery))
+        .order_by(Tracks.track_artist_main.asc())
+    )
+
+
+
+
+
 
 
     query_result = db.session.execute(query)

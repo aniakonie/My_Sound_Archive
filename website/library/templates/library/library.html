@@ -1,16 +1,49 @@
 {% extends "base.html" %}
 
+
+{% block style %}
+<style>
+
+body {
+      margin-left: 0 !important;
+      /* padding: 0;
+      box-sizing: border-box; */
+    }
+    .flex-container {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      justify-content: flex-start;
+      /* padding: 10px; */
+    }
+    .flex-item {
+      /* margin: 5px; */
+      padding: 20px;
+      box-sizing: border-box;
+      /* border: 2px solid black; */
+    }
+    .fixed-width-1 {
+      flex-basis: 200px;
+    }
+    .fixed-width-2 {
+      flex-basis: 250px;
+    }
+    .flex-grow {
+      flex-grow: 1;
+    }
+
+
+</style>
+{% endblock %}
+
 {% block title %}My VML{% endblock %}
 
 {% block content %}
 
 
 {% if current_user.is_library_created == True %}
-<div style="margin-bottom: 20px;"></div>
-<div class="container">
-
-    <div class="row">
-        <div class="col">
+    <div class="flex-container">
+        <div class="flex-item fixed-width-1">
             <h3>Genres</h3>
             <div style="margin-bottom: 20px;"></div>
             {% for genre in genres %}
@@ -26,7 +59,7 @@
             {% endfor %}
         </div>
 
-        <div class="col">
+        <div class="flex-item fixed-width-1">
             <h3>Subgenres</h3>
             <div style="margin-bottom: 20px;"></div>
             {% for subgenre in subgenres %}
@@ -42,7 +75,7 @@
             {% endfor %}
         </div>
 
-        <div class="col">
+        <div class="flex-item fixed-width-2">
             <h3>Artists</h3>
             <div style="margin-bottom: 20px;"></div>
             {% for artist in artists %}
@@ -58,54 +91,57 @@
             {% endfor %}
         </div>
 
-        <div class="col">
+        <div class="flex-item flex-grow: 1">
             <h3>Tracks</h3>
             <div style="margin-bottom: 20px;"></div>
             {% if selected_artist_name != "Loose tracks" %}
                 {% for track in tracklist %}
                     <button type="button" class="btn btn-light">
-                    <a class="play_track" href="{{track["track_uri"]}}">PL</a> <a class="open_album" href="{{track["album_uri"]}}">AL</a>
-                    <span class="track">{{track["track_title"]}}</span>
+                        <a class="play_track" href="{{track["track_uri"]}}">PL</a> <a class="open_album" href="{{track["album_uri"]}}">AL</a>
+                        <span class="track">{{track["track_title"]}}</span>
                     </button>
                     <div style="margin-bottom: 5px;"></div>
                 {% endfor %}
             
             {% else %}
                 {% for track in tracklist %}
-                    <a class="play_track" href="{{track["track_uri"]}}">PL </a>
-                    <a class="open_album" href="{{track["album_uri"]}}">AL </a>
-                    <span class="track">{{track["track_artist_main"]}} - {{track["track_title"]}} </span>          
-                    {% if track["track_artist_add1"] != None %}
-                    <span class="track_add">[ with {{track["track_artist_add1"]}}
+                    <button type="button" class="btn btn-light">
+                        <a class="play_track" href="{{track["track_uri"]}}">PL </a>
+                        <a class="open_album" href="{{track["album_uri"]}}">AL </a>
+                        <span class="track">{{track["track_artist_main"]}} - {{track["track_title"]}} </span>          
+                        {% if track["track_artist_add1"] != None %}
+                        <span class="track_add">[ with {{track["track_artist_add1"]}}
                         {% if track["track_artist_add2"] != None %}
                         <span class="track_add">, {{track["track_artist_add2"]}}</span>
                         {% endif %}]
-                    </span>
-                    {% endif %}
-                    <br>
+                        </span>
+                        {% endif %}
+                    </button>
+                    <div style="margin-bottom: 5px;"></div>    
                 {% endfor %}
             {% endif %}
 
             <br>
             {% if tracklist_featured|length > 0 %}
-            <p>Featured tracks</p>
+            <h5>Featured tracks</h5>
                 {% for track in tracklist_featured %}    
-                    <a class="play_track" href="{{track["track_uri"]}}">PL </a>
-                    <a class="open_album" href="{{track["album_uri"]}}">AL </a>
-                    <span class="track">{{track["track_artist_main"]}} - {{track["track_title"]}} </span>          
-                    {% if track["track_artist_add1"] != None %}
-                    <span class="track_add">[ with {{track["track_artist_add1"]}}
+                    <button type="button" class="btn btn-light">
+                        <a class="play_track" href="{{track["track_uri"]}}">PL </a>
+                        <a class="open_album" href="{{track["album_uri"]}}">AL </a>
+                        <span class="track">{{track["track_artist_main"]}} - {{track["track_title"]}} </span>          
+                        {% if track["track_artist_add1"] != None %}
+                        <span class="track_add">[ with {{track["track_artist_add1"]}}
                         {% if track["track_artist_add2"] != None %}
                         <span class="track_add">, {{track["track_artist_add2"]}}</span>
                         {% endif %}]
-                    </span>
-                    {% endif %}
-                    <br>
+                        </span>
+                        {% endif %}
+                    </button>
+                    <div style="margin-bottom: 5px;"></div> 
                 {% endfor %}
             {% endif %}
         </div>
     </div>
-</div>
 {% endif %}
 
 {% if current_user.is_library_created == False %}

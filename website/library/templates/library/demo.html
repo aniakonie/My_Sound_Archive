@@ -105,7 +105,7 @@
         <div class="col">
             <h3>Tracks</h3>
             <div style="margin-bottom: 20px;"></div>
-            {% if selected_artist != "Loose tracks" %}
+            {% if selected_artist_name != "Loose tracks" %}
                 {% for track in tracklist %}
                     <button type="button" class="btn btn-light">
                     <a class="play_track" href="{{track["track_uri"]}}">PL</a> <a class="open_album" href="{{track["album_uri"]}}">AL</a>

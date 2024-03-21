@@ -4,10 +4,11 @@ from website.library.views import *
 
 demo_bp = Blueprint('demo_bp', __name__, template_folder='templates')
 
+example_id = 19
 
 @demo_bp.route('/', methods=["POST", "GET"])
 def library():
-    genres = get_genres(3)
+    genres = get_genres(example_id)
     if request.method == "POST":
         selected_genre = request.form["selected_genre"]
         return redirect(url_for("demo_bp.library_genres", selected_genre = selected_genre))
@@ -17,10 +18,10 @@ def library():
 @demo_bp.route('/<selected_genre>', methods=["POST", "GET"])
 def library_genres(selected_genre):
 
-    genres = get_genres(3)
+    genres = get_genres(example_id)
     if selected_genre not in genres:
         abort(404)
-    subgenres = get_subgenres(selected_genre, 3)
+    subgenres = get_subgenres(selected_genre, example_id)
 
     if request.method == "POST":
         new_selected_genre = request.form.get("selected_genre")
@@ -35,14 +36,14 @@ def library_genres(selected_genre):
 @demo_bp.route('/<selected_genre>/<selected_subgenre>', methods=["POST", "GET"])
 def library_subgenres(selected_genre, selected_subgenre):
 
-    genres = get_genres(3)
+    genres = get_genres(example_id)
     if selected_genre not in genres:
         abort(404)
-    subgenres = get_subgenres(selected_genre, 3)
+    subgenres = get_subgenres(selected_genre, example_id)
     if selected_subgenre not in subgenres:
         abort(404)
 
-    artists = get_artists_of_selected_subgenre(selected_genre, selected_subgenre, 3)
+    artists = get_artists_of_selected_subgenre(selected_genre, selected_subgenre, example_id)
 
     if request.method == "POST":
         new_selected_genre = request.form.get("selected_genre")       
@@ -64,24 +65,25 @@ def library_subgenres(selected_genre, selected_subgenre):
 @demo_bp.route('/<selected_genre>/<selected_subgenre>/<selected_artist_name>', methods=["POST", "GET"])
 def library_tracks(selected_genre, selected_subgenre, selected_artist_name):
 
-    genres = get_genres(3)
+    genres = get_genres(example_id)
     if selected_genre not in genres:
         abort(404)
-    subgenres = get_subgenres(selected_genre, 3)
+    subgenres = get_subgenres(selected_genre, example_id)
     if selected_subgenre not in subgenres:
         abort(404)
 
-    artists = get_artists_of_selected_subgenre(selected_genre, selected_subgenre, 3)
+    artists = get_artists_of_selected_subgenre(selected_genre, selected_subgenre, example_id)
     selected_artist_uri = session["selected_artist_uri"]
     if (selected_artist_uri, selected_artist_name) not in artists:
         abort(404)
 
     if (selected_artist_uri, selected_artist_name) != ("Loose tracks", "Loose tracks"):
-        tracklist = get_tracks_of_artist(selected_artist_uri, 3)
-        tracklist_featured = get_featured_tracks_of_artist(selected_artist_name, 3)
+        tracklist = get_tracks_of_artist(selected_artist_uri, example_id)
+        tracklist_featured = get_featured_tracks_of_artist(selected_artist_name, example_id)
 
-    # else:
-    #     pass
+    else:
+        tracklist = get_loose_tracks_for_subgenre(selected_genre, selected_subgenre, current_user.id)
+        tracklist_featured = []
 
     if request.method == "POST":
         new_selected_genre = request.form.get("selected_genre")
@@ -98,6 +100,7 @@ def library_tracks(selected_genre, selected_subgenre, selected_artist_name):
             session["selected_artist_uri"] = new_selected_artist_uri
             return redirect(url_for("demo_bp.library_tracks", selected_genre = selected_genre, selected_subgenre = selected_subgenre, selected_artist_name = new_selected_artist_name))        
 
-    return render_template("library/demo.html", genres = genres, subgenres = subgenres, artists = artists, tracklist = tracklist, tracklist_featured = tracklist_featured,
-                           current = "library", selected_genre = selected_genre, selected_subgenre = selected_subgenre, selected_artist_uri = selected_artist_uri)
+    return render_template("library/demo.html", genres = genres, subgenres = subgenres, artists = artists, tracklist = tracklist,
+                           tracklist_featured = tracklist_featured, current ="library", selected_genre=selected_genre,
+                           selected_subgenre=selected_subgenre, selected_artist_uri=selected_artist_uri, selected_artist_name=selected_artist_name)
 

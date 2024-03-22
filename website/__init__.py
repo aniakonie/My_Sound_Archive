@@ -5,7 +5,6 @@ from flask_migrate import Migrate
 
 load_dotenv()
 
-
 def page_not_found(e):
     return render_template("404.html"), 404
 

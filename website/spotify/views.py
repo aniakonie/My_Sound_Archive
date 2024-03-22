@@ -10,6 +10,7 @@ from website.spotify.parse import *
 from website.spotify.save_to_database import *
 from website.database.models import db, UserMusicPlatform
 from website.library.genres_classification.genres_classification import classify_artists_genres
+from sqlalchemy import and_
 
 spotify_bp = Blueprint('spotify_bp', __name__, template_folder="templates")
 
@@ -115,9 +116,17 @@ def save_token(access_token, refresh_token):
     music_platform_id = get_music_platform_id(access_token)
     user = UserMusicPlatform.query.filter_by(user_id = current_user.id).first()
     if not user:
-        new_user = UserMusicPlatform("Spotify", music_platform_id, access_token, refresh_token, current_user.id)
-        db.session.add(new_user)
-        db.session.commit()
+        exists_already = UserMusicPlatform.query.filter(
+            and_(UserMusicPlatform.user_id == current_user.id,
+                 UserMusicPlatform.music_platform_name == "Spotify",
+                 UserMusicPlatform.music_platform_id == music_platform_id)).first()
+        if exists_already:
+            flash('You have a VML account with this Spotify account already, please log in to this account.', category = "error")
+            return redirect(url_for("home_bp.login"))
+        else:
+            new_user = UserMusicPlatform("Spotify", music_platform_id, access_token, refresh_token, current_user.id)
+            db.session.add(new_user)
+            db.session.commit()
     else:
         user.access_token = access_token
         db.session.add(user)

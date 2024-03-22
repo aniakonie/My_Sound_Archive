@@ -4,6 +4,7 @@ from flask_login import login_required, current_user, login_user, logout_user
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField
 from wtforms.validators import InputRequired, Length
+from flask_bcrypt import generate_password_hash, check_password_hash
 
 
 home_bp = Blueprint('home_bp', __name__, template_folder='templates')
@@ -22,7 +23,6 @@ class LoginForm(FlaskForm):
 def home():
     return render_template("home/home.html")
 
-
 @home_bp.route('/how_it_works')
 def how_it_works():
     return render_template("home/how_it_works.html")
@@ -40,7 +40,8 @@ def sign_up():
         if form.username.data in all_usernames:
             flash('Such user already exists. Please choose different username.', category="error")
         else:
-            new_user = User(form.username.data, form.password.data)
+            hashed_password = generate_password_hash(form.password.data).decode('utf-8')
+            new_user = User(form.username.data, hashed_password)
             new_user.authenticated = True
             db.session.add(new_user)
             db.session.commit()
@@ -58,7 +59,8 @@ def login():
     if request.method == 'POST':
         user = User.query.filter_by(username = form.username.data).first()
         if user:
-            if user.password == form.password.data:
+            is_valid = check_password_hash(user.password, form.password.data)
+            if is_valid:
                 user.authenticated = True
                 db.session.add(user)
                 db.session.commit()
@@ -102,8 +104,13 @@ def settings():
 
     if request.method == "POST":
 
+
+
+
         if request.form["delete_account"] == "Delete my account":
             return redirect(url_for("home_bp.delete_account"))
+
+
 
     return render_template("home/settings.html", username = username, current = 'settings')
 

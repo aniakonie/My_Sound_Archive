@@ -4,11 +4,12 @@
 
 
 {% block content %} 
-<div style="margin-bottom: 100px;"></div>
 {% if current_user.is_library_created == True %}
-    <h2 style="text-align: center;">Are you sure you want to delete your VML library?</h2>
+    <h3 style="text-align: center;">Are you sure</h3>
+    <h3 style="text-align: center;">you want to delete your VML library?</h3>
 {% else %}
-    <h2 style="text-align: center;">Are you sure you want to delete your VML account?</h2>
+    <h3 style="text-align: center;">Are you sure</h3>
+    <h3 style="text-align: center;">you want to delete your VML account?</h3>
 {% endif %}
 <div style="margin-bottom: 50px;"></div>
 <div style="text-align: center;">

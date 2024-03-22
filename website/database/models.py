@@ -13,7 +13,7 @@ class User(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(30), unique=True)
-    password = db.Column(db.String(30))
+    password = db.Column(db.String(60))
     account_created = db.Column(db.DateTime(timezone=True), default=func.now())
     authenticated = db.Column(db.Boolean, default = False)
     is_library_created = db.Column(db.Boolean, default = False)
@@ -54,6 +54,7 @@ class UserMusicPlatform(db.Model):
     access_token = db.Column(db.String(220))
     refresh_token = db.Column(db.String(131))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
 
     def __init__(self, music_platform_name, music_platform_id, access_token, refresh_token, user_id):
         self.music_platform_name = music_platform_name

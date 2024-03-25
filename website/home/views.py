@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, request, abort, flash, session
+from flask import Blueprint, render_template, redirect, url_for, request, abort, flash, session, request
 from website.database.models import *
 from flask_login import login_required, current_user, login_user, logout_user
 from flask_wtf import FlaskForm
@@ -100,19 +100,41 @@ def log_in_to_spotify():
 @home_bp.route('/settings', methods=["GET", "POST"])
 @login_required
 def settings():
-    username = current_user.username
+
+
+
+
+    user_playlists = UserPlaylists.query.filter_by(user_id = current_user.id).order_by('playlist_name').all()
+    if not user_playlists:
+        user_playlists_list = []
+    else:
+        user_playlists_list = []
+        for playlist in user_playlists:
+            user_playlists_list.append((playlist.playlist_name, playlist.playlist_id))
+
+
+
 
     if request.method == "POST":
 
 
+        number_of_songs_into_folders = request.form.get("number_of_songs_into_folders")
 
 
-        if request.form["delete_account"] == "Delete my account":
+        if number_of_songs_into_folders:
+            user = UserSettings.query.filter_by(user_id = current_user.id).first()
+            user.no_of_songs_into_folder = number_of_songs_into_folders
+            db.session.add(user)
+            db.session.commit()
+            flash('Changes have been saved', category = "success")
+            return redirect(url_for("home_bp.settings"))
+
+
+
+
+        if request.form.get("delete_account") == "Delete my account":
             return redirect(url_for("home_bp.delete_account"))
-
-
-
-    return render_template("home/settings.html", username = username, current = 'settings')
+    return render_template("home/settings.html", current = 'settings', user_playlists_list=user_playlists_list)
 
 
 @home_bp.route('/delete_account', methods=["GET", "POST"])

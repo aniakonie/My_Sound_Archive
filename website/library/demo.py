@@ -4,7 +4,7 @@ from website.library.views import *
 
 demo_bp = Blueprint('demo_bp', __name__, template_folder='templates')
 
-example_id = 19
+example_id = 21
 
 @demo_bp.route('/', methods=["POST", "GET"])
 def library():
@@ -15,7 +15,7 @@ def library():
     return render_template("library/demo.html", genres = genres, current = "library")
 
 
-@demo_bp.route('/<selected_genre>', methods=["POST", "GET"])
+@demo_bp.route('/<path:selected_genre>', methods=["POST", "GET"])
 def library_genres(selected_genre):
 
     genres = get_genres(example_id)
@@ -26,14 +26,14 @@ def library_genres(selected_genre):
     if request.method == "POST":
         new_selected_genre = request.form.get("selected_genre")
         selected_subgenre = request.form.get("selected_subgenre")
-        if new_selected_genre != None:
+        if new_selected_genre:
             return redirect(url_for("demo_bp.library_genres", selected_genre = new_selected_genre))
-        elif selected_subgenre != None:
+        elif selected_subgenre:
             return redirect(url_for("demo_bp.library_subgenres", selected_genre = selected_genre, selected_subgenre = selected_subgenre))
     return render_template("library/demo.html", genres = genres, subgenres = subgenres, current = "library", selected_genre = selected_genre)
 
 
-@demo_bp.route('/<selected_genre>/<selected_subgenre>', methods=["POST", "GET"])
+@demo_bp.route('/<path:selected_genre>/<path:selected_subgenre>', methods=["POST", "GET"])
 def library_subgenres(selected_genre, selected_subgenre):
 
     genres = get_genres(example_id)
@@ -50,11 +50,11 @@ def library_subgenres(selected_genre, selected_subgenre):
         new_selected_subgenre = request.form.get("selected_subgenre")
         selected_artist_uri = request.form.get("selected_artist_uri")
 
-        if new_selected_genre != None:
+        if new_selected_genre:
             return redirect(url_for("demo_bp.library_genres", selected_genre = new_selected_genre))
-        elif new_selected_subgenre != None:
+        elif new_selected_subgenre:
             return redirect(url_for("demo_bp.library_subgenres", selected_genre = selected_genre, selected_subgenre = new_selected_subgenre))
-        elif selected_artist_uri != None:
+        elif selected_artist_uri:
             selected_artist_name = request.form.get("selected_artist_name")
             session["selected_artist_uri"] = selected_artist_uri
             return redirect(url_for("demo_bp.library_tracks", selected_genre = selected_genre, selected_subgenre = selected_subgenre, selected_artist_name = selected_artist_name))   
@@ -62,7 +62,7 @@ def library_subgenres(selected_genre, selected_subgenre):
     return render_template("library/demo.html", genres = genres, subgenres = subgenres, artists = artists, current = "library", selected_genre = selected_genre, selected_subgenre = selected_subgenre)
 
 
-@demo_bp.route('/<selected_genre>/<selected_subgenre>/<selected_artist_name>', methods=["POST", "GET"])
+@demo_bp.route('/<path:selected_genre>/<path:selected_subgenre>/<path:selected_artist_name>', methods=["POST", "GET"])
 def library_tracks(selected_genre, selected_subgenre, selected_artist_name):
 
     genres = get_genres(example_id)
@@ -90,11 +90,11 @@ def library_tracks(selected_genre, selected_subgenre, selected_artist_name):
         new_selected_subgenre = request.form.get("selected_subgenre")
         new_selected_artist_uri = request.form.get("selected_artist_uri")
 
-        if new_selected_genre != None:
+        if new_selected_genre:
             return redirect(url_for("demo_bp.library_genres", selected_genre = new_selected_genre))
-        elif new_selected_subgenre != None:
+        elif new_selected_subgenre:
             return redirect(url_for("demo_bp.library_subgenres", selected_genre = selected_genre, selected_subgenre = new_selected_subgenre))
-        elif new_selected_artist_uri != None:
+        elif new_selected_artist_uri:
             new_selected_artist_name = request.form.get("selected_artist_name")
             session.pop("selected_artist_uri", default=None)
             session["selected_artist_uri"] = new_selected_artist_uri

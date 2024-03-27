@@ -13,7 +13,8 @@ def save_to_dabatase(playlists_info_library, saved_tracks_library, all_playlists
 def save_playlists_info(playlists_info_library):
 
     for playlist_id, playlist_name, is_owner in playlists_info_library:
-        data = UserPlaylists(playlist_id, playlist_name, is_owner, current_user.id)
+        display_in_library = True if is_owner else False
+        data = UserPlaylists(playlist_id, playlist_name, is_owner, display_in_library, current_user.id)
         db.session.add(data)
         db.session.commit()
 

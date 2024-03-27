@@ -5,6 +5,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField
 from wtforms.validators import InputRequired, Length
 from flask_bcrypt import generate_password_hash, check_password_hash
+from sqlalchemy import and_
 
 
 home_bp = Blueprint('home_bp', __name__, template_folder='templates')
@@ -101,25 +102,24 @@ def log_in_to_spotify():
 @login_required
 def settings():
 
-
-
-
     user_playlists = UserPlaylists.query.filter_by(user_id = current_user.id).order_by('playlist_name').all()
     if not user_playlists:
-        user_playlists_list = []
+        user_playlists_included = "no playlists"
     else:
-        user_playlists_list = []
+        user_playlists_included = []
+        user_playlists_excluded = []
         for playlist in user_playlists:
-            user_playlists_list.append((playlist.playlist_name, playlist.playlist_id))
-
-
-
+            if playlist.display_in_library == True:
+                user_playlists_included.append((playlist.playlist_name, playlist.playlist_id))
+            else:
+                user_playlists_excluded.append((playlist.playlist_name, playlist.playlist_id))
 
     if request.method == "POST":
-
-
         number_of_songs_into_folders = request.form.get("number_of_songs_into_folders")
-
+        playlist_id_exclude = request.form.get("selected_playlist_id_exclude")
+        print(playlist_id_exclude)
+        playlist_id_include = request.form.get("selected_playlist_id_include")
+        print(playlist_id_include)
 
         if number_of_songs_into_folders:
             user = UserSettings.query.filter_by(user_id = current_user.id).first()
@@ -129,12 +129,18 @@ def settings():
             flash('Changes have been saved', category = "success")
             return redirect(url_for("home_bp.settings"))
 
+        elif playlist_id_exclude or playlist_id_include:
+            change_display_to = change_playlist_display_setting(playlist_id_exclude, playlist_id_include)
+            if change_display_to == False:
+                flash('Playlist has been excluded from your library', category = "success")
+            else:
+                flash('Playlist has been included in your library', category = "success")
+            return redirect(url_for("home_bp.settings"))
 
-
-
-        if request.form.get("delete_account") == "Delete my account":
+        elif request.form.get("delete_account") == "Delete my account":
             return redirect(url_for("home_bp.delete_account"))
-    return render_template("home/settings.html", current = 'settings', user_playlists_list=user_playlists_list)
+        
+    return render_template("home/settings.html", current = 'settings', user_playlists_included=user_playlists_included, user_playlists_excluded=user_playlists_excluded)
 
 
 @home_bp.route('/delete_account', methods=["GET", "POST"])
@@ -183,6 +189,26 @@ def delete_vml_account(user_id):
     db.session.delete(user)
     db.session.commit()    
     print("VML account deleted")
+
+
+
+def change_playlist_display_setting(playlist_id_exclude, playlist_id_include):
+    playlist_id_to_change = playlist_id_exclude if playlist_id_exclude is not None else playlist_id_include
+    change_display_to = False if playlist_id_exclude is not None else True
+    playlist_to_change = UserPlaylists.query.filter(and_(UserPlaylists.user_id == current_user.id, UserPlaylists.playlist_id == playlist_id_to_change)).first()
+    print(playlist_to_change)
+    print(playlist_to_change.playlist_name)
+    playlist_to_change.display_in_library = change_display_to
+    db.session.add(playlist_to_change)
+    db.session.commit()
+    user_tracks = UserTracks.query.filter(and_(UserTracks.user_id == current_user.id, UserTracks.playlist_id_or_saved_song == playlist_id_to_change)).all()
+    for track in user_tracks:
+        track.display_in_library = change_display_to
+        db.session.add(track)
+    db.session.commit()
+    return change_display_to
+
+
 
 
 @login_manager.user_loader

@@ -48,11 +48,10 @@ body {
             <div style="margin-bottom: 20px;"></div>
             {% for genre in genres %}
                 <form method="POST">
-                    <input type="hidden" name="selected_genre" value="{{ genre }}">
                     {% if genre == selected_genre %}
-                    <input type="submit" value="{{ genre }}" class="btn btn-dark">
+                    <button type="submit" name="selected_genre" value="{{ genre }}" class="btn btn-dark">{{ genre }}</button>
                     {% else %}
-                    <input type="submit" value="{{ genre }}" class="btn btn-light">
+                    <button type="submit" name="selected_genre" value="{{ genre }}" class="btn btn-light">{{ genre }}</button>
                     {% endif %}
                 </form>
             <div style="margin-bottom: 5px;"></div>
@@ -64,11 +63,10 @@ body {
             <div style="margin-bottom: 20px;"></div>
             {% for subgenre in subgenres %}
                 <form method="POST">
-                    <input type="hidden" name="selected_subgenre" value="{{ subgenre }}">
                     {% if subgenre == selected_subgenre %}
-                    <input type="submit" value="{{ subgenre }}" class="btn btn-dark">
+                    <button type="submit" name="selected_subgenre" value="{{ subgenre }}" class="btn btn-dark">{{ subgenre }}</button>
                     {% else %}
-                    <input type="submit" value="{{ subgenre }}" class="btn btn-light">
+                    <button type="submit" name="selected_subgenre" value="{{ subgenre }}" class="btn btn-light">{{ subgenre }}</button>
                     {% endif %}
                 </form>
                 <div style="margin-bottom: 5px;"></div>

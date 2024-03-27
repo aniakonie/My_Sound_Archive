@@ -8,76 +8,74 @@
 <div style="margin-bottom: 20px;"></div>
 
 
-
-
-
-
 {% if current_user.is_library_created == True %}
+    <div>
+        <form method="POST">
+            <label for="number">Minimum number of songs to be grouped into artist folder:</label>
+            <div style="margin-bottom: 10px;"></div>
+            <select class="form-control" name="number_of_songs_into_folders" id="number">
+            {% for number in range(1,11) %}
+            <option>{{number}}</option>
+            {% endfor %}
+            </select>
+            <div style="margin-bottom: 10px;"></div>
+            <button type="submit" class="btn btn-dark">Save changes</button>
+        </form>
+    </div>
+    <div style="margin-bottom: 50px;"></div>
 
 
-<div>
-    <form method="POST">
-        <label for="number">Minimum number of songs to be grouped into artist folder:</label>
-        <div style="margin-bottom: 10px;"></div>
-        <select class="form-control" name="number_of_songs_into_folders" id="number">
-        {% for number in range(1,11) %}
-        <option>{{number}}</option>
-        {% endfor %}
-        </select>
-        <div style="margin-bottom: 10px;"></div>
-        <button type="submit" class="btn btn-dark">Save changes</button>
-    </form>
-</div>
+    <h5>Playlists</h5>
+    <div style="margin-bottom: 15px;"></div>
+    {% if user_playlists_included == "no playlists" %}
+        You don't have currently any playlists on Spotify.
+    {% else %}
 
+        <h6>Playlists included in library</h6>
+        <div style="margin-bottom: 15px;"></div>
+        {% if user_playlists_included|length == 0 %}
+        You have currently no playlists included.
+        {% else %}
+            <form method="POST">
+                {% for (playlist_name, playlist_id) in user_playlists_included %}
+                <button type="submit" name="selected_playlist_id_exclude" value="{{ playlist_id }}" class="btn btn-dark">Exclude</button>
+                <button type="button" class="btn btn-outline-dark" disabled>{{playlist_name}}</button>
+                <div style="margin-bottom: 5px;"></div>
+                {% endfor %}
+            </form>
+        {% endif %}
+        <div style="margin-bottom: 15px;"></div>
+        <h6>Playlists excluded from library</h6>
+        <div style="margin-bottom: 15px;"></div>
+        {% if user_playlists_excluded|length == 0 %}
+            You have currently no playlists excluded.
+        {% else %}
+            <form method="POST">  
+                {% for (playlist_name, playlist_id) in user_playlists_excluded %}
+                <button type="submit" name="selected_playlist_id_include" value="{{ playlist_id }}" class="btn btn-dark">Include</button>
+                <button type="button" class="btn btn-outline-dark" disabled>{{playlist_name}}</button>
+                <div style="margin-bottom: 5px;"></div>
+                {% endfor %}
+            </form>
+        {% endif %}
 
+    {% endif %}
 <div style="margin-bottom: 50px;"></div>
-<h5>Playlists</h5>
-
-{% if not user_playlists_list %}
-    You don't have currently any playlists on Spotify.
-{% else %}
-
-    <form method="POST">
-<!-- ZROBIĆ TO ROZWIJALNE
-JAKOŚ ZAZNACZYĆ, KTÓRE PLAYLISTY SĄ AKTUALNIE INCLUDED (MOŻE KOLOREM?) -->
-
-    {% for (playlist_name, playlist_id) in user_playlists_list %}
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="Include">
-            <label class="form-check-label" for="inlineRadio1">Include</label>
-        </div>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="Exclude">
-            <label class="form-check-label" for="inlineRadio2">Exclude</label>
-            <button type="button" class="btn btn-light">{{playlist_name}}</button>
-            
-        </div>
-        <br>
-    {% endfor %}
-
-        <div style="margin-bottom: 10px;"></div>
-        <button type="submit" class="btn btn-dark">Save changes</button>
-
-    </form>
 
 
-
+<h5>Statistics</h5>
+<div style="margin-bottom: 15px;"></div>
 
 
 {% endif %}
 
-<div style="margin-bottom: 50px;"></div>
-
-{% endif %}
 <div>
-    Delete account
+    <h5>Delete account</h5>
     <div style="margin-bottom: 10px;"></div>
     <form method="POST">
         <input type=submit value="Delete my account" name="delete_account" class="btn btn-danger">
     </form>
 </div>
-
-
 
 
 

@@ -139,6 +139,7 @@ def get_access_token():
     access_token = user.access_token
     refresh_token = user.refresh_token
     is_valid = check_token_validity(access_token)
+    print(is_valid)
     if is_valid == False:
         access_token = do_refresh_token(refresh_token)
     return access_token
@@ -147,7 +148,7 @@ def get_access_token():
 def check_token_validity(access_token):
     '''making an API request to check the type of response'''
     response = spotify_req_get_current_user_profile(access_token)
-    return response.status_code == 401
+    return response.status_code != 401
 
 
 def do_refresh_token(refresh_token):
@@ -161,6 +162,7 @@ def do_refresh_token(refresh_token):
 
 def create_library():
     user = UserMusicPlatform.query.filter_by(user_id = current_user.id).first()
+    print(user.user_id)
     access_token = get_access_token()
     spotify_playlists, spotify_saved_tracks, spotify_all_playlists_tracks = get_spotify_data(access_token)
     music_platform_id = user.music_platform_id

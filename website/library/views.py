@@ -100,7 +100,6 @@ def library_tracks(selected_genre, selected_subgenre, selected_artist_name):
         abort(404)
 
     selected_artist_name = session["selected_artist_name"]
-    print(selected_artist_name)
 
     artists = get_artists_of_selected_subgenre(selected_genre, selected_subgenre, current_user.id)
     selected_artist_uri = session["selected_artist_uri"]

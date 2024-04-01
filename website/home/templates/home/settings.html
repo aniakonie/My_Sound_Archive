@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}VML Settings{% endblock %}
+{% block title %}Settings{% endblock %}
 
 
 {% block content %} 
@@ -62,7 +62,39 @@
     {% endif %}
 <div style="margin-bottom: 50px;"></div>
 
+<h5>Move an artist to another genre/subgenre folder</h5>
+<div style="margin-bottom: 15px;"></div>
 
+
+
+
+
+
+
+<div>
+    <form method="POST">
+        <label>Genre: subgenre</label>
+        <div style="margin-bottom: 10px;"></div>
+        <select class="form-control" name="genre_subgenre_browse">
+        {% for genre_item in genres_subgenres %}
+            {% for subgenre in genre_item["subgenres"] %}
+            <option>{{genre_item["genre"]}}: {{subgenre}}</option>
+            {% endfor %}
+        {% endfor %}
+        </select>
+        <div style="margin-bottom: 10px;"></div>
+        <button type="submit" class="btn btn-dark">Browse artists</button>
+    </form>
+</div>
+
+
+
+
+
+
+
+
+<div style="margin-bottom: 100px;"></div>
 <h5>Statistics</h5>
 <div style="margin-bottom: 15px;"></div>
 

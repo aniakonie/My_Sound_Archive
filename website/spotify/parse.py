@@ -1,38 +1,50 @@
 
 def parse(spotify_playlists, spotify_saved_tracks, spotify_all_playlists_tracks, music_platform_id):
 
-    playlists_info_library = parse_playlists_info(spotify_playlists, music_platform_id)
     saved_tracks_library = parse_spotify_saved_tracks(spotify_saved_tracks)
-    all_playlists_tracks_library = parse_spotify_all_playlists_tracks(spotify_all_playlists_tracks)
+    all_playlists_tracks_library, playlists_to_discard = parse_spotify_all_playlists_tracks(spotify_all_playlists_tracks)
+    playlists_info_library = parse_playlists_info(spotify_playlists, music_platform_id)
 
     return playlists_info_library, saved_tracks_library, all_playlists_tracks_library
 
 
-def parse_playlists_info(spotify_playlists, music_platform_id):
-    '''extracting playlist info from spotify playlists for VML library - "playlist_info" table'''
+def parse_playlists_info(spotify_playlists, playlists_to_discard, music_platform_id):
+    '''extracting playlist info from spotify playlists for library - "playlist_info" table'''
     playlists_info_library = set()
 
     for playlist in spotify_playlists:
-        playlist_id = playlist["id"]
-        playlist_name = playlist["name"]
-        is_owner = True if playlist["owner"]["id"] == music_platform_id else False
-        playlist_info = (playlist_id, playlist_name, is_owner)
-        playlists_info_library.add(playlist_info)
+        if playlist not in playlists_to_discard:
+            playlist_id = playlist["id"]
+            playlist_name = playlist["name"]
+            is_owner = True if playlist["owner"]["id"] == music_platform_id else False
+            playlist_info = (playlist_id, playlist_name, is_owner)
+            playlists_info_library.add(playlist_info)
     return playlists_info_library
-
 
 def parse_spotify_all_playlists_tracks(spotify_all_playlists_tracks):
 
     all_playlists_tracks_library = {}
+    playlists_to_discard = set()
 
     playlists_ids = list(spotify_all_playlists_tracks.keys())
     for playlist in playlists_ids:
         all_playlists_tracks_library[playlist] = []
         playlist_tracks = spotify_all_playlists_tracks[playlist]
         for track_info in playlist_tracks:
-            track = parse_track_info(track_info)
-            all_playlists_tracks_library[playlist].append(track)
-    return all_playlists_tracks_library
+            if track_info["track"] == None:
+                continue
+            elif track_info["track"]["is_local"] == True:
+                continue
+            elif 'episode' in track_info["track"]["uri"]:
+                continue
+            else:
+                track = parse_track_info(track_info)
+                all_playlists_tracks_library[playlist].append(track)
+        #discard playlist if no tracks were added
+        if all_playlists_tracks_library[playlist] == []:
+            all_playlists_tracks_library.pop(playlist)
+            playlists_to_discard.add(playlist)
+    return all_playlists_tracks_library, playlists_to_discard
 
 
 def parse_spotify_saved_tracks(spotify_saved_tracks):
@@ -40,8 +52,13 @@ def parse_spotify_saved_tracks(spotify_saved_tracks):
     saved_tracks_library = []
 
     for track_info in spotify_saved_tracks:
-        track = parse_track_info(track_info)
-        saved_tracks_library.append(track)
+        if track_info["track"] == None:
+            continue
+        elif track_info["track"]["is_local"] == True:
+            continue
+        else:
+            track = parse_track_info(track_info)
+            saved_tracks_library.append(track)
     return saved_tracks_library
 
 
@@ -72,7 +89,7 @@ def parse_track_info(track_info):
 
 
 def parse_album_artists(track_info):
-    '''extracting album artists from spotify songs for VML library'''
+    '''extracting album artists from spotify songs for library'''
 
     album_artist_main = track_info["track"]["album"]["artists"][0]["name"]
     album_artist_add1 = None
@@ -86,7 +103,7 @@ def parse_album_artists(track_info):
 
 
 def parse_track_artists_main_artist_uri(track_info):
-    '''extracting album artists from spotify songs for VML library'''
+    '''extracting album artists from spotify songs for library'''
 
     track_artist_main = track_info["track"]["artists"][0]["name"]
     main_artist_uri = track_info["track"]["artists"][0]["uri"]

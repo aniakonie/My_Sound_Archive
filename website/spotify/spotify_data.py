@@ -12,10 +12,13 @@ def get_music_platform_id(access_token):
 def get_spotify_data(access_token):
 
     spotify_playlists = get_spotify_playlists(access_token)
+
     print("playlists saved")
     spotify_saved_tracks = get_spotify_saved_tracks(access_token)
+
     print("saved tracks saved")
     spotify_all_playlists_tracks = get_spotify_all_playlists_tracks(access_token)
+
     print("playlists tracks saved")
     return spotify_playlists, spotify_saved_tracks, spotify_all_playlists_tracks
 
@@ -56,7 +59,10 @@ def get_spotify_playlist_songs_one_playlist(access_token, playlist_id):
     offset = 0
 
     while True:
-        spotify_playlist_items_response = spotify_req_get_playlist_items(access_token, offset, playlist_id)
+        spotify_playlist_items_response, status_code = spotify_req_get_playlist_items(access_token, offset, playlist_id)
+        print(spotify_playlist_items_response)
+        print(status_code)
+
         spotify_playlist_items_50items = spotify_playlist_items_response['items']
         if len(spotify_playlist_items_50items) == 0:
             break
@@ -76,13 +82,17 @@ def get_spotify_playlists_ids(spotify_playlists):
 
 # REQUESTS OFFSET
 
-def get_spotify_response_all_items(spotify_req, access_token):
+def get_spotify_response_all_items(spotify_req_function, access_token):
 
     offset = 0
     spotify_response_all_items = []
 
     while True:
-        spotify_response = spotify_req(access_token, offset)
+        spotify_response, status_code = spotify_req_function(access_token, offset)
+        print(spotify_response)
+        print(status_code)
+        
+
         spotify_50items = spotify_response['items']
         if len(spotify_50items) == 0:
             break
@@ -100,31 +110,33 @@ def spotify_request(base_url, offset, access_token):
     headers = {
         'Authorization': 'Bearer ' + access_token
     }
-    spotify_response = (requests.get(url, headers=headers)).json()
-    return spotify_response
+    spotify_response_json = requests.get(url, headers=headers)
+    status_code = spotify_response_json.status_code
+    spotify_response = spotify_response_json.json()
+    return spotify_response, status_code
 
 
 def spotify_req_get_users_saved_tracks(access_token, offset):
     '''retrieving 50 saved songs from spotify at a time'''
 
     base_url = 'https://api.spotify.com/v1/me/tracks'
-    spotify_saved_tracks_response = spotify_request(base_url, offset, access_token)
-    return spotify_saved_tracks_response
+    spotify_saved_tracks_response, status_code = spotify_request(base_url, offset, access_token)
+    return spotify_saved_tracks_response, status_code
 
 
 def spotify_req_get_users_playlists(access_token, offset):
     '''retrieving info about 50 playlists from spotify at a time'''
 
     base_url = 'https://api.spotify.com/v1/me/playlists'
-    spotify_playlists_response = spotify_request(base_url, offset, access_token)
-    return spotify_playlists_response
+    spotify_playlists_response, status_code = spotify_request(base_url, offset, access_token)
+    return spotify_playlists_response, status_code
 
 
 def spotify_req_get_playlist_items(access_token, offset, playlist_id):
     '''retrieving 50 songs from spotify's particular playlist at a time'''
     base_url = f'https://api.spotify.com/v1/playlists/{playlist_id}/tracks'
-    spotify_playlist_items_response = spotify_request(base_url, offset, access_token)
-    return spotify_playlist_items_response
+    spotify_playlist_items_response, status_code = spotify_request(base_url, offset, access_token)
+    return spotify_playlist_items_response, status_code
 
 
 def spotify_req_get_current_user_profile(access_token):

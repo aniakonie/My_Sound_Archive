@@ -71,11 +71,12 @@ class UserPlaylists(db.Model):
     __tablename__ = "users_playlists"
 
     id = db.Column(db.Integer, primary_key=True)
-    playlist_id = db.Column(db.String(25), unique=True)
+    playlist_id = db.Column(db.String(25))
     playlist_name = db.Column(db.String(100))
     is_owner = db.Column(db.Boolean)
     display_in_library = db.Column(db.Boolean)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    __table_args__ = (UniqueConstraint('playlist_id', 'user_id'),)
 
     def __init__(self, playlist_id, playlist_name, is_owner, display_in_library, user_id):
         self.playlist_id = playlist_id

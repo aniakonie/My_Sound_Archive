@@ -4,52 +4,78 @@
 
 
 {% block content %} 
-<h1 style="text-align: center;">Welcome to My Sound Archive</h1>
+<h1 style="text-align: center; color:white;">Welcome to My Sound Archive</h1>
 <br>
 <br>
-<h3 style="text-align: center;">All your favorite tracks in one place.</h3>
+<h3 style="text-align: center; color:white;">All your favorite tracks in one place.</h3>
+<div style="margin-bottom: 50px;"></div>
+<h3 style="text-align: center; color:white;">Keep all of your music neatly organized</h3>
+<h3 style="text-align: center; color:white;">so that you have a bird's-eye view of the collection.</h3>
+<br>
+<br>
+<h5 style="text-align: center; color:white;">Currently available for <img src="Spotify_Logo_RGB_Green.png" alt="Spotify logo" width="8%"> users only</h5>
 
-<h3 style="text-align: center;">Keep all of your music neatly organized so that you have a bird's-eye view of the collection.</h3>
-<br>
-<br>
-<h5 style="text-align: center;">Currently available for <img src="Spotify_Logo_RGB_Green.png" alt="Spotify logo" width="8%"> users only</h5>
-<br>
-<br>
-<br>
-<div class="container">
-    <div class="row">
+<div style="margin-bottom: 100px;"></div>
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
         <div class="col">
-            <h5 style="text-align: center;">Music arranged into genre folders</h5>
-            Easier to search through your artists when they are divided into genres. Genre classification is fluid so you can always move
-            any artist to another folder if the one assigned by the app does not suit you.
+            <div class="card text-white mb-3" style="background-color: rgb(2, 2, 2); border: 1px solid rgb(153, 149, 149)">
+                <h5 class="card-header text-center">Music arranged into genre folders</h5>
+                <div class="card-body">
+                    <p class="card-text text-center">
+                    Easier to search through your artists when they are divided into genres. Genre classification is fluid so you can always move
+                    any artist to another folder if the one assigned by the app does not suit you.
+                    </p>
+                </div>
+            </div>
         </div>
         <div class="col">
-            <h5 style="text-align: center;">Separate folder for each artist</h5>
-            Each artist folder comprises tracks sourced from your list of liked songs and playlists. No need to worry if you've overlooked
-            liking certain songs by your favorite artists that are exclusively present in your playlists.
+            <div class="card text-white mb-3" style="background-color: rgb(2, 2, 2); border: 1px solid rgb(153, 149, 149)">
+                <h5 class="card-header text-center">Separate folder for each artist</h5>
+                <div class="card-body">
+                    <p class="card-text text-center">
+                        Each artist folder comprises tracks sourced from your list of liked songs and playlists. No need to worry if you've overlooked
+                        liking certain songs by your favorite artists that are exclusively present in your playlists.
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
 <br>
 <br>
-    <div class="row">
+    <div class="row justify-content-center">
         <div class="col">
-            <h5 style="text-align: center;">Every song matters</h5>
-            A dedicated folder for each genre housing tracks from artists with a limited presence in your library. Artist folders exclusively
-            feature your most-listened-to musicians, while the 'loose tracks' section gathers those unique finds which are equally important.
+            <div class="card text-white mb-3" style="background-color: rgb(2, 2, 2); border: 1px solid rgb(153, 149, 149)">
+                <h5 class="card-header text-center">Every song matters</h5>
+                <div class="card-body">
+                    <p class="card-text text-center">
+                        A dedicated folder for each genre housing tracks from artists with a limited presence in your library. Artist folders exclusively
+                        feature your most-listened-to musicians, while the 'loose tracks' section gathers those unique finds which are equally important.
+                    </p>
+                </div>
+            </div>
         </div>
         <div class="col">
-            <h5 style="text-align: center;">Artist's remixes and featured tracks included</h5>
-            Enjoying an artist with an extensive remix collection? Despite remix authors not being the main artists,
-            they are still included in the artist folder. Featured tracks are showcased as well.
+            <div class="card text-white mb-3" style="background-color: rgb(2, 2, 2); border: 1px solid rgb(153, 149, 149)">
+                <h5 class="card-header text-center">Artist's remixes and featured tracks included</h5>
+                <div class="card-body">
+                    <p class="card-text text-center">
+                        Enjoying an artist with an extensive remix collection? Despite remix authors not being the main artists of these tracks,
+                        they are still included in the artist folder. Featured tracks and collaborations are showcased as well.
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
 </div>
-<br>
-<br>
+
+<div style="margin-bottom: 100px;"></div>
+
 <div class="container">
     <div class="row">
         <div class="col">
-            <h5 style="text-align: center;">Find out more about how this app works</h5>
+            <h5 style="text-align: center; color:white;">Find out more about how this app works</h5>
             <br>
             <div style="text-align: center;">
                 <form action="/how_it_works">
@@ -58,7 +84,7 @@
             </div>
         </div>
         <div class="col">
-            <h5 style="text-align: center;">See an example of sound archive</h5>
+            <h5 style="text-align: center; color:white;">See an example of sound archive</h5>
             <br>
             <div style="text-align: center;">
                 <form action="/demo">
@@ -69,12 +95,6 @@
     </div>
 </div>
 
+<div style="margin-bottom: 200px;"></div>
 
-
-
-
-
-<br>
-<br>
 {% endblock %}
-

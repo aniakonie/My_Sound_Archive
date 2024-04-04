@@ -145,4 +145,5 @@ def spotify_req_get_current_user_profile(access_token):
         'Authorization': 'Bearer ' + access_token
     }
     current_user_profile_data_response = requests.get(get_user_base_url, headers=headers)
+    print(current_user_profile_data_response.status_code)
     return current_user_profile_data_response

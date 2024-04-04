@@ -12,16 +12,22 @@
     />
 
     {% block style %}
-    <style></style>
+    <style>
+    footer {
+    width: 85%;
+    margin-left: auto;
+    margin-right: auto;
+    }
+    </style>
     {% endblock %}
 
     <title>{% block title %} {% endblock %}</title>
 
   </head>
-  <body>
+  <body style="background-color:black;">
   
     {% block navbar %}
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <nav class="navbar navbar-expand-lg" style="background-color: black;">
         <div class="container-fluid">
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -29,39 +35,35 @@
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="http://127.0.0.1:5000">Home</a>
+                    <a class="nav-link active" aria-current="page" href="http://127.0.0.1:5000" style="color:white; font-weight:bold;">Home</a>
                 </li>
             {% if current != 'library' and current != 'settings' and current != 'delete_account' %}
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="http://127.0.0.1:5000/how_it_works">How it works</a>
+                    <a class="nav-link active" aria-current="page" href="http://127.0.0.1:5000/how_it_works" style="color:white; font-weight:bold;">How it works</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="http://127.0.0.1:5000/demo">See an example</a>
+                    <a class="nav-link active" aria-current="page" href="http://127.0.0.1:5000/demo" style="color:white; font-weight:bold;">See an example</a>
                 </li>
             {% endif %}
-              <!-- <form class="d-flex" role="search">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success" type="submit">Search</button>
-              </form> -->
             </ul>
             <ul class="navbar-nav me-2 mb-2 mb-lg-0">
             {% if not current_user.is_authenticated %}  
             <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="http://127.0.0.1:5000/login">Log in</a>
+                <a class="nav-link active" aria-current="page" href="http://127.0.0.1:5000/login" style="color:white; font-weight:bold;">Log in</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="http://127.0.0.1:5000/sign-up">Sign up</a>
+                <a class="nav-link active" aria-current="page" href="http://127.0.0.1:5000/sign-up" style="color:white; font-weight:bold;">Sign up</a>
             </li>
             {% endif %}
             {% if current_user.is_authenticated %}
             <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="http://127.0.0.1:5000/library">My Archive</a>
+                <a class="nav-link active" aria-current="page" href="http://127.0.0.1:5000/library" style="color:white; font-weight:bold;">My Archive</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="http://127.0.0.1:5000/settings">Settings</a>
+                <a class="nav-link active" aria-current="page" href="http://127.0.0.1:5000/settings" style="color:white; font-weight:bold;">Settings</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="http://127.0.0.1:5000/logout">Log out</a>
+                <a class="nav-link active" aria-current="page" href="http://127.0.0.1:5000/logout" style="color:white; font-weight:bold;">Log out</a>
             </li>
             {% endif %}
             </ul>
@@ -95,6 +97,41 @@
     <div style="margin-bottom: 40px;"></div>
     <div class="container">{% block content %} {% endblock %}</div>
     
+
+    
+    <footer>
+        <nav class="navbar navbar-expand-lg" style="background-color: black;">
+            <div class="container-fluid">
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" style="color:white;">© 2024 My Sound Archive</a>
+                    </li>
+    
+    
+                </ul>
+                <ul class="navbar-nav me-2 mb-2 mb-lg-0"> 
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" style="color:white;">Privacy Policy</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" style="color:white;">Cookies</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" style="color:white;">Contact</a>
+                </li>
+                </ul>
+    
+              </div>
+            </div>
+        </nav>
+    </footer>    
+
+
+    {% block javascript %} {% endblock %}
     
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
@@ -104,4 +141,5 @@
 
   </body>
 </html>
+
 

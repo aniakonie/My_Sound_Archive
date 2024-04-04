@@ -12,8 +12,9 @@ body {
       justify-content: center;
       width: 300px;
       height: 400px;
-      border: 2px solid black;
+      border: 2px solid rgb(153, 149, 149);
       border-radius: 30px;
+      margin-bottom: 85px;
     }
 </style>
 {% endblock %}
@@ -21,14 +22,17 @@ body {
 {% block content %} 
 <div>
     <div style="margin-bottom: 20px;"></div>
-    <h1 style="text-align: center;">Log in</h1>
+    <h1 style="text-align: center; color:white;">Log in</h1>
     <br>
     <form method="post">
-        {{ form.username.label(class="form-label") }}:<br>{{ form.username(class_="form-control") }}<br>
-        {{ form.password.label(class="form-label") }}:<br>{{ form.password(class_="form-control") }}<br>
+        {{ form.username.label(class="form-label", style="color:white;") }}:<br>{{ form.username(class_="form-control", style="background-color :rgb(20, 20, 20); color:white;") }}<br>
+        {{ form.password.label(class="form-label", style="color:white;") }}:<br>{{ form.password(class_="form-control", style="background-color :rgb(20, 20, 20); color:white;") }}<br>
         <br>
         <input type=submit value="Log in" class="btn btn-dark">
     </form>
 </div>
+
+
 {% endblock %}
+
 

@@ -3,7 +3,7 @@ def parse(spotify_playlists, spotify_saved_tracks, spotify_all_playlists_tracks,
 
     saved_tracks_library = parse_spotify_saved_tracks(spotify_saved_tracks)
     all_playlists_tracks_library, playlists_to_discard = parse_spotify_all_playlists_tracks(spotify_all_playlists_tracks)
-    playlists_info_library = parse_playlists_info(spotify_playlists, music_platform_id)
+    playlists_info_library = parse_playlists_info(spotify_playlists, playlists_to_discard, music_platform_id)
 
     return playlists_info_library, saved_tracks_library, all_playlists_tracks_library
 
@@ -11,14 +11,15 @@ def parse(spotify_playlists, spotify_saved_tracks, spotify_all_playlists_tracks,
 def parse_playlists_info(spotify_playlists, playlists_to_discard, music_platform_id):
     '''extracting playlist info from spotify playlists for library - "playlist_info" table'''
     playlists_info_library = set()
-
     for playlist in spotify_playlists:
-        if playlist not in playlists_to_discard:
             playlist_id = playlist["id"]
             playlist_name = playlist["name"]
+            if playlist_name == '':
+                playlist_name = '[no name]'
             is_owner = True if playlist["owner"]["id"] == music_platform_id else False
             playlist_info = (playlist_id, playlist_name, is_owner)
-            playlists_info_library.add(playlist_info)
+            if playlist_id not in playlists_to_discard:
+                playlists_info_library.add(playlist_info)
     return playlists_info_library
 
 def parse_spotify_all_playlists_tracks(spotify_all_playlists_tracks):

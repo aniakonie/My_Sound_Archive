@@ -4,20 +4,22 @@
 
 
 {% block content %} 
-<h1 style="text-align: center;">Settings</h1>
+<h1 style="text-align: center; color:white;">Settings</h1>
 <div style="margin-bottom: 20px;"></div>
 
 
 {% if current_user.is_library_created == True %}
     <div>
         <form method="POST">
-            <label for="number">Minimum number of songs to be grouped into artist folder:</label>
-            <div style="margin-bottom: 10px;"></div>
-            <select class="form-control" name="number_of_songs_into_folders" id="number">
-            {% for number in range(1,11) %}
-            <option>{{number}}</option>
-            {% endfor %}
-            </select>
+                <label for="number" style="color:white;">Minimum number of songs to be grouped into artist folder:</label>
+                <div style="margin-bottom: 10px;"></div>
+                <div class="mb-3 w-25">
+                    <select class="form-control" name="number_of_songs_into_folders" id="number" style="background-color :rgb(20, 20, 20); color:white;">
+                    {% for number in range(1,11) %}
+                    <option>{{number}}</option>
+                    {% endfor %}
+                    </select>
+                </div>
             <div style="margin-bottom: 10px;"></div>
             <button type="submit" class="btn btn-dark">Save changes</button>
         </form>
@@ -25,35 +27,35 @@
     <div style="margin-bottom: 50px;"></div>
 
 
-    <h5>Playlists</h5>
+    <h5 style="color:white;">Playlists</h5>
     <div style="margin-bottom: 15px;"></div>
     {% if user_playlists_included == "no playlists" %}
-        You don't have currently any playlists on Spotify.
+        <p style="color:white;">You don't have currently any playlists on Spotify.</p>
     {% else %}
 
-        <h6>Playlists included in library</h6>
-        <div style="margin-bottom: 15px;"></div>
+        <h6 style="color:white;">Playlists included in library</h6>
+        <div style="margin-bottom: 30px;"></div>
         {% if user_playlists_included|length == 0 %}
-        You have currently no playlists included.
+        <p style="color:white;">You have currently no playlists included.</p>
         {% else %}
             <form method="POST">
                 {% for (playlist_name, playlist_id) in user_playlists_included %}
                 <button type="submit" name="selected_playlist_id_exclude" value="{{ playlist_id }}" class="btn btn-dark">Exclude</button>
-                <button type="button" class="btn btn-outline-dark" disabled>{{playlist_name}}</button>
+                <button type="button" style="color:white;" class="btn btn-outline-light" disabled>{{playlist_name}}</button>
                 <div style="margin-bottom: 5px;"></div>
                 {% endfor %}
             </form>
         {% endif %}
-        <div style="margin-bottom: 15px;"></div>
-        <h6>Playlists excluded from library</h6>
-        <div style="margin-bottom: 15px;"></div>
+        <div style="margin-bottom: 30px;"></div>
+        <h6 style="color:white;">Playlists excluded from library</h6>
+        <div style="margin-bottom: 30px;"></div>
         {% if user_playlists_excluded|length == 0 %}
-            You have currently no playlists excluded.
+            <p style="color:white;">You have currently no playlists excluded.</p>
         {% else %}
             <form method="POST">  
                 {% for (playlist_name, playlist_id) in user_playlists_excluded %}
                 <button type="submit" name="selected_playlist_id_include" value="{{ playlist_id }}" class="btn btn-dark">Include</button>
-                <button type="button" class="btn btn-outline-dark" disabled>{{playlist_name}}</button>
+                <button type="button" class="btn btn-outline-light" disabled>{{playlist_name}}</button>
                 <div style="margin-bottom: 5px;"></div>
                 {% endfor %}
             </form>
@@ -62,7 +64,7 @@
     {% endif %}
 <div style="margin-bottom: 50px;"></div>
 
-<h5>Move an artist to another genre/subgenre folder</h5>
+<h5 style="color:white;">Move an artist to another genre/subgenre folder</h5>
 <div style="margin-bottom: 15px;"></div>
 
 
@@ -95,14 +97,13 @@
 
 
 <div style="margin-bottom: 100px;"></div>
-<h5>Statistics</h5>
+<h5 style="color:white;">Statistics</h5>
 <div style="margin-bottom: 15px;"></div>
 
 
 {% endif %}
 
 <div>
-    <h5>Delete account</h5>
     <div style="margin-bottom: 10px;"></div>
     <form method="POST">
         <input type=submit value="Delete my account" name="delete_account" class="btn btn-danger">

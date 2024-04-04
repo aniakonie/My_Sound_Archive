@@ -50,7 +50,7 @@ class UserMusicPlatform(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     music_platform_name = db.Column(db.String(15))
-    music_platform_id = db.Column(db.String(15))
+    music_platform_id = db.Column(db.String(40))
     access_token = db.Column(db.String(220))
     refresh_token = db.Column(db.String(131))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))

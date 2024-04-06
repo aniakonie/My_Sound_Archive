@@ -6,15 +6,16 @@ from flask_login import current_user
 def classify_artists_genres():
     '''retrieving all artists without corresponding genres from database'''
     artists = Artists.query.filter_by(artist_genres = None).all()
-    artists_list = [artist for artist in artists]
-    artists_uris_genres = spotify_get_artists_genres(artists_list)
+    if artists:
+        artists_list = [artist for artist in artists]
+        artists_uris_genres = spotify_get_artists_genres(artists_list)
 
-    artists_uris_genres_main_genre = []
-    for artist in artists_uris_genres:
-        genres_string = ", ".join(artist[1])
-        main_genre = assign_main_genre(genres_string)
-        artists_uris_genres_main_genre.append((artist + (main_genre,)))
-    save_artists_genres(artists_uris_genres_main_genre)
+        artists_uris_genres_main_genre = []
+        for artist in artists_uris_genres:
+            genres_string = ", ".join(artist[1])
+            main_genre = assign_main_genre(genres_string)
+            artists_uris_genres_main_genre.append((artist + (main_genre,)))
+        save_artists_genres(artists_uris_genres_main_genre)
     save_user_artists_genres()
 
 

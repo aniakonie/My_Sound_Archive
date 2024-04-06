@@ -156,6 +156,7 @@ def delete_account():
         if request.form["answer"] == "Yes":
             if current_user.is_library_created == True:
                 delete_library(user_id)
+                delete_user_music_platform(user_id)
                 delete_vml_account(user_id)
             else:
                 delete_vml_account(user_id)
@@ -171,10 +172,6 @@ def delete_library(user_id):
     db.session.delete(user_settings)
     db.session.commit()  
 
-    user_music_platform = UserMusicPlatform.query.filter_by(user_id=user_id).first()
-    db.session.delete(user_music_platform)
-    db.session.commit()  
-
     models_to_delete = [UserTracks, UserPlaylists, UserArtists]
     for model in models_to_delete:
         user_records = model.query.filter_by(user_id=user_id).all()
@@ -187,6 +184,12 @@ def delete_library(user_id):
     db.session.add(user)
     db.session.commit()
     print("Library deleted")
+
+
+def delete_user_music_platform(user_id):
+    user_music_platform = UserMusicPlatform.query.filter_by(user_id=user_id).first()
+    db.session.delete(user_music_platform)
+    db.session.commit()
 
 
 def delete_vml_account(user_id):

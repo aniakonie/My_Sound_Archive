@@ -22,6 +22,7 @@ def parse_playlists_info(spotify_playlists, playlists_to_discard, music_platform
                 playlists_info_library.add(playlist_info)
     return playlists_info_library
 
+
 def parse_spotify_all_playlists_tracks(spotify_all_playlists_tracks):
 
     all_playlists_tracks_library = {}

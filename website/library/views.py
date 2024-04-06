@@ -3,7 +3,6 @@ from flask_login import login_required, current_user
 from website.database.models import *
 from sqlalchemy import func, select, and_, or_, distinct
 from werkzeug.routing import BaseConverter
-import urllib.parse
 
 
 library_bp = Blueprint('library_bp', __name__, template_folder='templates')
@@ -25,7 +24,7 @@ def library():
         if request.method == "POST":
             selected_genre = request.form["selected_genre"]
             return redirect(url_for("library_bp.library_genres", selected_genre = selected_genre))
-    return render_template("library/library.html", genres = genres, current = "library", user = current_user.username)
+    return render_template("library/library.html", genres = genres, user = current_user.username)
 
 
 @library_bp.route('/<path:selected_genre>', methods=["POST", "GET"])
@@ -47,7 +46,7 @@ def library_genres(selected_genre):
             return redirect(url_for("library_bp.library_genres", selected_genre = new_selected_genre))
         elif selected_subgenre:
             return redirect(url_for("library_bp.library_subgenres", selected_genre = selected_genre, selected_subgenre = selected_subgenre))
-    return render_template("library/library.html", genres = genres, subgenres = subgenres, current = "library", selected_genre = selected_genre)
+    return render_template("library/library.html", genres = genres, subgenres = subgenres, selected_genre = selected_genre)
 
 
 @library_bp.route('/<path:selected_genre>/<path:selected_subgenre>', methods=["POST", "GET"])
@@ -82,7 +81,7 @@ def library_subgenres(selected_genre, selected_subgenre):
             selected_artist_name = encode_characters(selected_artist_name)
             return redirect(url_for("library_bp.library_tracks", selected_genre = selected_genre, selected_subgenre = selected_subgenre, selected_artist_name = selected_artist_name))   
 
-    return render_template("library/library.html", genres = genres, subgenres = subgenres, artists = artists, current = "library", selected_genre = selected_genre, selected_subgenre = selected_subgenre)
+    return render_template("library/library.html", genres = genres, subgenres = subgenres, artists = artists, selected_genre = selected_genre, selected_subgenre = selected_subgenre)
 
 
 @library_bp.route('/<path:selected_genre>/<path:selected_subgenre>/<path:selected_artist_name>', methods=["POST", "GET"])
@@ -133,8 +132,9 @@ def library_tracks(selected_genre, selected_subgenre, selected_artist_name):
             return redirect(url_for("library_bp.library_tracks", selected_genre = selected_genre, selected_subgenre = selected_subgenre, selected_artist_name = new_selected_artist_name))        
 
     return render_template("library/library.html", genres = genres, subgenres = subgenres, artists = artists, tracklist = tracklist,
-                           tracklist_featured = tracklist_featured, current ="library", selected_genre=selected_genre,
+                           tracklist_featured = tracklist_featured, selected_genre=selected_genre,
                            selected_subgenre=selected_subgenre, selected_artist_uri=selected_artist_uri, selected_artist_name=selected_artist_name)
+
 
 
 def encode_characters(param):

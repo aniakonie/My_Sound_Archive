@@ -4,15 +4,16 @@ from website.library.views import *
 
 demo_bp = Blueprint('demo_bp', __name__, template_folder='templates')
 
-example_id = 21
+example_id = 28
 
 @demo_bp.route('/', methods=["POST", "GET"])
 def library():
+
     genres = get_genres(example_id)
     if request.method == "POST":
         selected_genre = request.form["selected_genre"]
         return redirect(url_for("demo_bp.library_genres", selected_genre = selected_genre))
-    return render_template("library/demo.html", genres = genres, current = "library")
+    return render_template("library/demo.html", genres = genres)
 
 
 @demo_bp.route('/<path:selected_genre>', methods=["POST", "GET"])
@@ -30,7 +31,7 @@ def library_genres(selected_genre):
             return redirect(url_for("demo_bp.library_genres", selected_genre = new_selected_genre))
         elif selected_subgenre:
             return redirect(url_for("demo_bp.library_subgenres", selected_genre = selected_genre, selected_subgenre = selected_subgenre))
-    return render_template("library/demo.html", genres = genres, subgenres = subgenres, current = "library", selected_genre = selected_genre)
+    return render_template("library/demo.html", genres = genres, subgenres = subgenres, selected_genre = selected_genre)
 
 
 @demo_bp.route('/<path:selected_genre>/<path:selected_subgenre>', methods=["POST", "GET"])
@@ -55,11 +56,13 @@ def library_subgenres(selected_genre, selected_subgenre):
         elif new_selected_subgenre:
             return redirect(url_for("demo_bp.library_subgenres", selected_genre = selected_genre, selected_subgenre = new_selected_subgenre))
         elif selected_artist_uri:
-            selected_artist_name = request.form.get("selected_artist_name")
             session["selected_artist_uri"] = selected_artist_uri
+            selected_artist_name = request.form.get("selected_artist_name")
+            session["selected_artist_name"] = selected_artist_name
+            selected_artist_name = encode_characters(selected_artist_name)
             return redirect(url_for("demo_bp.library_tracks", selected_genre = selected_genre, selected_subgenre = selected_subgenre, selected_artist_name = selected_artist_name))   
 
-    return render_template("library/demo.html", genres = genres, subgenres = subgenres, artists = artists, current = "library", selected_genre = selected_genre, selected_subgenre = selected_subgenre)
+    return render_template("library/demo.html", genres = genres, subgenres = subgenres, artists = artists, selected_genre = selected_genre, selected_subgenre = selected_subgenre)
 
 
 @demo_bp.route('/<path:selected_genre>/<path:selected_subgenre>/<path:selected_artist_name>', methods=["POST", "GET"])
@@ -72,6 +75,8 @@ def library_tracks(selected_genre, selected_subgenre, selected_artist_name):
     if selected_subgenre not in subgenres:
         abort(404)
 
+    selected_artist_name = session["selected_artist_name"]
+
     artists = get_artists_of_selected_subgenre(selected_genre, selected_subgenre, example_id)
     selected_artist_uri = session["selected_artist_uri"]
     if (selected_artist_uri, selected_artist_name) not in artists:
@@ -80,7 +85,6 @@ def library_tracks(selected_genre, selected_subgenre, selected_artist_name):
     if (selected_artist_uri, selected_artist_name) != ("Loose tracks", "Loose tracks"):
         tracklist = get_tracks_of_artist(selected_artist_uri, example_id)
         tracklist_featured = get_featured_tracks_of_artist(selected_artist_name, example_id)
-
     else:
         tracklist = get_loose_tracks_for_subgenre(selected_genre, selected_subgenre, current_user.id)
         tracklist_featured = []
@@ -90,17 +94,21 @@ def library_tracks(selected_genre, selected_subgenre, selected_artist_name):
         new_selected_subgenre = request.form.get("selected_subgenre")
         new_selected_artist_uri = request.form.get("selected_artist_uri")
 
+        session.pop("selected_artist_uri", default=None)
+        session.pop("selected_artist_name", default=None)
+
         if new_selected_genre:
             return redirect(url_for("demo_bp.library_genres", selected_genre = new_selected_genre))
         elif new_selected_subgenre:
             return redirect(url_for("demo_bp.library_subgenres", selected_genre = selected_genre, selected_subgenre = new_selected_subgenre))
         elif new_selected_artist_uri:
-            new_selected_artist_name = request.form.get("selected_artist_name")
-            session.pop("selected_artist_uri", default=None)
             session["selected_artist_uri"] = new_selected_artist_uri
-            return redirect(url_for("demo_bp.library_tracks", selected_genre = selected_genre, selected_subgenre = selected_subgenre, selected_artist_name = new_selected_artist_name))        
+            selected_artist_name = request.form.get("selected_artist_name")
+            session["selected_artist_name"] = selected_artist_name
+            new_selected_artist_name = encode_characters(selected_artist_name)
+            return redirect(url_for("library_bp.library_tracks", selected_genre = selected_genre, selected_subgenre = selected_subgenre, selected_artist_name = new_selected_artist_name))        
 
     return render_template("library/demo.html", genres = genres, subgenres = subgenres, artists = artists, tracklist = tracklist,
-                           tracklist_featured = tracklist_featured, current ="library", selected_genre=selected_genre,
+                           tracklist_featured = tracklist_featured, selected_genre=selected_genre,
                            selected_subgenre=selected_subgenre, selected_artist_uri=selected_artist_uri, selected_artist_name=selected_artist_name)
 

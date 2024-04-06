@@ -11,6 +11,7 @@ from website.spotify.save_to_database import *
 from website.database.models import db, UserMusicPlatform
 from website.library.genres_classification.genres_classification import classify_artists_genres
 from sqlalchemy import and_
+from website.home.views import delete_library
 
 spotify_bp = Blueprint('spotify_bp', __name__, template_folder="templates")
 
@@ -162,12 +163,15 @@ def do_refresh_token(refresh_token):
 def create_library():
     user = UserMusicPlatform.query.filter_by(user_id = current_user.id).first()
     access_token = get_access_token()
+
     spotify_playlists, spotify_saved_tracks, spotify_all_playlists_tracks = get_spotify_data(access_token)
     music_platform_id = user.music_platform_id
+    print('parsing data...')
     playlists_info_library, saved_tracks_library, all_playlists_tracks_library = parse(spotify_playlists, spotify_saved_tracks, spotify_all_playlists_tracks, music_platform_id)
+    print('saving tracks to database...')
     save_to_dabatase(playlists_info_library, saved_tracks_library, all_playlists_tracks_library)
-    print('music saved, now genres...')
     save_default_user_settings()
+    print('assigning genres...')
     classify_artists_genres()
     print('done')
     current_user.is_library_created = True

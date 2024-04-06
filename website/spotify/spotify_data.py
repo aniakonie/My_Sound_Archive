@@ -34,7 +34,8 @@ def get_spotify_all_playlists_tracks(access_token):
     '''adding songs from all playlists'''
 
     spotify_playlists = get_spotify_playlists(access_token)
-    spotify_playlists_ids = get_spotify_playlists_ids(spotify_playlists)
+    music_platform_id = get_music_platform_id(access_token)
+    spotify_playlists_ids = get_spotify_playlists_ids(spotify_playlists, music_platform_id)
 
     spotify_all_playlists_tracks = {}
 
@@ -60,7 +61,6 @@ def get_spotify_playlist_songs_one_playlist(access_token, playlist_id):
 
     while True:
         spotify_playlist_items_response, status_code = spotify_req_get_playlist_items(access_token, offset, playlist_id)
-        print(spotify_playlist_items_response)
         print(status_code)
 
         spotify_playlist_items_50items = spotify_playlist_items_response['items']
@@ -71,12 +71,13 @@ def get_spotify_playlist_songs_one_playlist(access_token, playlist_id):
     return spotify_playlist_tracks
 
 
-def get_spotify_playlists_ids(spotify_playlists):
+def get_spotify_playlists_ids(spotify_playlists, music_platform_id):
 
     spotify_playlists_ids = set()
     for playlist in spotify_playlists:
-        spotify_playlists_ids.add(playlist["id"])
-
+        if playlist["owner"] == music_platform_id:
+            print(playlist["owner"], music_platform_id)
+            spotify_playlists_ids.add(playlist["id"])
     return spotify_playlists_ids
 
 
@@ -89,10 +90,7 @@ def get_spotify_response_all_items(spotify_req_function, access_token):
 
     while True:
         spotify_response, status_code = spotify_req_function(access_token, offset)
-        print(spotify_response)
         print(status_code)
-        
-
         spotify_50items = spotify_response['items']
         if len(spotify_50items) == 0:
             break

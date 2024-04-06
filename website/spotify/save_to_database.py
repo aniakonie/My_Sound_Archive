@@ -13,10 +13,11 @@ def save_to_dabatase(playlists_info_library, saved_tracks_library, all_playlists
 def save_playlists_info(playlists_info_library):
 
     for playlist_id, playlist_name, is_owner in playlists_info_library:
-        display_in_library = True if is_owner else False
-        data = UserPlaylists(playlist_id, playlist_name, is_owner, display_in_library, current_user.id)
-        db.session.add(data)
-        db.session.commit()
+        if is_owner:
+            display_in_library = True
+            data = UserPlaylists(playlist_id, playlist_name, is_owner, display_in_library, current_user.id)
+            db.session.add(data)
+            db.session.commit()
 
 
 def save_saved_tracks(saved_tracks_library):

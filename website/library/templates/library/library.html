@@ -1,48 +1,46 @@
 {% extends "base.html" %}
 
-
 {% block style %}
 <style>
-
 body {
-      margin-top: 0;
-      /* padding: 0;
-      box-sizing: border-box; */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
     }
     .flex-container {
       display: flex;
       flex-direction: row;
       flex-wrap: nowrap;
       justify-content: flex-start;
-      /* padding: 10px; */
     }
     .flex-item {
-      /* margin: 5px; */
-      padding: 20px;
-      box-sizing: border-box;
-      /* border: 2px solid black; */
+        padding: 20px;
+        box-sizing: border-box;
     }
     .fixed-width-1 {
-      flex-basis: 200px;
+        flex-basis: 200px;
     }
     .fixed-width-2 {
-      flex-basis: 250px;
+        flex-basis: 250px;
     }
     .fixed-width-3 {
-      flex-basis: 150px;
+        flex-basis: 150px;
     }
     .flex-grow {
-      flex-grow: 1;
+        flex-grow: 1;
     }
-
-
+    footer {
+        width: 85%;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: auto;
+    }
 </style>
 {% endblock %}
 
 {% block title %}My Archive{% endblock %}
 
 {% block content %}
-
 
 {% if current_user.is_library_created == True %}
     <div class="flex-container">

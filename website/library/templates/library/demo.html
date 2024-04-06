@@ -1,156 +1,146 @@
 {% extends "base.html" %}
 
-{% block title %}My Archive{% endblock %}
-
-
-{% block navbar %}
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
-    <div class="container-fluid">
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="http://127.0.0.1:5000">Home</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="http://127.0.0.1:5000/how_it_works">How it works</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="http://127.0.0.1:5000/demo">See an example</a>
-            </li>
-        </ul>
-        <ul class="navbar-nav me-2 mb-2 mb-lg-0">
-        {% if not current_user.is_authenticated %}  
-        <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="http://127.0.0.1:5000/login">Log in</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="http://127.0.0.1:5000/sign-up">Sign up</a>
-        </li>
-        {% endif %}
-        {% if current_user.is_authenticated %}
-        <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="http://127.0.0.1:5000/library">My VML</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="http://127.0.0.1:5000/settings">Settings</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="http://127.0.0.1:5000/logout">Log out</a>
-        </li>
-        {% endif %}
-        </ul>
-      </div>
-    </div>
-</nav>
+{% block style %}
+<style>
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    }
+    .flex-container {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      justify-content: flex-start;
+    }
+    .flex-item {
+        padding: 20px;
+        box-sizing: border-box;
+    }
+    .fixed-width-1 {
+        flex-basis: 200px;
+    }
+    .fixed-width-2 {
+        flex-basis: 250px;
+    }
+    .fixed-width-3 {
+        flex-basis: 150px;
+    }
+    .flex-grow {
+        flex-grow: 1;
+    }
+    footer {
+        width: 85%;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: auto;
+    }
+</style>
 {% endblock %}
 
+{% block title %}Archive example{% endblock %}
 
 {% block content %}
 
-<div style="margin-bottom: 20px;"></div>
-<div class="container">
-
-    <div class="row">
-        <div class="col">
-            <h3>Genres</h3>
+    <div class="flex-container">
+        <div class="flex-item fixed-width-3">
+            <h3 style="color:white;">Genres</h3>
             <div style="margin-bottom: 20px;"></div>
             {% for genre in genres %}
                 <form method="POST">
-                    <input type="hidden" name="selected_genre" value="{{ genre }}">
                     {% if genre == selected_genre %}
-                    <input type="submit" value="{{ genre }}" class="btn btn-dark">
+                    <button type="submit" name="selected_genre" value="{{ genre }}" class="btn btn-light">{{ genre }}</button>
                     {% else %}
-                    <input type="submit" value="{{ genre }}" class="btn btn-light">
+                    <button type="submit" name="selected_genre" value="{{ genre }}" class="btn btn-dark">{{ genre }}</button>
                     {% endif %}
                 </form>
             <div style="margin-bottom: 5px;"></div>
             {% endfor %}
         </div>
 
-        <div class="col">
-            <h3>Subgenres</h3>
+        <div class="flex-item fixed-width-1">
+            <h3 style="color:white;">Subgenres</h3>
             <div style="margin-bottom: 20px;"></div>
             {% for subgenre in subgenres %}
                 <form method="POST">
-                    <input type="hidden" name="selected_subgenre" value="{{ subgenre }}">
                     {% if subgenre == selected_subgenre %}
-                    <input type="submit" value="{{ subgenre }}" class="btn btn-dark">
+                    <button type="submit" name="selected_subgenre" value="{{ subgenre }}" class="btn btn-light">{{ subgenre }}</button>
                     {% else %}
-                    <input type="submit" value="{{ subgenre }}" class="btn btn-light">
+                    <button type="submit" name="selected_subgenre" value="{{ subgenre }}" class="btn btn-dark">{{ subgenre }}</button>
                     {% endif %}
                 </form>
                 <div style="margin-bottom: 5px;"></div>
             {% endfor %}
         </div>
 
-        <div class="col">
-            <h3>Artists</h3>
+        <div class="flex-item fixed-width-2">
+            <h3 style="color:white;">Artists</h3>
             <div style="margin-bottom: 20px;"></div>
             {% for artist in artists %}
                 <form method="POST">
                     <input type="hidden" name="selected_artist_uri" value="{{ artist[0] }}">
                     {% if artist[0] == selected_artist_uri %}
-                    <input type="submit" name="selected_artist_name" value="{{ artist[1] }}" class="btn btn-dark">
-                    {% else %}
                     <input type="submit" name="selected_artist_name" value="{{ artist[1] }}" class="btn btn-light">
+                    {% else %}
+                    <input type="submit" name="selected_artist_name" value="{{ artist[1] }}" class="btn btn-dark">
                     {% endif %}
                 </form>
             <div style="margin-bottom: 5px;"></div>
             {% endfor %}
         </div>
 
-        <div class="col">
-            <h3>Tracks</h3>
+        <div class="flex-item flex-grow: 1">
+            <h3 style="color:white;">Tracks</h3>
             <div style="margin-bottom: 20px;"></div>
             {% if selected_artist_name != "Loose tracks" %}
                 {% for track in tracklist %}
-                    <button type="button" class="btn btn-light">
-                    <a class="play_track" href="{{track["track_uri"]}}">PL</a> <a class="open_album" href="{{track["album_uri"]}}">AL</a>
-                    <span class="track">{{track["track_title"]}}</span>
+                    <button type="button" class="btn btn-dark">
+                        <a class="play_track" href="{{track["track_uri"]}}">PL</a> <a class="open_album" href="{{track["album_uri"]}}">AL</a>
+                        <span class="track">{{track["track_title"]}}</span>
                     </button>
                     <div style="margin-bottom: 5px;"></div>
                 {% endfor %}
             
             {% else %}
                 {% for track in tracklist %}
-                    <a class="play_track" href="{{track["track_uri"]}}">PL </a>
-                    <a class="open_album" href="{{track["album_uri"]}}">AL </a>
-                    <span class="track">{{track["track_artist_main"]}} - {{track["track_title"]}} </span>          
-                    {% if track["track_artist_add1"] != None %}
-                    <span class="track_add">[ with {{track["track_artist_add1"]}}
+                    <button type="button" class="btn btn-dark">
+                        <a class="play_track" href="{{track["track_uri"]}}">PL </a>
+                        <a class="open_album" href="{{track["album_uri"]}}">AL </a>
+                        <span class="track">{{track["track_artist_main"]}} - {{track["track_title"]}} </span>          
+                        {% if track["track_artist_add1"] != None %}
+                        <span class="track_add">[ with {{track["track_artist_add1"]}}
                         {% if track["track_artist_add2"] != None %}
                         <span class="track_add">, {{track["track_artist_add2"]}}</span>
                         {% endif %}]
-                    </span>
-                    {% endif %}
-                    <br>
+                        </span>
+                        {% endif %}
+                    </button>
+                    <div style="margin-bottom: 5px;"></div>    
                 {% endfor %}
             {% endif %}
 
             <br>
             {% if tracklist_featured|length > 0 %}
-            <p>Featured tracks</p>
+            <h5 style="color:white;">Featured tracks</h5>
                 {% for track in tracklist_featured %}    
-                    <a class="play_track" href="{{track["track_uri"]}}">PL </a>
-                    <a class="open_album" href="{{track["album_uri"]}}">AL </a>
-                    <span class="track">{{track["track_artist_main"]}} - {{track["track_title"]}} </span>          
-                    {% if track["track_artist_add1"] != None %}
-                    <span class="track_add">[ with {{track["track_artist_add1"]}}
+                    <button type="button" class="btn btn-dark">
+                        <a class="play_track" href="{{track["track_uri"]}}">PL </a>
+                        <a class="open_album" href="{{track["album_uri"]}}">AL </a>
+                        <span class="track">{{track["track_artist_main"]}} - {{track["track_title"]}} </span>          
+                        {% if track["track_artist_add1"] != None %}
+                        <span class="track_add">[ with {{track["track_artist_add1"]}}
                         {% if track["track_artist_add2"] != None %}
                         <span class="track_add">, {{track["track_artist_add2"]}}</span>
                         {% endif %}]
-                    </span>
-                    {% endif %}
-                    <br>
+                        </span>
+                        {% endif %}
+                    </button>
+                    <div style="margin-bottom: 5px;"></div> 
                 {% endfor %}
             {% endif %}
         </div>
     </div>
-</div>
-
+<div style="margin-bottom: 200px;"></div>
 
 {% endblock %}
 

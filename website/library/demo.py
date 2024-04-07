@@ -4,7 +4,7 @@ from website.library.views import *
 
 demo_bp = Blueprint('demo_bp', __name__, template_folder='templates')
 
-example_id = 28
+example_id = 1
 
 @demo_bp.route('/', methods=["POST", "GET"])
 def library():

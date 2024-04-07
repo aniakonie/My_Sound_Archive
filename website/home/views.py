@@ -104,20 +104,13 @@ def settings():
 
     if current_user.is_library_created:
         user_playlists_included, user_playlists_excluded = get_user_playlists()
-        user_id = current_user.id
-        genres = get_genres(user_id)
-        genres_subgenres = []
-        for genre in genres:
-            subgenres = get_subgenres(genre, user_id)
-            genres_subgenres.append({"genre":genre, "subgenres": subgenres})
-    else: user_playlists_included = user_playlists_excluded = genres_subgenres = None
-
+    else:
+        user_playlists_included = user_playlists_excluded = []
 
     if request.method == "POST":
         number_of_songs_into_folders = request.form.get("number_of_songs_into_folders")
         playlist_id_exclude = request.form.get("selected_playlist_id_exclude")
         playlist_id_include = request.form.get("selected_playlist_id_include")
-        genre_subgenre_browse = request.form.get("genre_subgenre_browse")
 
         if number_of_songs_into_folders:
             change_number_of_songs_into_folders(number_of_songs_into_folders)
@@ -131,21 +124,12 @@ def settings():
             else:
                 flash('Playlist has been included in your library', category = "success")
             return redirect(url_for("home_bp.settings"))
-
-        elif genre_subgenre_browse:
-            print(genre_subgenre_browse)
-
-
-            return redirect(url_for("home_bp.settings"))
-
-
-
-
-        elif request.form.get("delete_account") == "Delete my account":
+        
+        elif request.form.get("delete_account"):
             return redirect(url_for("home_bp.delete_account"))
         
-    return render_template("home/settings.html", current = 'settings', user_playlists_included=user_playlists_included, user_playlists_excluded=user_playlists_excluded,
-                           genres_subgenres=genres_subgenres)
+    return render_template("home/settings.html", user_playlists_included=user_playlists_included, user_playlists_excluded=user_playlists_excluded)
+
 
 
 @home_bp.route('/delete_account', methods=["GET", "POST"])

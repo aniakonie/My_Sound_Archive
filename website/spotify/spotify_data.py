@@ -12,14 +12,11 @@ def get_music_platform_id(access_token):
 def get_spotify_data(access_token):
 
     spotify_playlists = get_spotify_playlists(access_token)
-
-    print("playlists saved")
+    print("playlists retrieved")
     spotify_saved_tracks = get_spotify_saved_tracks(access_token)
-
-    print("saved tracks saved")
+    print("saved tracks retrieved")
     spotify_all_playlists_tracks = get_spotify_all_playlists_tracks(access_token)
-
-    print("playlists tracks saved")
+    print("playlists tracks retrieved")
     return spotify_playlists, spotify_saved_tracks, spotify_all_playlists_tracks
 
     
@@ -75,8 +72,7 @@ def get_spotify_playlists_ids(spotify_playlists, music_platform_id):
 
     spotify_playlists_ids = set()
     for playlist in spotify_playlists:
-        if playlist["owner"] == music_platform_id:
-            print(playlist["owner"], music_platform_id)
+        if playlist["owner"]["id"] == music_platform_id:
             spotify_playlists_ids.add(playlist["id"])
     return spotify_playlists_ids
 

@@ -86,7 +86,7 @@ def library_tracks(selected_genre, selected_subgenre, selected_artist_name):
         tracklist = get_tracks_of_artist(selected_artist_uri, example_id)
         tracklist_featured = get_featured_tracks_of_artist(selected_artist_name, example_id)
     else:
-        tracklist = get_loose_tracks_for_subgenre(selected_genre, selected_subgenre, current_user.id)
+        tracklist = get_loose_tracks_for_subgenre(selected_genre, selected_subgenre, example_id)
         tracklist_featured = []
 
     if request.method == "POST":
@@ -106,7 +106,7 @@ def library_tracks(selected_genre, selected_subgenre, selected_artist_name):
             selected_artist_name = request.form.get("selected_artist_name")
             session["selected_artist_name"] = selected_artist_name
             new_selected_artist_name = encode_characters(selected_artist_name)
-            return redirect(url_for("library_bp.library_tracks", selected_genre = selected_genre, selected_subgenre = selected_subgenre, selected_artist_name = new_selected_artist_name))        
+            return redirect(url_for("demo_bp.library_tracks", selected_genre = selected_genre, selected_subgenre = selected_subgenre, selected_artist_name = new_selected_artist_name))        
 
     return render_template("library/demo.html", genres = genres, subgenres = subgenres, artists = artists, tracklist = tracklist,
                            tracklist_featured = tracklist_featured, selected_genre=selected_genre,

@@ -46,6 +46,7 @@ def parse_spotify_all_playlists_tracks(spotify_all_playlists_tracks):
         if all_playlists_tracks_library[playlist] == []:
             all_playlists_tracks_library.pop(playlist)
             playlists_to_discard.add(playlist)
+    print(all_playlists_tracks_library)
     return all_playlists_tracks_library, playlists_to_discard
 
 

@@ -166,14 +166,10 @@ def create_library():
 
     spotify_playlists, spotify_saved_tracks, spotify_all_playlists_tracks = get_spotify_data(access_token)
     music_platform_id = user.music_platform_id
-    print('parsing data...')
     playlists_info_library, saved_tracks_library, all_playlists_tracks_library = parse(spotify_playlists, spotify_saved_tracks, spotify_all_playlists_tracks, music_platform_id)
-    print('saving tracks to database...')
     save_to_dabatase(playlists_info_library, saved_tracks_library, all_playlists_tracks_library)
     save_default_user_settings()
-    print('assigning genres...')
     classify_artists_genres()
-    print('done')
     current_user.is_library_created = True
     db.session.add(current_user)
     db.session.commit()

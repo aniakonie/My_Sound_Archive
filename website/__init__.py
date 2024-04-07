@@ -18,8 +18,7 @@ def create_app():
 
     app.register_error_handler(404, page_not_found)
     app.register_error_handler(401, unauthorized)
-    password_postgres = os.getenv('PASSWORD_POSTGRES')
-    app.config['SQLALCHEMY_DATABASE_URI'] = f"postgresql://postgres:{password_postgres}@localhost:5432/VMLdb"
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
     from website.database.models import db, migrate, login_manager

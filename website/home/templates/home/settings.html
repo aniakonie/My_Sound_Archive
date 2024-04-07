@@ -64,10 +64,6 @@
     {% endif %}
 <div style="margin-bottom: 100px;"></div>
 
-
-
-{% endif %}
-
 <div>
     <div style="margin-bottom: 10px;"></div>
     <form method="POST">
@@ -76,5 +72,20 @@
 </div>
 
 <div style="margin-bottom: 200px;"></div>
+
+{% else %}
+<div style="margin-bottom: 200px;"></div>
+<span style="color:white;">There are no settings available.<br>
+<span style="color:white;">Create your archive and begin customizing it to your preferences.</span>
+
+<div style="margin-bottom: 300px;"></div>
+<div>
+    <div style="margin-bottom: 10px;"></div>
+    <form method="POST">
+        <input type=submit value="Delete account" name="delete_account" class="btn btn-danger">
+    </form>
+</div>
+<div style="margin-bottom: 200px;"></div>
+{% endif %}
 
 {% endblock %}

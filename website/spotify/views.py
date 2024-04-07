@@ -78,7 +78,7 @@ def successfully_logged_in_to_spotify():
 def request_authorization():
     client_id = os.getenv("CLIENT_ID")
     response_type = 'code'
-    redirect_uri = 'http://127.0.0.1:5000/spotify/callback'
+    redirect_uri = 'https://www.mysoundarchive.com/spotify/callback'
     scope = 'user-library-read playlist-read-private user-follow-read user-read-private user-read-email'
     state = 'fgfrgwgawgwwe' #TODO store it somewhere
     params = {'client_id': client_id, 'response_type': response_type, 'redirect_uri': redirect_uri, 'scope': scope, 'state': state}
@@ -90,7 +90,7 @@ def request_authorization():
 
 def get_token_initial(code):
     '''exchanging authorization code for an access token - post request to the token endpoint'''
-    redirect_uri = 'http://127.0.0.1:5000/spotify/callback'
+    redirect_uri = 'https://www.mysoundarchive.com/spotify/callback'
     grant_type = 'authorization_code'
     params = {'grant_type': grant_type, 'code': code, 'redirect_uri': redirect_uri}
     access_token_response_dict = token_request(params)
@@ -122,7 +122,7 @@ def save_token(access_token, refresh_token):
                  UserMusicPlatform.music_platform_name == "Spotify",
                  UserMusicPlatform.music_platform_id == music_platform_id)).first()
         if exists_already:
-            flash('You have a VML account with this Spotify account already, please log in to this account.', category = "error")
+            flash('You have My Sound Archive account with this Spotify account already, please log in to this account.', category = "error")
             return redirect(url_for("home_bp.login"))
         else:
             new_user = UserMusicPlatform("Spotify", music_platform_id, access_token, refresh_token, current_user.id)

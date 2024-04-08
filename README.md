@@ -1,4 +1,4 @@
-# Virtual Music Library
+# My Sound Archive
 
 A web application that displays Spotify user's library organized into artists, genres and subgenres folders, offering a convenient way to browse through the music collection.
 
@@ -10,7 +10,7 @@ Unless you search through a long list of liked songs or artists when selecting s
 
 ## In what way does it solve this problem
 
-Virtual Music Library app retrieves liked songs and all tracks from a user's playlists through the Spotify API. It then consolidates them and organizes the collection into corresponding artists and genres folders. Users can play songs on Spotify by using the links provided within the app.
+My Sound Archive app retrieves liked songs and all tracks from a user's playlists through the Spotify API. It then consolidates them and organizes the collection into corresponding artists and genres folders. Users can play songs on Spotify by using the links provided within the app.
 
 ![Screen](https://github.com/aniakonie/virtual_music_library_flask/assets/112773165/4d2f88aa-f312-4a63-8742-3e4849d8063d)
 
@@ -25,7 +25,7 @@ Virtual Music Library app retrieves liked songs and all tracks from a user's pla
 
 ## API's used
 
-Virtual Music Library app uses Spotify API (REST API) with OAuth 2.0 standard.
+My Sound Archive app uses Spotify API (REST API) with OAuth 2.0 standard.
 The authorization code flow used in the app is shown in the following Whimsical schema:
 
 https://whimsical.com/vml-s-oauth-2-0-AK9SEvFpFv4AvF9nLMGuSb
@@ -36,10 +36,18 @@ Mockup designs for the app can be found in the following link:
 
 https://whimsical.com/vml-mockups-3bYjFTHMP4NWSAbbUh7khH
 
+## Deployed website
+
+You can access the live version of the web app here: http://mysoundarchive.com/
+
 ## Project status
-The project is currently in the development phase, with deployment scheduled in the near future.
+
+Project is currently in development mode, which means that it can serve up to 25 users (according to Spotify's rules).
 
 Some of the improvements on the horizon:
 
-* Google user authentication
-* the same functionality for different music platforms
+* submitting an extension request to Spotify for the app (to serve more users),
+* addressing library retrieval failures caused by temporary issues in Spotify's backend,
+* improving the algorithm for assigning genres to artists,
+* adding an option to modify genres assigned by the app,
+* integrating Google authentication.

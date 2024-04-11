@@ -157,8 +157,9 @@ def get_genres(user_id):
     )
     result = db.session.execute(query)
     genres = [genre.artist_main_genre_custom for genre in result]
-    genres.remove("others")
-    genres.append("others")
+    if "others" in genres:
+        genres.remove("others")
+        genres.append("others")
     return genres
 
 
@@ -179,8 +180,9 @@ def get_subgenres(selected_genre, user_id):
     )
     query_result = db.session.execute(query)
     subgenres = [subgenre.artist_subgenre_custom for subgenre in query_result]
-    subgenres.remove("others")
-    subgenres.append("others")
+    if "others" in subgenres:
+        subgenres.remove("others")
+        subgenres.append("others")
     return subgenres
 
 

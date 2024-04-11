@@ -18,8 +18,9 @@ def create_app():
 
     app.register_error_handler(404, page_not_found)
     app.register_error_handler(401, unauthorized)
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
-    app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+    
+    env_config = os.getenv("APP_SETTINGS")
+    app.config.from_object(env_config)
 
     from website.database.models import db, migrate, login_manager
     db.init_app(app)

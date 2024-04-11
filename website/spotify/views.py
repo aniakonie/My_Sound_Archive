@@ -78,7 +78,7 @@ def successfully_logged_in_to_spotify():
 def request_authorization():
     client_id = os.getenv("CLIENT_ID")
     response_type = 'code'
-    redirect_uri = 'https://www.mysoundarchive.com/spotify/callback'
+    redirect_uri = os.getenv("REDIRECT_URI_SPOTIFY")
     scope = 'user-library-read playlist-read-private user-follow-read user-read-private user-read-email'
     state = 'fgfrgwgawgwwe' #TODO store it somewhere
     params = {'client_id': client_id, 'response_type': response_type, 'redirect_uri': redirect_uri, 'scope': scope, 'state': state}
@@ -90,7 +90,7 @@ def request_authorization():
 
 def get_token_initial(code):
     '''exchanging authorization code for an access token - post request to the token endpoint'''
-    redirect_uri = 'https://www.mysoundarchive.com/spotify/callback'
+    redirect_uri = os.getenv("REDIRECT_URI_SPOTIFY")
     grant_type = 'authorization_code'
     params = {'grant_type': grant_type, 'code': code, 'redirect_uri': redirect_uri}
     access_token_response_dict = token_request(params)

@@ -14,7 +14,7 @@ def unauthorized(e):
 
 def create_app():
 
-    app = Flask(__name__, static_url_path='')
+    app = Flask(__name__)
 
     app.register_error_handler(404, page_not_found)
     app.register_error_handler(401, unauthorized)

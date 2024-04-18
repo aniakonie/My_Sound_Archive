@@ -1,4 +1,4 @@
-# My Sound Archive
+<h1 align="center"> My Sound Archive </h1> <br>
 
 A web application that displays Spotify user's library organized into artists, genres and subgenres folders, offering a convenient way to browse through the music collection.
 
@@ -51,3 +51,8 @@ Some of the improvements on the horizon:
 * improving the algorithm for assigning genres to artists,
 * adding an option to modify genres assigned by the app,
 * integrating Google authentication.
+
+## What I'm currently working on
+
+You can check what I am currently working on here:
+http://github.com/users/aniakonie/projects/1

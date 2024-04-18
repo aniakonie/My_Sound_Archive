@@ -4,9 +4,14 @@ import urllib.parse
 
 def get_music_platform_id(access_token):
     current_user_profile_data_response = spotify_req_get_current_user_profile(access_token)
-    current_user_profile_data = current_user_profile_data_response.json() 
-    music_platform_id = current_user_profile_data["id"]
-    return music_platform_id
+    status_code = current_user_profile_data_response.status_code
+    if status_code == 403:
+        music_platform_id = None
+        return music_platform_id, status_code
+    else:
+        current_user_profile_data = current_user_profile_data_response.json() 
+        music_platform_id = current_user_profile_data["id"]
+        return music_platform_id, status_code
 
 
 def get_spotify_data(access_token):
@@ -139,5 +144,4 @@ def spotify_req_get_current_user_profile(access_token):
         'Authorization': 'Bearer ' + access_token
     }
     current_user_profile_data_response = requests.get(get_user_base_url, headers=headers)
-    print(current_user_profile_data_response.status_code)
     return current_user_profile_data_response

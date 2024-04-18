@@ -1,5 +1,11 @@
 <h1 align="center"> My Sound Archive </h1> <br>
 
+<p align="center">
+  <a href="http://mysoundarchive.com/">
+    <img alt="MySoundArchive" title="MySoundArchive" src="https://github.com/aniakonie/My_Sound_Archive/assets/112773165/b92cfdc9-42b2-4744-8ac1-4f3691d15dc7/logo-inkscape-svg.png" width="200">
+  </a>
+</p>
+
 A web application that displays Spotify user's library organized into artists, genres and subgenres folders, offering a convenient way to browse through the music collection.
 
 ## What problem does it solve
@@ -12,7 +18,9 @@ Unless you search through a long list of liked songs or artists when selecting s
 
 My Sound Archive app retrieves liked songs and all tracks from a user's playlists through the Spotify API. It then consolidates them and organizes the collection into corresponding artists and genres folders. Users can play songs on Spotify by using the links provided within the app.
 
-![Screen](https://github.com/aniakonie/virtual_music_library_flask/assets/112773165/4d2f88aa-f312-4a63-8742-3e4849d8063d)
+<p align="center">
+    <img alt="MySoundArchive" title="MySoundArchive" src="https://github.com/aniakonie/My_Sound_Archive/assets/112773165/7732115e-dce4-400b-b908-4ba6d3d386a9/Capture.png" width="700">
+</p>
 
 ## Technologies used
 

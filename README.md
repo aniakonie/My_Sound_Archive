@@ -31,7 +31,7 @@ My Sound Archive app retrieves liked songs and all tracks from a user's playlist
 * Jinja2 3.1.2
 * Bootstrap 5.3.2
 
-## API's used
+## APIs used
 
 My Sound Archive app uses Spotify API (REST API) with OAuth 2.0 standard.
 The authorization code flow used in the app is shown in the following Whimsical schema:
@@ -64,3 +64,57 @@ Some of the improvements on the horizon:
 
 You can check what I am currently working on here:
 http://github.com/users/aniakonie/projects/1
+
+## Setup
+
+1. Clone repository<br>
+    `git clone https://github.com/aniakonie/My_Sound_Archive.git`
+2. Install Python3.9 if you haven't already. Download it from https://www.python.org/downloads/.
+
+3. Set up a virtual environment with Python3.9<br>
+    `python3.9 -m venv venv_name`<br>
+    Replace `venv_name` with the desired name for the environment.
+    If this command does not work, try providing the full path to your Python executable:<br>
+    `C:\Users\Name\AppData\Local\Programs\Python\Python39\python3.9 -m venv venv_name`
+4. Navigate to the root directory of the project, activate it and install all dependencies from     requirements.txt file.<br>
+    `venv_name\Scripts\activate`<br>
+    `python -m pip install -r requirements.txt`
+5. Create a new .env file and save it in the root directory of the project.<br>
+
+    Add the following variables in the file (values to be added in the next steps):<br>
+    CLIENT_ID = ""<br>
+    CLIENT_SECRET = ""<br>
+    SECRET_KEY = ""<br>
+    DATABASE_URL = ""<br>
+    APP_SETTINGS = "config.DevelopmentConfig"<br>
+    REDIRECT_URI_SPOTIFY = "http://127.0.0.1:5000/spotify/callback"<br>
+    <br>
+    (SECRET_KEY should be a long random bytes or str)
+
+6. Head over to Spotify for developers: http://developer.spotify.com/<br>
+    Go to your dashboard and create a new app.<br>
+    In "Redirect URIs" field paste the following link: http://127.0.0.1:5000/spotify/callback<br>
+    Copy your Client ID and Client Secret to your .env file (CLIENT_ID and CLIENT_SECRET).
+
+7. Install PostgreSQL and create a new database. It will store users' login credentials and data retrieved from Spotify.<br>
+    Add your database url to your .env file (DATABASE_URL).<br>
+    The URI scheme can be of the following form:<br>
+    `"postgresql://[username]:[password]@[host]:[port]/[database_name]"`<br>
+    Replace the placeholders in square brackets with your actual PostgreSQL credentials.
+
+8. Navigate to the root directory of the project, activate your environment and initialize database migrations with the following command:<br>
+
+    `flask --app main db init --directory website/database/migrations`<br>
+
+    `"--directory website/database/migrations"` part is optional - if not included, migrations folder will be created in the root directory<br>
+
+    Create tables in your database with the following commands:<br>
+
+    `flask --app main db migrate --directory website/database/migrations`<br>
+    `flask --app main db upgrade --directory website/database/migrations`<br>
+
+9. With your environment activated, run the application using `main.py`<br>
+
+    With the development server running, visit the following URL in your browser:<br>
+    http://127.0.0.1:5000/
+

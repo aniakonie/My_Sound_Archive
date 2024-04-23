@@ -115,24 +115,25 @@ def token_request(params):
 
 
 def save_token(access_token, refresh_token):
-    music_platform_id, status_code = get_music_platform_id(access_token)
-    if status_code == 403:
-        flash('''If you wish to create your sound archive, please let us know by sending an email to the following address: mysoundarchiveofficial@gmail.com.
-              This app is currently in development mode, so we need to grant you permission first.''', category = "info")
-        return redirect(url_for("home_bp.home"))
     user = UserMusicPlatform.query.filter_by(user_id = current_user.id).first()
+
     if not user:
-        exists_already = UserMusicPlatform.query.filter(
-            and_(UserMusicPlatform.user_id == current_user.id,
-                 UserMusicPlatform.music_platform_name == "Spotify",
-                 UserMusicPlatform.music_platform_id == music_platform_id)).first()
-        if exists_already:
-            flash('You have My Sound Archive account with this Spotify account already, please log in to this account.', category = "error")
-            return redirect(url_for("home_bp.login"))
+        music_platform_id, status_code = get_music_platform_id(access_token)
+        if status_code == 403:
+            flash('''If you wish to create your sound archive, please let us know by sending an email to the following address: mysoundarchiveofficial@gmail.com.
+                This app is currently in development mode, so we need to grant you permission first.''', category = "info")
+            return redirect(url_for("home_bp.home"))
         else:
-            new_user = UserMusicPlatform("Spotify", music_platform_id, access_token, refresh_token, current_user.id)
-            db.session.add(new_user)
-            db.session.commit()
+            exists_already = UserMusicPlatform.query.filter(
+                and_(UserMusicPlatform.music_platform_name == "Spotify",
+                    UserMusicPlatform.music_platform_id == music_platform_id)).first()
+            if exists_already:
+                flash('You have My Sound Archive account with this Spotify account already, please log in to this account.', category = "error")
+                return redirect(url_for("home_bp.login"))
+            else:
+                new_user = UserMusicPlatform("Spotify", music_platform_id, access_token, refresh_token, current_user.id)
+                db.session.add(new_user)
+                db.session.commit()
     else:
         user.access_token = access_token
         db.session.add(user)
@@ -168,9 +169,8 @@ def do_refresh_token(refresh_token):
 def create_library():
     user = UserMusicPlatform.query.filter_by(user_id = current_user.id).first()
     access_token = get_access_token()
-
-    spotify_playlists, spotify_saved_tracks, spotify_all_playlists_tracks = get_spotify_data(access_token)
     music_platform_id = user.music_platform_id
+    spotify_playlists, spotify_saved_tracks, spotify_all_playlists_tracks = get_spotify_data(access_token)
     playlists_info_library, saved_tracks_library, all_playlists_tracks_library = parse(spotify_playlists, spotify_saved_tracks, spotify_all_playlists_tracks, music_platform_id)
     save_to_dabatase(playlists_info_library, saved_tracks_library, all_playlists_tracks_library)
     save_default_user_settings()

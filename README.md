@@ -24,12 +24,14 @@ My Sound Archive app retrieves liked songs and all tracks from a user's playlist
 
 ## Technologies used
 
-* Python 3.9.7
-* Flask 2.2.2
-* SQLAlchemy 1.4.42
-* PostgreSQL 16.1
-* Jinja2 3.1.2
-* Bootstrap 5.3.2
+* Python 3.9
+* Flask 2.2
+* SQLAlchemy 1.4
+* PostgreSQL 16
+* Jinja2 3.1
+* Bootstrap 5.3
+* Pytest 8.1
+* WTForms 3.1
 
 ## APIs used
 
@@ -82,22 +84,22 @@ http://github.com/users/aniakonie/projects/1
 5. Create a new .env file and save it in the root directory of the project.<br>
 
     Add the following variables in the file (values to be added in the next steps):<br>
-    CLIENT_ID = ""<br>
-    CLIENT_SECRET = ""<br>
-    SECRET_KEY = ""<br>
-    DATABASE_URL = ""<br>
-    APP_SETTINGS = "config.DevelopmentConfig"<br>
-    REDIRECT_URI_SPOTIFY = "http://127.0.0.1:5000/spotify/callback"<br>
+    `CLIENT_ID = ""`<br>
+    `CLIENT_SECRET = ""`<br>
+    `SECRET_KEY = ""`<br>
+    `DATABASE_URL = ""`<br>
+    `APP_SETTINGS = "config.DevelopmentConfig"`<br>
+    `REDIRECT_URI_SPOTIFY = "http://127.0.0.1:5000/spotify/callback"`<br>
     <br>
-    (SECRET_KEY should be a long random bytes or str)
+    (`SECRET_KEY` should be a long random bytes or str)
 
 6. Head over to Spotify for developers: http://developer.spotify.com/<br>
     Go to your dashboard and create a new app.<br>
     In "Redirect URIs" field paste the following link: http://127.0.0.1:5000/spotify/callback<br>
-    Copy your Client ID and Client Secret to your .env file (CLIENT_ID and CLIENT_SECRET).
+    Copy your Client ID and Client Secret to your .env file (`CLIENT_ID` and `CLIENT_SECRET`).
 
 7. Install PostgreSQL and create a new database. It will store users' login credentials and data retrieved from Spotify.<br>
-    Add your database url to your .env file (DATABASE_URL).<br>
+    Add your database url to your .env file (`DATABASE_URL`).<br>
     The URI scheme can be of the following form:<br>
     `"postgresql://[username]:[password]@[host]:[port]/[database_name]"`<br>
     Replace the placeholders in square brackets with your actual PostgreSQL credentials.
@@ -118,3 +120,8 @@ http://github.com/users/aniakonie/projects/1
     With the development server running, visit the following URL in your browser:<br>
     http://127.0.0.1:5000/
 
+
+## Testing
+
+In order to perform tests navigate to the root folder of the project and run tests with the following command:
+`pytest tests\test_library.py`

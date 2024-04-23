@@ -36,9 +36,8 @@ def get_spotify_all_playlists_tracks(access_token):
     '''adding songs from all playlists'''
 
     spotify_playlists = get_spotify_playlists(access_token)
-    music_platform_id = get_music_platform_id(access_token)
+    music_platform_id, status_code = get_music_platform_id(access_token)
     spotify_playlists_ids = get_spotify_playlists_ids(spotify_playlists, music_platform_id)
-
     spotify_all_playlists_tracks = {}
 
     # adding songs of each playlist to a dictionary: key = playlist_id, value: list of songs

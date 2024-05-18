@@ -1,3 +1,10 @@
+<b>Please head over to repository of the currently deployed version of My Sound Archive:</b>
+<br>
+https://github.com/aniakonie/My_Sound_Archive_Django
+<br><br>
+The current version, which is written in Django, is available at https://www.mysoundarchive.com/
+<br><br>
+
 <h1 align="center"> My Sound Archive </h1> <br>
 
 <p align="center">
@@ -46,26 +53,9 @@ Mockup designs for the app can be found in the following link:
 
 https://whimsical.com/vml-mockups-3bYjFTHMP4NWSAbbUh7khH
 
-## Deployed website
-
-You can access the live version of the web app here: http://mysoundarchive.com/
-
 ## Project status
 
-Project is currently in development mode, which means that it can serve up to 25 users (according to Spotify's rules).
-
-Some of the improvements on the horizon:
-
-* submitting an extension request to Spotify for the app (to serve more users),
-* addressing library retrieval failures caused by temporary issues in Spotify's backend,
-* improving the algorithm for assigning genres to artists,
-* adding an option to modify genres assigned by the app,
-* integrating Google authentication.
-
-## What I'm currently working on
-
-You can check what I am currently working on here:
-http://github.com/users/aniakonie/projects/1
+The project is currently being further developed using Django. This version will no longer be updated.
 
 ## Setup
 

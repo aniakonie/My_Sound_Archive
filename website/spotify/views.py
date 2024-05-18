@@ -43,7 +43,6 @@ def callback():
     # spotify sent back an error - something went wrong or user refused access to his/her spotify account
     error = request.args.get("error")
     if error != None:
-        print(error)
         if error == "access_denied":
             flash('''Did you mean to refuse access to your Spotify account? If not, please click 'Log in to Spotify' again.
                   If you did mean it and you are not sure whether to accept it, please head over to 'How it works' page and find out more about the app.''', category="info")
